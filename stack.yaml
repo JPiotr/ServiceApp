@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '5003:6379'
+    volumes:
+      - redis:/data
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=serviceApp
+      - POSTGRES_USER=serviceApp
+      - POSTGRES_PASSWORD=ServiceApp$$14
+    ports:
+      - '5123:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:
+    driver: local
+  redis:
+    driver: local
