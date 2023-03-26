@@ -6,7 +6,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Entity
 @Table(name = "Roles")
 public class Role extends EntityBase {
-
+    //todo: available modules?
 }
