@@ -1,5 +1,12 @@
 package com.oblitus.serviceApp.Security;
 
-public class Role {
+import com.oblitus.serviceApp.Abstracts.EntityBase;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+@Table(name = "Roles")
+public class Role extends EntityBase {
 
 }

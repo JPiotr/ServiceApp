@@ -5,8 +5,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @NoArgsConstructor
-public abstract class ModuleBase {
-    public String Name;
+public abstract class ModuleBase extends EntityBase {
     public List<ModuleElement> Elements;
 
 }
