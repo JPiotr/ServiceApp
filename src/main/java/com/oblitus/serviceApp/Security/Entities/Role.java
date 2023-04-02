@@ -14,10 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Roles")
+@Table(name = "roles")
 public class Role extends EntityBase {
     //todo: available modules?
     @ElementCollection
     public List<EModule> Modules;
 
+    //fixme: not List of EModule just list of ModuleBase!
+    public Role(String name, List<EModule> modules) {
+        super(name);
+        Modules = modules;
+    }
 }
