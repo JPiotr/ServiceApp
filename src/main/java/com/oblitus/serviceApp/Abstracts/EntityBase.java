@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Abstracts;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@MappedSuperclass
 public abstract class EntityBase{
     @Id
     protected UUID ID;
