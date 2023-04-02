@@ -14,13 +14,20 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User extends EntityBase {
     @Column(nullable = false)
     public String Email;
     @OneToMany(targetEntity = Role.class)
     public Collection<Role> Roles;
     private String password;
+
+    public User(String name, String email, Collection<Role> roles, String password) {
+        super(name);
+        Email = email;
+        Roles = roles;
+        this.password = password;
+    }
 
     public User addRole(Role role){
         Roles.add(role);
