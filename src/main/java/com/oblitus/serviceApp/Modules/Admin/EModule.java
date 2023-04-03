@@ -6,5 +6,6 @@ public enum EModule {
     CASH_MODULE,
     FINANCE_MODULE,
     PROJECTS_MODULE,
-    SERVICE_MODULE
+    SERVICE_MODULE,
+    BASE_MODULE,
 }
