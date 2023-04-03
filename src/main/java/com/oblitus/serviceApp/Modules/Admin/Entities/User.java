@@ -13,6 +13,7 @@ import java.util.Collection;
 //todo: Maybe Root Singleton Class?
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Entity
 @Table(name = "users")
 public class User extends EntityBase {
@@ -20,9 +21,9 @@ public class User extends EntityBase {
     public String Email;
     @OneToMany(targetEntity = Role.class)
     public Collection<Role> Roles;
-    private String password;
+    private byte[] password;
 
-    public User(String name, String email, Collection<Role> roles, String password) {
+    public User(String name, String email, Collection<Role> roles, byte[] password) {
         super(name);
         Email = email;
         Roles = roles;
