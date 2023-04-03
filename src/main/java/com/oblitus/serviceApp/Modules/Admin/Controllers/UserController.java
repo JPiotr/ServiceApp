@@ -1,17 +1,12 @@
-package com.oblitus.serviceApp.Security.Controllers;
+package com.oblitus.serviceApp.Modules.Admin.Controllers;
 
-import com.oblitus.serviceApp.Security.Entities.User;
-import com.oblitus.serviceApp.Security.Services.UserService;
+import com.oblitus.serviceApp.Modules.Admin.Entities.User;
+import com.oblitus.serviceApp.Modules.Admin.Services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-
-import java.awt.*;
 
 @RestController
 @RequestMapping("adminModule")

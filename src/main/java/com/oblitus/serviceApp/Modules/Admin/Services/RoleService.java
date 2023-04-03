@@ -1,9 +1,8 @@
-package com.oblitus.serviceApp.Security.Services;
+package com.oblitus.serviceApp.Modules.Admin.Services;
 
-import com.oblitus.serviceApp.Modules.AdminModule;
-import com.oblitus.serviceApp.Security.EModule;
-import com.oblitus.serviceApp.Security.Entities.Role;
-import com.oblitus.serviceApp.Security.Repos.RoleRepository;
+import com.oblitus.serviceApp.Modules.Admin.EModule;
+import com.oblitus.serviceApp.Modules.Admin.Entities.Role;
+import com.oblitus.serviceApp.Modules.Admin.Repos.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

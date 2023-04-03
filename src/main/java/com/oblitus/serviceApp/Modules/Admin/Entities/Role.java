@@ -1,8 +1,7 @@
-package com.oblitus.serviceApp.Security.Entities;
+package com.oblitus.serviceApp.Modules.Admin.Entities;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
-import com.oblitus.serviceApp.Abstracts.ModuleBase;
-import com.oblitus.serviceApp.Security.EModule;
+import com.oblitus.serviceApp.Modules.Admin.EModule;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

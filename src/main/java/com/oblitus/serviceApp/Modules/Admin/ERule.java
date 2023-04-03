@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Security;
+package com.oblitus.serviceApp.Modules.Admin;
 
 public enum ERule {
     ADMIN,USER,SERVICE,FINANCE

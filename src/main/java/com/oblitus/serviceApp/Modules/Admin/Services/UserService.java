@@ -1,13 +1,13 @@
-package com.oblitus.serviceApp.Security.Services;
+package com.oblitus.serviceApp.Modules.Admin.Services;
 
-import com.oblitus.serviceApp.Security.Entities.Role;
-import com.oblitus.serviceApp.Security.Entities.User;
-import com.oblitus.serviceApp.Security.Repos.UserRepository;
+import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
+import com.oblitus.serviceApp.Modules.Admin.Entities.Role;
+import com.oblitus.serviceApp.Modules.Admin.Entities.User;
+import com.oblitus.serviceApp.Modules.Admin.Repos.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
