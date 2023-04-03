@@ -1,10 +1,11 @@
 package com.oblitus.serviceApp;
 
-import com.oblitus.serviceApp.Security.EModule;
-import com.oblitus.serviceApp.Security.Entities.Role;
-import com.oblitus.serviceApp.Security.Entities.User;
-import com.oblitus.serviceApp.Security.Services.RoleService;
-import com.oblitus.serviceApp.Security.Services.UserService;
+import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
+import com.oblitus.serviceApp.Modules.Admin.EModule;
+import com.oblitus.serviceApp.Modules.Admin.Entities.Role;
+import com.oblitus.serviceApp.Modules.Admin.Entities.User;
+import com.oblitus.serviceApp.Modules.Admin.Services.RoleService;
+import com.oblitus.serviceApp.Modules.Admin.Services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +27,7 @@ public class ServiceAppApplication {
 		RoleService roleService,
 		UserService userService
 	){return args -> {
+		Crypt crypt = new Crypt();
 		ArrayList<EModule> modules = new ArrayList<>();
 		modules.add(EModule.ADMIN_MODULE);
 
@@ -34,10 +36,9 @@ public class ServiceAppApplication {
 		ArrayList<Role> roles = new ArrayList<>();
 		roles.add(role);
 
-		User user = new User("Root","root@st.iai",roles,"root");
+		User user = userService.addUser("Root","root@st.iai", roles,"root");
 
 		roleService.addRole(role);
-		userService.addUser(user);
 
 	};}
 }
