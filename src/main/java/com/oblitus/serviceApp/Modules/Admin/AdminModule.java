@@ -1,11 +1,9 @@
-package com.oblitus.serviceApp.Modules;
+package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Abstracts.ModuleBase;
-import com.oblitus.serviceApp.Security.EModule;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
 public final class AdminModule extends ModuleBase {
     private static AdminModule module;
 
