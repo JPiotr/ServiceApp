@@ -1,8 +1,12 @@
 package com.oblitus.serviceApp.Abstracts;
 
-import lombok.NoArgsConstructor;
+import com.oblitus.serviceApp.Modules.Admin.EModule;
 
-@NoArgsConstructor
-public abstract class ModuleBase extends EntityBase {
+public interface ModuleBase {
+    //todo : implement Base Module
+    static ModuleBase getModule() {
+        return null;
+    }
 
+    EModule getType();
 }
