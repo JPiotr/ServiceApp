@@ -4,7 +4,7 @@ import com.oblitus.serviceApp.Abstracts.ModuleBase;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public final class AdminModule extends ModuleBase {
+public final class AdminModule implements ModuleBase{
     private static AdminModule module;
 
     public final EModule Type = EModule.ADMIN_MODULE;
@@ -22,5 +22,10 @@ public final class AdminModule extends ModuleBase {
             module = new AdminModule();
         }
         return module;
+    }
+
+    @Override
+    public EModule getType() {
+        return Type;
     }
 }
