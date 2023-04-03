@@ -1,6 +1,5 @@
 package com.oblitus.serviceApp.Abstracts;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public abstract class EntityBase{
     public String Name;
     public Boolean ReadOnly;
     //Once Locked it can't be edited anyway
-    public Boolean Locked;
+    protected Boolean Locked;
 
     public EntityBase(String name) {
         ID = UUID.randomUUID();
@@ -34,4 +33,33 @@ public abstract class EntityBase{
         ReadOnly = false;
         Locked = false;
     }
+
+    public void lockData(){
+        setLastModificationDate();
+        Locked = true;
+    }
+
+    public String getName(){
+        return Name;
+    }
+
+    public LocalDateTime getLastModificationDate() {
+        return LastModificationDate;
+    }
+
+    public void setLastModificationDate() {
+        LastModificationDate = LocalDateTime.now();
+    }
+
+    public Boolean getReadOnly() {
+        return ReadOnly;
+    }
+
+    public EntityBase setReadOnly(Boolean readOnly) {
+        setLastModificationDate();
+        ReadOnly = readOnly;
+        return this;
+    }
+
+
 }
