@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp;
 
+import com.oblitus.serviceApp.Modules.Admin.ERule;
 import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
 import com.oblitus.serviceApp.Modules.Admin.EModule;
 import com.oblitus.serviceApp.Modules.Admin.Entities.Role;
@@ -31,7 +32,7 @@ public class ServiceAppApplication {
 		ArrayList<EModule> modules = new ArrayList<>();
 		modules.add(EModule.ADMIN_MODULE);
 
-		Role role = new Role("Root",modules);
+		Role role = new Role(ERule.ADMIN,modules);
 
 		ArrayList<Role> roles = new ArrayList<>();
 		roles.add(role);
