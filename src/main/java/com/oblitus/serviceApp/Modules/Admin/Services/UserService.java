@@ -31,7 +31,8 @@ public class UserService {
     }
 
     public User addUser(String name, String email, Collection<Role> roles, String password) throws Exception {
-        return userRepo.save(new User(name, email, roles, crypt.cryptData(password)));
+        return userRepo.save(new User(name, email, roles, password));
+//        return userRepo.save(new User(name, email, roles, crypt.cryptData(password)));
     }
 
     public User addUser(User user){
