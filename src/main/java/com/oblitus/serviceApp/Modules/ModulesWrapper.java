@@ -1,8 +1,7 @@
 package com.oblitus.serviceApp.Modules;
 
 import com.oblitus.serviceApp.Abstracts.ModuleBase;
-import com.oblitus.serviceApp.Modules.Admin.AdminModule;
-import lombok.NoArgsConstructor;
+import com.oblitus.serviceApp.Modules.Admin.Singletons.AdminModule;
 
 import java.util.List;
 
