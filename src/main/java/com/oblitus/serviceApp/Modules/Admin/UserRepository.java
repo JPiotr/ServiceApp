@@ -1,10 +1,12 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
-import com.oblitus.serviceApp.Modules.Admin.Entities.User;
+import com.oblitus.serviceApp.Modules.Admin.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, UUID> {
+@Repository
+interface UserRepository extends JpaRepository<User, UUID> {
 
 }
