@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Modules.Admin.Repos;
+package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Modules.Admin.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

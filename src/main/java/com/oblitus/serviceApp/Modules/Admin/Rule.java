@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Modules.Admin.Entities;
+package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Abstracts.ModuleBase;
