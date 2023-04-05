@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,27 +14,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.UUID;
 
 //todo: Maybe Root Singleton Class?
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Entity
 @Table(name = "users")
 public class User extends EntityBase implements UserDetails {
     @Column(nullable = false)
-    public String Email;
-    @OneToMany(targetEntity = Role.class)
-    public Collection<Role> Roles;
+    private String Email;
+    @OneToMany(targetEntity = Rule.class)
+    private Collection<Rule> rules;
 
     @Column(nullable = false)
-    public String Username;
+    private String Username;
 
-    public LocalDateTime LastLoginDate;
+    private LocalDateTime LastLoginDate;
 
-    public LocalDateTime CredentialExpirationDate;
+    private LocalDateTime CredentialExpirationDate;
 
-    public LocalDateTime AccountExpirationDate;
+    private LocalDateTime AccountExpirationDate;
 
     private boolean Enabled;
     private boolean Expired;
@@ -43,27 +45,42 @@ public class User extends EntityBase implements UserDetails {
     private String password;
 
 
-    public User(String username, String email, Collection<Role> roles, String password) {
+    public User(UUID id, String email, Collection<Rule> rules, String username, LocalDateTime lastLoginDate, LocalDateTime credentialExpirationDate, LocalDateTime accountExpirationDate, boolean enabled, boolean expired, boolean credentialsExpired, String password) {
         super();
-        Username = username;
+        super.ID = id;
         Email = email;
-        Roles = roles;
+        this.rules = rules;
+        Username = username;
+        LastLoginDate = lastLoginDate;
+        CredentialExpirationDate = credentialExpirationDate;
+        AccountExpirationDate = accountExpirationDate;
+        Enabled = enabled;
+        Expired = expired;
+        CredentialsExpired = credentialsExpired;
         this.password = password;
     }
 
-    public User addRole(Role role){
-        Roles.add(role);
+    protected User(String username, String email, Collection<Rule> rules, String password) {
+        super();
+        Username = username;
+        Email = email;
+        this.rules = rules;
+        this.password = password;
+    }
+
+    protected User addRole(Rule rule){
+        rules.add(rule);
         return this;
     }
 
-    public User deleteRole(Role role){
-        Roles.remove(role);
+    protected User deleteRole(Rule rule){
+        rules.remove(rule);
         return this;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        return getRules();
     }
 
     @Override
