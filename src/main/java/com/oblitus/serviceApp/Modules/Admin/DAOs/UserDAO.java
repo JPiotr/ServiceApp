@@ -23,8 +23,12 @@ public final class UserDAO implements DAO<UserDTO> {
 
     @Override
     public Optional<UserDTO> get(UUID id) {
+        var opt = userService.getUser(id);
+        if(opt.isEmpty()){
+            return Optional.empty();
+        }
         return Optional.of(
-                userMapper.apply(userService.getUser(id))
+                userMapper.apply(opt.get())
         );
     }
 

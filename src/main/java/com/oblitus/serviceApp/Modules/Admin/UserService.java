@@ -14,12 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService {
     private final UserRepository userRepo;
-     public User getUser(UUID id){
-        Optional<User> opt = userRepo.findById(id);
-        if(opt.isEmpty()){
-            return User.emptyUser;
-        }
-        return opt.get();
+     public Optional<User> getUser(UUID id){
+        return userRepo.findById(id);
     }
     public User addUser(String name, String email, Collection<Rule> rules, String password){
         return userRepo.save(new User(name, email, rules, password));
