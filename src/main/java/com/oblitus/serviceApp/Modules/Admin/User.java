@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 //todo: Maybe Root Singleton Class?
@@ -110,4 +111,6 @@ public class User extends EntityBase implements UserDetails {
     public boolean isCredentialsExpired(){
         return CredentialsExpired;
     }
+
+    public static User emptyUser = new User("NOT exist",null, List.of(Rule.baseRule),null);
 }

@@ -35,4 +35,6 @@ public class Rule extends EntityBase implements GrantedAuthority {
     public String getAuthority() {
         return ruleType.toString();
     }
+
+    public static Rule baseRule = new Rule(ERule.USER,List.of(EModule.BASE_MODULE));
 }
