@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountLockedException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +24,13 @@ public class UserService {
     public List<User> getAllUsers(){
         return userRepo.findAll();
     }
-    public User updateUser(UUID id, String username, String email, String password){
+    public User updateUser(UUID id, String username, String email, String password) throws AccountLockedException {
          Optional<User> user = userRepo.findById(id);
          if(user.isEmpty()){
              return null;
+         }
+         if(!user.get().isAccountNonLocked()){
+             throw new AccountLockedException("Account " + user.get().getUsername() + " is locked");
          }
          if(email != null){
              user.get().setEmail(email);
