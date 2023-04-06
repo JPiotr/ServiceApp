@@ -16,7 +16,10 @@ public class UserService {
     private final UserRepository userRepo;
      public User getUser(UUID id){
         Optional<User> opt = userRepo.findById(id);
-        return opt.orElse(null);
+        if(opt.isEmpty()){
+            return User.emptyUser;
+        }
+        return opt.get();
     }
     public User addUser(String name, String email, Collection<Rule> rules, String password){
         return userRepo.save(new User(name, email, rules, password));
@@ -27,7 +30,7 @@ public class UserService {
     public User updateUser(UUID id, String username, String email, String password) throws AccountLockedException {
          Optional<User> user = userRepo.findById(id);
          if(user.isEmpty()){
-             return null;
+             return User.emptyUser;
          }
          if(!user.get().isAccountNonLocked()){
              throw new AccountLockedException("Account " + user.get().getUsername() + " is locked");
