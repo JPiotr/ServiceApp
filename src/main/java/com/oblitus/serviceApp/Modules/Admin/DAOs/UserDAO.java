@@ -6,6 +6,7 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.UserMapper;
 import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Service
 public final class UserDAO implements DAO<UserDTO> {
     private final UserService userService;
     private final UserMapper userMapper;

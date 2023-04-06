@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
 import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Service
 public final class RuleDAO implements DAO<RuleDTO> {
     private final RuleService ruleService;
     private final RuleMapper ruleMapper;
