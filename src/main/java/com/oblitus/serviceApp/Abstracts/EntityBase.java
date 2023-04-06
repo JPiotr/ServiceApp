@@ -52,6 +52,9 @@ public abstract class EntityBase{
         Locked = true;
     }
 
+    public boolean isLocked(){
+        return Locked;
+    }
     public LocalDateTime getLastModificationDate() {
         return LastModificationDate;
     }
