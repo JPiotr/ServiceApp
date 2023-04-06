@@ -7,6 +7,7 @@ import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import lombok.RequiredArgsConstructor;
 
+import javax.security.auth.login.AccountLockedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,7 +51,7 @@ public final class UserDAO implements DAO<UserDTO> {
     }
 
     @Override
-    public UserDTO update(UserDTO userDTO) {
+    public UserDTO update(UserDTO userDTO) throws AccountLockedException {
         return userMapper.apply(
                 userService.updateUser(
                         userDTO.id(),
