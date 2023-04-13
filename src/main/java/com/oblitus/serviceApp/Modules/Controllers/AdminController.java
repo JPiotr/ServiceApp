@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.DAOs.UserDAO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,13 +20,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/adminModule")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AdminController {
-    private static final ModulesWrapper modulesWrapper = ModulesWrapper.getInstance();
+    private final ModulesWrapper modulesWrapper;
 
     @GetMapping("/users/user")
     public ResponseEntity<Response> getUser(@RequestBody @Validated UUID id){
-        Optional<UserDTO> opt = ModulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
+        Optional<UserDTO> opt = modulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
         if(opt.isEmpty()){
             return ResponseEntity.ok(
                     Response.builder()
@@ -55,7 +56,7 @@ public class AdminController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .massage("All existing users.")
-                        .data(Map.of("users",ModulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()))
+                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -68,7 +69,7 @@ public class AdminController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .massage("New User putted to Database.")
-                        .data(Map.of("user",ModulesWrapper.adminModule.getAdminDAO().getUserDao().save(userDTO)))
+                        .data(Map.of("user",modulesWrapper.adminModule.getAdminDAO().getUserDao().save(userDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -82,7 +83,7 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .massage("User updated.")
-                            .data(Map.of("user", ModulesWrapper.adminModule.getAdminDAO().getUserDao().update(userDTO)))
+                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().update(userDTO)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -107,7 +108,7 @@ public class AdminController {
           Response.builder()
                   .timestamp(LocalDateTime.now())
                   .massage("Try to drop User")
-                  .data(Map.of("result", ModulesWrapper.adminModule.getAdminDAO().getUserDao().delete(userDTO)))
+                  .data(Map.of("result", modulesWrapper.adminModule.getAdminDAO().getUserDao().delete(userDTO)))
                   .statusCode(HttpStatus.OK.value())
                   .status(HttpStatus.OK)
                   .build()
