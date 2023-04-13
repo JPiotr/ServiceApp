@@ -37,7 +37,7 @@
 //
 //        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
 //            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-//            final boolean isTokenValid;
+//            final boolean isTokenValid = false;
 //
 //            if(isTokenValid){
 //                UsernamePasswordAuthenticationToken authToken =
