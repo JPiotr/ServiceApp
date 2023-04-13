@@ -1,25 +1,45 @@
 version: '3.8'
 services:
+  serviceApp:
+    image: serviceapp-server:0.1.1
+    restart: always
+    ports:
+      - '8080:8080'
+#    networks:
+#      - redis
+#      - postgres
+    depends_on:
+      - redis
+      - postgres
   redis:
     image: redis
     restart: always
-    ports:
-      - '5003:6379'
+#    ports:
+#      - '5003:6379'
     volumes:
       - redis:/data
+#    networks:
+#      - redis
   postgres:
     image: postgres
     restart: always
     environment:
-      - POSTGRES_DB=serviceApp
-      - POSTGRES_USER=serviceApp
-      - POSTGRES_PASSWORD=ServiceApp$$14
-    ports:
-      - '5123:5432'
+      POSTGRES_USER: service_app
+      POSTGRES_PASSWORD: serviceapp14
+      POSTGRES_ROOT_PASSWORD: serviceapp14
+#    ports:
+#      - '5123:5432'
     volumes:
       - postgres:/var/lib/postgresql/data
+#    networks:
+#      - postgres
 volumes:
   postgres:
     driver: local
   redis:
     driver: local
+#networks:
+#  postgres:
+#    name: postgres-driver
+#  redis:
+#    name: redis-driver
