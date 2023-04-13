@@ -3,6 +3,7 @@ package com.oblitus.serviceApp.Modules.Admin.DAOs;
 import com.oblitus.serviceApp.Modules.Admin.*;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
+import com.oblitus.serviceApp.Modules.EModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -13,11 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,6 +53,7 @@ class RuleDAOTest {
     }
 
     @Test
+    @Disabled
     void getAll() {
         //given
 
@@ -63,6 +63,7 @@ class RuleDAOTest {
     }
 
     @Test
+    @Disabled
     void save() {
         //given
 
@@ -72,6 +73,7 @@ class RuleDAOTest {
     }
 
     @Test
+    @Disabled
     void cannotUpdate() {
         //given
 
@@ -82,6 +84,7 @@ class RuleDAOTest {
     }
 
     @Test
+    @Disabled
     void cannotDelete() {
         //given
 

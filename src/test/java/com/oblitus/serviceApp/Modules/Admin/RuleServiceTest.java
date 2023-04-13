@@ -1,25 +1,22 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
+import com.oblitus.serviceApp.Modules.Module;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
+import com.oblitus.serviceApp.Modules.EModule;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.rmi.server.RemoteStub;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,8 +30,8 @@ class RuleServiceTest {
 
     @BeforeEach
     void setUp() {
-        List<EModule> modules = new ArrayList<>();
-        modules.add(EModule.BASE_MODULE);
+        List<Module> modules = new ArrayList<>();
+        modules.add(new Module(EModule.ADMIN_MODULE.name(), true,EModule.ADMIN_MODULE));
         rule = new Rule(ERule.USER,modules);
         ruleDTO = ruleMapper.apply(rule);
 
