@@ -1,8 +1,11 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
+import com.oblitus.serviceApp.Modules.EModule;
+import com.oblitus.serviceApp.Modules.Module;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,12 +22,11 @@ import java.util.List;
 @Table(name = "rules")
 public class Rule extends EntityBase implements GrantedAuthority {
 
-    @ElementCollection
-    private List<EModule> Modules;
+    @OneToMany(targetEntity = Module.class)
+    private List<Module> Modules;
     private String Name;
     private ERule ruleType;
-    //fixme: not List of EModule just list of ModuleBase!
-    protected Rule(ERule roleType, List<EModule> modules) {
+    protected Rule(ERule roleType, List<Module> modules) {
         super();
         Name = roleType.toString();
         Modules = modules;
@@ -36,5 +38,4 @@ public class Rule extends EntityBase implements GrantedAuthority {
         return ruleType.toString();
     }
 
-    public static Rule baseRule = new Rule(ERule.USER,List.of(EModule.BASE_MODULE));
 }

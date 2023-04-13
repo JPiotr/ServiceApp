@@ -13,7 +13,7 @@ public class RuleMapper implements Function<Rule, RuleDTO> {
         return new RuleDTO(
                 rule.getID(),
                 rule.getName(),
-                rule.getModules().stream().map(Enum::toString).collect(Collectors.toList())
+                rule.getModules()
         );
     }
 }
