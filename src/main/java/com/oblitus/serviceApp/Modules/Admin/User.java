@@ -112,5 +112,4 @@ public class User extends EntityBase implements UserDetails {
         return CredentialsExpired;
     }
 
-    public static User emptyUser = new User("NOT exist",null, List.of(Rule.baseRule),null);
 }

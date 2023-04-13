@@ -1,14 +1,13 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,6 +15,9 @@ public class UserService {
     private final UserRepository userRepo;
      public Optional<User> getUser(UUID id){
         return userRepo.findById(id);
+    }
+     public Optional<User> getUser(String name){
+        return Optional.ofNullable(userRepo.findAll().stream().filter(x-> Objects.equals(x.getUsername(), name)).toList().get(0));
     }
     public User addUser(String name, String email, Collection<Rule> rules, String password){
         return userRepo.save(new User(name, email, rules, password));
@@ -26,10 +28,10 @@ public class UserService {
     public User updateUser(UUID id, String username, String email, String password) throws AccountLockedException {
          Optional<User> user = userRepo.findById(id);
          if(user.isEmpty()){
-             return User.emptyUser;
+             throw new EntityNotFoundException("User with id "+ id + "not found!");
          }
          if(!user.get().isAccountNonLocked()){
-             throw new AccountLockedException("Account " + user.get().getUsername() + " is locked");
+             throw new AccountLockedException("Account " + user.get().getUsername() + " is locked!");
          }
          if(email != null){
              user.get().setEmail(email);
