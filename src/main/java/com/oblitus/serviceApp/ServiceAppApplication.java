@@ -1,8 +1,13 @@
 package com.oblitus.serviceApp;
 
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
+import com.oblitus.serviceApp.Modules.EModule;
+import com.oblitus.serviceApp.Modules.Module;
+import com.oblitus.serviceApp.Modules.ModuleRepository;
+import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
-import com.oblitus.serviceApp.Modules.Admin.EModule;
 //import com.oblitus.serviceApp.Modules.Admin.Role;
 //import com.oblitus.serviceApp.Modules.Admin.User;
 //import com.oblitus.serviceApp.Modules.Admin.RoleService;
@@ -14,6 +19,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @SpringBootApplication
 @AllArgsConstructor
@@ -25,21 +32,49 @@ public class ServiceAppApplication {
 
 	@Bean
 	CommandLineRunner dbinit(
-//		RoleService roleService,
-//		UserService userService
+		ModuleRepository moduleRepository,
+		ModulesWrapper modulesWrapper
 	){return args -> {
 		Crypt crypt = new Crypt();
-//		ArrayList<EModule> modules = new ArrayList<>();
-//		modules.add(EModule.ADMIN_MODULE);
-//
-//		Role role = new Role(ERule.ADMIN,modules);
-//
-//		ArrayList<Role> roles = new ArrayList<>();
-//		roles.add(role);
-//
-//		User user = userService.addUser("Root","root@st.iai", roles,"root");
-//
-//		roleService.addRole(role);
+		List<Module> modules = List.of(
+				new Module(EModule.ADMIN_MODULE.name()	 ,true ,EModule.ADMIN_MODULE		),
+				new Module(EModule.BASE_MODULE.name()	 ,true ,EModule.BASE_MODULE		),
+				new Module(EModule.FINANCE_MODULE.name() ,false,EModule.FINANCE_MODULE	),
+				new Module(EModule.PROJECTS_MODULE.name(),false,EModule.PROJECTS_MODULE	),
+				new Module(EModule.CRM_MODULE.name()	 ,false,EModule.CRM_MODULE		),
+				new Module(EModule.CASH_MODULE.name()	 ,false,EModule.CASH_MODULE		),
+				new Module(EModule.SERVICE_MODULE.name() ,false,EModule.SERVICE_MODULE	)
+		);
+
+		moduleRepository.saveAll(modules);
+
+		RuleDTO rootRole = new RuleDTO(
+				UUID.randomUUID(),
+				ERule.ADMIN.name(),
+				List.of(modules.get(0),
+						modules.get(1)
+				)
+		);
+
+		rootRole = modulesWrapper.adminModule.getAdminDAO().getRuleDao().save(rootRole);
+
+		UserDTO root = new UserDTO(
+				UUID.randomUUID(),
+				"root",
+				" ",
+				null,
+				null,
+				null,
+				true,
+				false,
+				false,
+				"rootpass",
+				List.of(
+						rootRole
+				)
+		);
+
+		modulesWrapper.adminModule.getAdminDAO().getUserDao().save(root);
 
 	};}
 }
