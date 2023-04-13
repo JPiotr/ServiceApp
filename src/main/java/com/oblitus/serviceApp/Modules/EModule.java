@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Modules.Admin;
+package com.oblitus.serviceApp.Modules;
 
 public enum EModule {
     ADMIN_MODULE,
