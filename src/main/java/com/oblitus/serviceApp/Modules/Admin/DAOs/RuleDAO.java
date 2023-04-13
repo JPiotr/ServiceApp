@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
 import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public final class RuleDAO implements DAO<RuleDTO> {
     public Optional<RuleDTO> get(UUID id) {
         return Optional.of(
                 ruleMapper.apply(
-                    ruleService.getRule(id)
-            )
+                        ruleService.getRule(id)
+                )
         );
     }
 
@@ -33,7 +34,7 @@ public final class RuleDAO implements DAO<RuleDTO> {
                 .stream()
                 .map(ruleMapper)
                 .collect(Collectors.toList()
-        );
+                );
     }
 
     @Override
@@ -53,3 +54,4 @@ public final class RuleDAO implements DAO<RuleDTO> {
         return false;
     }
 }
+
