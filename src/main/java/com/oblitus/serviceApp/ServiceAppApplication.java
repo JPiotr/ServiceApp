@@ -39,10 +39,10 @@ public class ServiceAppApplication {
 		List<Module> modules = List.of(
 				new Module(EModule.ADMIN_MODULE.name()	 ,true ,EModule.ADMIN_MODULE		),
 				new Module(EModule.BASE_MODULE.name()	 ,true ,EModule.BASE_MODULE		),
-				new Module(EModule.FINANCE_MODULE.name() ,false,EModule.FINANCE_MODULE	),
+//				new Module(EModule.FINANCE_MODULE.name() ,false,EModule.FINANCE_MODULE	),
 				new Module(EModule.PROJECTS_MODULE.name(),false,EModule.PROJECTS_MODULE	),
-				new Module(EModule.CRM_MODULE.name()	 ,false,EModule.CRM_MODULE		),
-				new Module(EModule.CASH_MODULE.name()	 ,false,EModule.CASH_MODULE		),
+//				new Module(EModule.CRM_MODULE.name()	 ,false,EModule.CRM_MODULE		),
+//				new Module(EModule.CASH_MODULE.name()	 ,false,EModule.CASH_MODULE		),
 				new Module(EModule.SERVICE_MODULE.name() ,false,EModule.SERVICE_MODULE	)
 		);
 
