@@ -18,6 +18,6 @@ public class Response {
     protected String reason;
     protected String message;
     protected String devMessage;
-    protected Map<?,?> data;
+    protected Map<String,?> data;
 
 }
