@@ -24,4 +24,5 @@ public class Ticket extends EntityBase {
     private Collection<Comment> Comments;
     @OneToOne(targetEntity = Client.class)
     private Client Client;
+    private TicketState state;
 }
