@@ -4,6 +4,6 @@ public enum ERule {
     ADMIN,
     USER,
     SERVICE,
-    FINANCE
+    CLIENT
 
 }
