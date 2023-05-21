@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-//todo: DAO DTO support
+
 /**
  * Base class for every Entity in application.
  */
