@@ -13,8 +13,8 @@ import java.util.UUID;
 public class ClientService {
     private final ClientRepository repository;
 
-    public Client getClient(UUID id){
-        return repository.findById(id).orElse(null);
+    public Optional<Client> getClient(UUID id){
+        return repository.findById(id);
     }
 
     public List<Client> getAllClients(){
