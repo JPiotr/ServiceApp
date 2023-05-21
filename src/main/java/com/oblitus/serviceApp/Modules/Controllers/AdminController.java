@@ -31,7 +31,7 @@ public class AdminController {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .massage("User " + id + " not found.")
+                            .message("User " + id + " not found.")
                             .data(Map.of("user",null))
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
@@ -42,7 +42,7 @@ public class AdminController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .massage("User with ID = " + id + ".")
+                        .message("User with ID = " + id + ".")
                         .data(Map.of("user",opt.get()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -55,7 +55,7 @@ public class AdminController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .massage("All existing users.")
+                        .message("All existing users.")
                         .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -68,7 +68,7 @@ public class AdminController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .massage("New User putted to Database.")
+                        .message("New User putted to Database.")
                         .data(Map.of("user",modulesWrapper.adminModule.getAdminDAO().getUserDao().save(userDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
@@ -82,7 +82,7 @@ public class AdminController {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .massage("User updated.")
+                            .message("User updated.")
                             .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().update(userDTO)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
@@ -93,7 +93,7 @@ public class AdminController {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .massage(e.getMessage())
+                            .message(e.getMessage())
                             .data(Map.of("user",null))
                             .statusCode(HttpStatus.LOCKED.value())
                             .status(HttpStatus.LOCKED)
@@ -107,7 +107,7 @@ public class AdminController {
         return ResponseEntity.ok(
           Response.builder()
                   .timestamp(LocalDateTime.now())
-                  .massage("Try to drop User")
+                  .message("Try to drop User")
                   .data(Map.of("result", modulesWrapper.adminModule.getAdminDAO().getUserDao().delete(userDTO)))
                   .statusCode(HttpStatus.OK.value())
                   .status(HttpStatus.OK)

@@ -16,7 +16,7 @@ public class Response {
     protected int statusCode;
     protected HttpStatus status;
     protected String reason;
-    protected String massage;
+    protected String message;
     protected String devMessage;
     protected Map<?,?> data;
 
