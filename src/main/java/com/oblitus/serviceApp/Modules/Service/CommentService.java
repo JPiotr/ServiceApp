@@ -34,4 +34,13 @@ public class CommentService {
         return true;
 
     }
+
+    public Comment updateComment(UUID id, String content){
+        var opt = repository.findById(id);
+        if(opt.isEmpty()){
+            return null;
+        }
+        opt.get().setContent(content);
+        return repository.save(opt.get());
+    }
 }
