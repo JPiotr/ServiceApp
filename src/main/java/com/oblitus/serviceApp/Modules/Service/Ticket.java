@@ -27,6 +27,7 @@ public class Ticket extends EntityBase {
     private TicketState state;
 
     public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client) {
+        super();
         Title = title;
         Description = description;
         Client = client;
