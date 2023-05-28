@@ -23,4 +23,11 @@ public class Project extends EntityBase {
     private Collection<Functionality> Functionalities;
     @OneToOne(targetEntity = User.class)
     private User Owner;
+
+    public Project(String name, String description, User owner) {
+        super();
+        Name = name;
+        Description = description;
+        Owner = owner;
+    }
 }
