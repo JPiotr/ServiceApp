@@ -21,8 +21,8 @@ public class CommentService {
         return repository.findAll();
     }
 
-    public Comment addComment(Comment comment){
-        return  repository.save(comment);
+    public Comment addComment(String content){
+        return  repository.save(new Comment(content));
     }
 
     public boolean deleteComment(UUID id){

@@ -18,4 +18,9 @@ public class Comment extends EntityBase {
     private boolean Active;
     @OneToOne(targetEntity = User.class)
     private User Creator;
+
+    public Comment(String content) {
+        super();
+        Content = content;
+    }
 }
