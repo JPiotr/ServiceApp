@@ -9,7 +9,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,4 +27,11 @@ public class Task extends EntityBase {
     private User User;
     @OneToMany(targetEntity = Comment.class)
     private Collection<Comment> Comments;
+
+    public Task(String title, String description, com.oblitus.serviceApp.Modules.Admin.User user) {
+        super();
+        Title = title;
+        Description = description;
+        User = user;
+    }
 }
