@@ -21,8 +21,8 @@ import java.util.UUID;
 public class AdminController {
     private final ModulesWrapper modulesWrapper;
 
-    @GetMapping("/users/user")
-    public ResponseEntity<Response> getUser(@RequestBody @Validated UUID id){
+    @GetMapping("/users/user/{id}")
+    public ResponseEntity<Response> getUser(@PathVariable @Validated UUID id){
         Optional<UserDTO> opt = modulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
                 Response.builder()

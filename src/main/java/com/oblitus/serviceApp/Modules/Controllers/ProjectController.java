@@ -28,8 +28,8 @@ public class ProjectController {
     private final TaskService taskService;
     private final FunctionalityService functionalityService;
 
-    @GetMapping("/projects/project")
-    public ResponseEntity<Response> getProject(@RequestBody @Validated UUID id) {
+    @GetMapping("/projects/project/{id}")
+    public ResponseEntity<Response> getProject(@PathVariable @Validated UUID id) {
         Optional<Project> opt = projectService.getProject(id);
         return opt.<ResponseEntity<Response>>map(project -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
@@ -114,8 +114,8 @@ public class ProjectController {
         );
     }
 
-    @GetMapping("/tasks/task")
-    public ResponseEntity<Response> getTask(@RequestBody @Validated UUID id) {
+    @GetMapping("/tasks/task/{id}")
+    public ResponseEntity<Response> getTask(@PathVariable @Validated UUID id) {
         Optional<Task> opt = taskService.getTask(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
@@ -200,8 +200,8 @@ public class ProjectController {
         );
     }
 
-    @GetMapping("/functionalities/func")
-    public ResponseEntity<Response> getFunc(@RequestBody @Validated UUID id) {
+    @GetMapping("/functionalities/func/{id}")
+    public ResponseEntity<Response> getFunc(@PathVariable @Validated UUID id) {
         Optional<Functionality> opt = functionalityService.getFunctionality(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())

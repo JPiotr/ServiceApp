@@ -29,8 +29,8 @@ public class ServiceController {
     private final CommentService commentService;
     private final TicketService ticketService;
 
-    @GetMapping("/clients/client")
-    public ResponseEntity<Response> getClient(@RequestBody @Validated UUID id){
+    @GetMapping("/clients/client//{id}")
+    public ResponseEntity<Response> getClient(@PathVariable @Validated UUID id){
         Optional<ClientDTO> opt = clientDAO.get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
                 Response.builder()
@@ -117,8 +117,8 @@ public class ServiceController {
         );
     }
 
-    @GetMapping("/comments/comment")
-    public ResponseEntity<Response> getFunc(@RequestBody @Validated UUID id) {
+    @GetMapping("/comments/comment/{id}")
+    public ResponseEntity<Response> getFunc(@PathVariable @Validated UUID id) {
         Optional<Comment> opt = commentService.getComment(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
@@ -203,8 +203,8 @@ public class ServiceController {
         );
     }
 
-    @GetMapping("/tickets/ticket")
-    public ResponseEntity<Response> getTicket(@RequestBody @Validated UUID id) {
+    @GetMapping("/tickets/ticket//{id}")
+    public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
         Optional<Ticket> opt = ticketService.getTicket(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
