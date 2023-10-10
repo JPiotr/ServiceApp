@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "rules")
-public class Rule extends EntityBase{ //implements GrantedAuthority {
+public class Rule extends EntityBase implements GrantedAuthority {
 
     @OneToMany(targetEntity = Module.class)
     private List<Module> Modules;

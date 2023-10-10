@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -17,7 +20,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "users")
-public class User extends EntityBase{// implements UserDetails {
+public class User extends EntityBase implements UserDetails, CredentialsContainer {
     @Column(nullable = false)
     private String Email;
     @OneToMany(targetEntity = Rule.class)
@@ -35,8 +38,12 @@ public class User extends EntityBase{// implements UserDetails {
 
     private LocalDateTime AccountExpirationDate;
 
+    //@Override
+    @Getter
     private boolean Enabled;
+    @Getter
     private boolean Expired;
+    @Getter
     private boolean CredentialsExpired;
 
     //todo: what do to with password??
@@ -106,17 +113,8 @@ public class User extends EntityBase{// implements UserDetails {
         return CredentialsExpired;
     }
 
-   //@Override
-    public boolean isEnabled() {
-        return Enabled;
+    @Override
+    public void eraseCredentials() {
+        Password = null;
     }
-
-    public boolean isExpired(){
-        return Expired;
-    }
-
-    public boolean isCredentialsExpired(){
-        return CredentialsExpired;
-    }
-
 }
