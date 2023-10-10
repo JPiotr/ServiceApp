@@ -6,8 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "users")
-public class User extends EntityBase implements UserDetails {
+public class User extends EntityBase{// implements UserDetails {
     @Column(nullable = false)
     private String Email;
     @OneToMany(targetEntity = Rule.class)
@@ -90,27 +90,27 @@ public class User extends EntityBase implements UserDetails {
         return this;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    //@Override
+    public Collection<Rule> getAuthorities() {
         return getRules();
     }
 
-    @Override
+    //@Override
     public boolean isAccountNonExpired() {
         return Expired;
     }
 
-    @Override
+    //@Override
     public boolean isAccountNonLocked() {
         return !super.Locked;
     }
 
-    @Override
+    //@Override
     public boolean isCredentialsNonExpired() {
         return CredentialsExpired;
     }
 
-    @Override
+   //@Override
     public boolean isEnabled() {
         return Enabled;
     }
