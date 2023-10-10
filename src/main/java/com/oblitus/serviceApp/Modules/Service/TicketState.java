@@ -3,9 +3,11 @@ package com.oblitus.serviceApp.Modules.Service;
 public enum TicketState {
     NEW,
     DONE,
-    ONGOING,
+    OPEN,
+    @Deprecated
     PAUSED,
     REOPENED,
+    @Deprecated
     CLOSE,
     ARCHIVED
 }
