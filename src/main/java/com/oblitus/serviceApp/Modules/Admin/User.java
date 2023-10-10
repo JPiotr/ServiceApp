@@ -25,10 +25,13 @@ public class User extends EntityBase implements UserDetails {
     @Column(nullable = false)
     private String Email;
     @OneToMany(targetEntity = Rule.class)
-    private Collection<Rule> rules;
+    private Collection<Rule> Rules;
 
     @Column(nullable = false)
     private String Username;
+
+    private String Name;
+    private String Surname;
 
     private LocalDateTime LastLoginDate;
 
@@ -41,14 +44,14 @@ public class User extends EntityBase implements UserDetails {
     private boolean CredentialsExpired;
 
     //todo: what do to with password??
-    private String password;
+    private String Password;
 
 
     public User(UUID id, String email, Collection<Rule> rules, String username, LocalDateTime lastLoginDate, LocalDateTime credentialExpirationDate, LocalDateTime accountExpirationDate, boolean enabled, boolean expired, boolean credentialsExpired, String password) {
         super();
         super.ID = id;
         Email = email;
-        this.rules = rules;
+        Rules = rules;
         Username = username;
         LastLoginDate = lastLoginDate;
         CredentialExpirationDate = credentialExpirationDate;
@@ -56,24 +59,34 @@ public class User extends EntityBase implements UserDetails {
         Enabled = enabled;
         Expired = expired;
         CredentialsExpired = credentialsExpired;
-        this.password = password;
+        Password = password;
     }
 
     protected User(String username, String email, Collection<Rule> rules, String password) {
         super();
         Username = username;
         Email = email;
-        this.rules = rules;
-        this.password = password;
+        Rules = rules;
+        Password = password;
+    }
+
+    protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
+        super();
+        Username = username;
+        Email = email;
+        Rules = rules;
+        Password = password;
+        Name = name;
+        Surname = surname;
     }
 
     protected User addRole(Rule rule){
-        rules.add(rule);
+        Rules.add(rule);
         return this;
     }
 
     protected User deleteRole(Rule rule){
-        rules.remove(rule);
+        Rules.remove(rule);
         return this;
     }
 
