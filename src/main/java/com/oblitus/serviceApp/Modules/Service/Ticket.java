@@ -33,5 +33,6 @@ public class Ticket extends EntityBase {
         Description = description;
         Client = client;
         state = TicketState.NEW;
+        priority = TicketPriority.MEDIUM;
     }
 }
