@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Entity
@@ -17,4 +16,9 @@ import java.util.UUID;
 public class Client extends EntityBase {
     private String Name;
 
+    public Client(String name) {
+        super();
+        this.ID = UUID.fromString("CL1ENT");
+        Name = name;
+    }
 }
