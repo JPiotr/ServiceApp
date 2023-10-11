@@ -7,6 +7,8 @@ import java.util.UUID;
 public record UserDTO(
       UUID id,
       String username,
+      String name,
+      String surname,
       String email,
       LocalDateTime lastLoginDateTime,
       LocalDateTime credentialExpireDate,

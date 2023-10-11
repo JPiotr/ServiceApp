@@ -203,7 +203,7 @@ public class ServiceController {
         );
     }
 
-    @GetMapping("/tickets/ticket//{id}")
+    @GetMapping("/tickets/ticket/{id}")
     public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
         Optional<Ticket> opt = ticketService.getTicket(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(

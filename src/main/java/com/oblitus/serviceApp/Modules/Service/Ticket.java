@@ -25,6 +25,7 @@ public class Ticket extends EntityBase {
     @OneToOne(targetEntity = Client.class)
     private Client Client;
     private TicketState state;
+    private TicketPriority priority;
 
     public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client) {
         super();

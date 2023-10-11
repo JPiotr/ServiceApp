@@ -38,7 +38,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
 
     private LocalDateTime AccountExpirationDate;
 
-    //@Override
+//    @Override
     @Getter
     private boolean Enabled;
     @Getter
@@ -117,4 +117,6 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     public void eraseCredentials() {
         Password = null;
     }
+
+
 }

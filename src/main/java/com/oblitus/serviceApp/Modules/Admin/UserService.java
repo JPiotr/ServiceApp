@@ -3,6 +3,10 @@ package com.oblitus.serviceApp.Modules.Admin;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
@@ -11,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepo;
      public Optional<User> getUser(UUID id){
         return userRepo.findById(id);
@@ -51,5 +55,11 @@ public class UserService {
          }
         userRepo.delete(user.get());
          return true;
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return getUser(username).orElse(null);
     }
 }

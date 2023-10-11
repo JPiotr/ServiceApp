@@ -18,6 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -61,13 +62,15 @@ public class ServiceAppApplication {
 		UserDTO root = new UserDTO(
 				UUID.randomUUID(),
 				"root",
+				"root",
+				"root",
 				" ",
 				null,
-				null,
-				null,
+				LocalDateTime.now().plusMonths(1L),
+				LocalDateTime.now().plusMonths(1L),
+				false,
+				 false,
 				true,
-				false,
-				false,
 				"rootpass",
 				List.of(
 						rootRole
