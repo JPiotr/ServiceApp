@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class AdminController {
     private final ModulesWrapper modulesWrapper;
 
-    @GetMapping("/users/user/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<Response> getUser(@PathVariable @Validated UUID id){
         Optional<UserDTO> opt = modulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
@@ -44,19 +45,6 @@ public class AdminController {
         ));
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<Response> getUsers(){
-        return ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("All existing users.")
-                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()))
-                        .statusCode(HttpStatus.OK.value())
-                        .status(HttpStatus.OK)
-                        .build()
-        );
-    }
-
     @PutMapping("/users")
     public ResponseEntity<Response> putUser(@RequestBody @Validated UserDTO userDTO){
         return ResponseEntity.ok(
@@ -66,6 +54,20 @@ public class AdminController {
                         .data(Map.of("user",modulesWrapper.adminModule.getAdminDAO().getUserDao().save(userDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
+                        .build()
+        );
+    }
+
+
+    @GetMapping("/users")
+    public ResponseEntity<Response> getUsers(){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("All existing users.")
+                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
                         .build()
         );
     }
