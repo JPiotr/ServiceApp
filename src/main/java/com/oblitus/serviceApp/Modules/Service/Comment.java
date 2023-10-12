@@ -15,7 +15,6 @@ import lombok.*;
 @Table(name = "comments")
 public class Comment extends EntityBase {
     private String Content;
-    private boolean Active;
     @OneToOne(targetEntity = User.class)
     private User Creator;
 
