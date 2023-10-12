@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Modules.Admin.Singletons;
 
 import com.oblitus.serviceApp.Abstracts.ModuleBase;
 import com.oblitus.serviceApp.Modules.EModule;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public final class AdminModule implements ModuleBase{
-//    private final AdminModule module;
+
+    @Getter
     private final AdminDAO adminDAO;
 
     public final EModule Type = EModule.ADMIN_MODULE;
@@ -28,7 +30,4 @@ public final class AdminModule implements ModuleBase{
         return Type;
     }
 
-    public AdminDAO getAdminDAO(){
-        return adminDAO;
-    }
 }

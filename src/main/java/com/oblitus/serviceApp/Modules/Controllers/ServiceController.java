@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
+import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Project.DTOs.FunctionalityDTO;
 import com.oblitus.serviceApp.Modules.Project.Functionality;
 import com.oblitus.serviceApp.Modules.Service.*;
@@ -28,8 +29,9 @@ public class ServiceController {
     private final ClientDAO clientDAO;
     private final CommentService commentService;
     private final TicketService ticketService;
+    private final ModulesWrapper modulesWrapper;
 
-    @GetMapping("/clients/client//{id}")
+    @GetMapping("/clients/client/{id}")
     public ResponseEntity<Response> getClient(@PathVariable @Validated UUID id){
         Optional<ClientDTO> opt = clientDAO.get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
@@ -203,34 +205,25 @@ public class ServiceController {
         );
     }
 
-    @GetMapping("/tickets/ticket/{id}")
+    @GetMapping("/ticket/{id}")
     public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
-        Optional<Ticket> opt = ticketService.getTicket(id);
-        return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
+        return ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
                         .message("Ticket with ID = " + id + ".")
-                        .data(Map.of("ticket", task))
+                        .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
-        )).orElseGet(() -> ResponseEntity.ok(
-                Response.builder().timestamp(LocalDateTime.now())
-                        .message("Ticket with ID = " + id + ".")
-                        .data(Map.of("ticket", null))
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .status(HttpStatus.NOT_FOUND)
-                        .reason("There is no Entity with this ID!")
-                        .build()
-        ));
+        );
     }
 
     @GetMapping("/tickets")
-    public ResponseEntity<Response> getTicket(){
+    public ResponseEntity<Response> getTickets(){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing tickets.")
-                        .data(Map.of("tickets",commentService.getAllComments()))
+                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -243,9 +236,24 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New Ticket putted to Database.")
-                        .data(Map.of("ticket",ticketService.addTicket(ticketDTO.title(),ticketDTO.description(),null)))
+                        .data(Map.of("ticket",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticketDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
+                        .build()
+        );
+    }
+
+    @GetMapping("/tickets/{userId}")
+    public ResponseEntity<Response> getUserTickets(@PathVariable @Validated UUID userId){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("All existing tickets.")
+                        .data(Map.of("tickets",commentService.getAllComments().stream().filter(
+                                comment -> comment.getCreator().getID() == userId
+                        )))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
                         .build()
         );
     }
@@ -257,7 +265,7 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Ticket updated.")
-                            .data(Map.of("ticket", ticketService.updateClient(ticketDTO.id(),ticketDTO.description(),ticketDTO.description())))
+                            .data(Map.of("ticket", ticketService.updateTicket(ticketDTO.id(),ticketDTO.description(),ticketDTO.description())))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
