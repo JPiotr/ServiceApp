@@ -35,7 +35,7 @@ public class TicketService {
         return true;
     }
 
-    public Ticket updateClient(UUID id, String title, String description){
+    public Ticket updateTicket(UUID id, String title, String description){
         Optional<Ticket> opt = repository.findById(id);
         if(opt.isEmpty()){
             return null;
