@@ -16,6 +16,8 @@ public class UserMapper implements Function<User,UserDTO> {
     public UserDTO apply(User user) {
         return new UserDTO(
                 user.getID(),
+                user.getName(),
+                user.getSurname(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getLastLoginDate(),
