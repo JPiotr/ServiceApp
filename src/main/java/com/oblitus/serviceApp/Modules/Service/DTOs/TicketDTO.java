@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
 
 import java.util.Collection;
@@ -11,6 +12,7 @@ public record TicketDTO(
         String description,
         Collection<CommentDTO> comments,
         ClientDTO client,
-        TicketState state
+        TicketState state,
+        TicketPriority priority
 ) {
 }
