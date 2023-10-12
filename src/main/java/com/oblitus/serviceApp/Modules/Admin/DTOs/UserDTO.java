@@ -19,4 +19,19 @@ public record UserDTO(
       String password,
       Collection<RuleDTO> roles
 ) {
+    public UserDTO(String username, String name, String surname, String email, String password, Collection<RuleDTO> roles) {
+        this(null,
+                username,
+                name,
+                surname,
+                email,
+                null,
+                null,
+                null,
+                true,
+                false,
+                false,
+                password,
+                roles);
+    }
 }
