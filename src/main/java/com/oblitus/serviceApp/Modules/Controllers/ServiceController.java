@@ -1,12 +1,7 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
-import com.oblitus.serviceApp.Modules.Project.DTOs.FunctionalityDTO;
-import com.oblitus.serviceApp.Modules.Project.Functionality;
-import com.oblitus.serviceApp.Modules.Service.*;
-import com.oblitus.serviceApp.Modules.Service.DAOs.ClientDAO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
