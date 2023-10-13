@@ -26,9 +26,6 @@ import java.util.UUID;
 @RequestMapping("/serviceModule")
 @RequiredArgsConstructor
 public class ServiceController {
-    private final ClientDAO clientDAO;
-    private final CommentService commentService;
-    private final TicketService ticketService;
     private final ModulesWrapper modulesWrapper;
 
     @GetMapping("/clients/{id}")
@@ -80,7 +77,7 @@ public class ServiceController {
         );
     }
 
-    @PostMapping("/clients")
+    @PostMapping("/client")
     public ResponseEntity<Response> updateClient(@RequestBody @Validated ClientDTO clientDTO) {
         try {
             return ResponseEntity.ok(
@@ -119,9 +116,10 @@ public class ServiceController {
         );
     }
 
-    @GetMapping("/comments/comment/{id}")
+
+    @GetMapping("/comments/{id}")
     public ResponseEntity<Response> getFunc(@PathVariable @Validated UUID id) {
-        Optional<Comment> opt = commentService.getComment(id);
+        Optional<CommentDTO> opt = modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
                         .message("Comment with ID = " + id + ".")
@@ -146,7 +144,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing comments.")
-                        .data(Map.of("comments",commentService.getAllComments()))
+                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -159,21 +157,21 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New Comment putted to Database.")
-                        .data(Map.of("comment",commentService.addComment(commentDTO.content())))
+                        .data(Map.of("comment",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(commentDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
         );
     }
 
-    @PostMapping("/comments")
+    @PostMapping("/comment")
     public ResponseEntity<Response> updateFunctionality(@RequestBody @Validated CommentDTO commentDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Comment updated.")
-                            .data(Map.of("comment", commentService.updateComment(commentDTO.id(),commentDTO.content())))
+                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().update(commentDTO)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -192,13 +190,13 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping("/comments")
+    @DeleteMapping("/comment")
     public ResponseEntity<Response> deleteUser(@RequestBody @Validated CommentDTO commentDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Comment")
-                        .data(Map.of("result", commentService.deleteComment(commentDTO.id())))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().delete(commentDTO)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
