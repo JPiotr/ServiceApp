@@ -1,7 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
-import com.oblitus.serviceApp.Modules.Admin.Rule;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -10,7 +9,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.Collection;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
