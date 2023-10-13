@@ -209,14 +209,24 @@ public class ServiceController {
 
     @GetMapping("/ticket/{id}")
     public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
-        return ResponseEntity.ok(
+        Optional<TicketDTO> opt = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id);
+        return opt.<ResponseEntity<Response>>map(ticketDTO ->ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
                         .message("Ticket with ID = " + id + ".")
-                        .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id)))
+                        .data(Map.of("ticket", ticketDTO))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
-        );
+        )).orElseGet(() -> ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Ticket " + id + " not found.")
+                        .data(Map.of("ticket", null))
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .status(HttpStatus.NOT_FOUND)
+                        .reason("There is no Entity with this ID!")
+                        .build()
+        ));
     }
 
     @GetMapping("/tickets")
