@@ -46,7 +46,6 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     @Getter
     private boolean CredentialsExpired;
 
-    //todo: what do to with password??
     private String Password;
 
 
@@ -117,6 +116,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     public void eraseCredentials() {
         Password = null;
     }
+
+
 
 
 }

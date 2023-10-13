@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
+import com.oblitus.serviceApp.Modules.Admin.AuthenticationService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.LUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
@@ -20,25 +21,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class BasicController {
-    private final ModulesWrapper modulesWrapper;
+    private final AuthenticationService authenticationService;
 
     @PutMapping("/register")
     public ResponseEntity<Response> registerUser(@RequestBody @Validated RUserDTO userDTO){
-        UserDTO user = new UserDTO(userDTO.userName(),
-                        userDTO.name(),
-                        userDTO.surname(),
-                        userDTO.email(),
-                        userDTO.password(),
-                        modulesWrapper.adminModule.getAdminDAO().getRuleDao().getAll()
-                                .stream().filter(
-                                ruleDTO -> ruleDTO.name() == ERule.USER.toString()
-                        ).collect(Collectors.toList())
-                );
         return  ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("New User putted to Database.")
-                        .data(Map.of("user",modulesWrapper.adminModule.getAdminDAO().getUserDao().save(user)))
+                        .message("New User putted to Database. And token generated.")
+                        .data(Map.of("token", authenticationService.register(userDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -47,8 +38,15 @@ public class BasicController {
 
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody @Validated LUserDTO userDTO){
-
-        return ResponseEntity.ok().build();
+        return  ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Login approve")
+                        .data(Map.of("token", authenticationService.login(userDTO)))
+                        .statusCode(HttpStatus.CREATED.value())
+                        .status(HttpStatus.CREATED)
+                        .build()
+        );
     }
 
     @PostMapping("/logout")
