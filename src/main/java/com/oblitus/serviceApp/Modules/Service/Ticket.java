@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Modules.Service;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.Admin.Rule;
+import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -24,6 +25,8 @@ public class Ticket extends EntityBase {
     private Collection<Comment> Comments;
     @OneToOne(targetEntity = Client.class)
     private Client Client;
+    @OneToOne(targetEntity = User.class)
+    private User Assigned;
     private TicketState state;
     private TicketPriority priority;
 
@@ -34,5 +37,15 @@ public class Ticket extends EntityBase {
         Client = client;
         state = TicketState.NEW;
         priority = TicketPriority.MEDIUM;
+    }
+
+    public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User user, TicketPriority priority){
+        super();
+        Title = title;
+        Description = description;
+        Client = client;
+        state = TicketState.NEW;
+        Assigned = user;
+        this.priority = priority;
     }
 }

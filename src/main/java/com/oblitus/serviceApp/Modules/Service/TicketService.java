@@ -26,6 +26,10 @@ public class TicketService {
         return repository.save(new Ticket(title,description,client));
     }
 
+    public Ticket addTicket(Ticket ticket){
+        return repository.save(ticket);
+    }
+
     public boolean deleteTicket(UUID id){
         Optional<Ticket> opt = repository.findById(id);
         if(opt.isEmpty()){

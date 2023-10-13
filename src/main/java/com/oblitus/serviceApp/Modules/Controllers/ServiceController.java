@@ -205,6 +205,8 @@ public class ServiceController {
         );
     }
 
+
+
     @GetMapping("/ticket/{id}")
     public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
         return ResponseEntity.ok(
@@ -248,9 +250,9 @@ public class ServiceController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("All existing tickets.")
-                        .data(Map.of("tickets",commentService.getAllComments().stream().filter(
-                                comment -> comment.getCreator().getID() == userId
+                        .message("All user tickets.")
+                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll().stream().filter(
+                                ticket -> ticket.user().id() == userId
                         )))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -258,14 +260,14 @@ public class ServiceController {
         );
     }
 
-    @PostMapping("/tickets")
+    @PostMapping("/ticket")
     public ResponseEntity<Response> updateTicket(@RequestBody @Validated TicketDTO ticketDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Ticket updated.")
-                            .data(Map.of("ticket", ticketService.updateTicket(ticketDTO.id(),ticketDTO.description(),ticketDTO.description())))
+                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().update(ticketDTO)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -284,13 +286,13 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping("/tickets")
+    @DeleteMapping("/ticket")
     public ResponseEntity<Response> deleteTicket(@RequestBody @Validated TicketDTO ticketDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Ticket")
-                        .data(Map.of("result", ticketService.deleteTicket(ticketDTO.id())))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().delete(ticketDTO)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
