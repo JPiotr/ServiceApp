@@ -31,9 +31,9 @@ public class ServiceController {
     private final TicketService ticketService;
     private final ModulesWrapper modulesWrapper;
 
-    @GetMapping("/clients/client/{id}")
+    @GetMapping("/clients/{id}")
     public ResponseEntity<Response> getClient(@PathVariable @Validated UUID id){
-        Optional<ClientDTO> opt = clientDAO.get(id);
+        Optional<ClientDTO> opt = modulesWrapper.serviceModule.getServiceDAO().getClientDao().get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
@@ -60,7 +60,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing clients.")
-                        .data(Map.of("clients",clientDAO.getAll()))
+                        .data(Map.of("clients",modulesWrapper.serviceModule.getServiceDAO().getClientDao().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -73,7 +73,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New Client putted to Database.")
-                        .data(Map.of("client",clientDAO.save(clientDTO)))
+                        .data(Map.of("client",modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(clientDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -87,7 +87,7 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Client updated.")
-                            .data(Map.of("client", clientDAO.update(clientDTO)))
+                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientDao().update(clientDTO)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -112,7 +112,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Client")
-                        .data(Map.of("result", clientDAO.delete(clientDTO)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getClientDao().delete(clientDTO)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
