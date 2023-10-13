@@ -6,6 +6,7 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.UserMapper;
 import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
@@ -20,6 +21,7 @@ public final class UserDAO implements DAO<UserDTO> {
     private final UserService userService;
     private final UserMapper userMapper;
     private final RuleService ruleService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<UserDTO> get(UUID id) {
@@ -51,7 +53,9 @@ public final class UserDAO implements DAO<UserDTO> {
                                     ruleDTO -> ruleService.getRule(ruleDTO.id()))
                             .collect(Collectors.toList()
                             ),
-                    userDTO.password()
+                    passwordEncoder.encode(userDTO.password()),
+                userDTO.username(),
+                userDTO.surname()
                 )
         );
     }

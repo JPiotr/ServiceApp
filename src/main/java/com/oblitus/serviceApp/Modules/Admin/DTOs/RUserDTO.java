@@ -8,9 +8,9 @@ public record RUserDTO (
 
     String password
 ){
-    @Override
-    public String userName() {
-        return name() + surname();
-    }
+//    @Override
+//    public String userName() {
+//        return name() + surname();
+//    }
 }
 

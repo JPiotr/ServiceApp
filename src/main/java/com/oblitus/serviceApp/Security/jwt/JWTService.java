@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 @Service
 public class JWTService {
-    private static final String KEY = "nIa8uy7UZ0SJh3VU9AJB9uw1uVGnBkAe"; //todo change this
+    private static final String KEY = "88cd2108b5347d973cf39cdf9053d7dd42704876d8c9a9bd8e2d168259d3ddf7"; //todo change this
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }

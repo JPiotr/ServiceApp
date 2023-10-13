@@ -17,6 +17,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,17 +36,15 @@ public class ServiceAppApplication {
 	@Bean
 	CommandLineRunner dbinit(
 		ModuleRepository moduleRepository,
-		ModulesWrapper modulesWrapper
+		ModulesWrapper modulesWrapper,
+		PasswordEncoder passwordEncoder
 	){return args -> {
 		Crypt crypt = new Crypt();
 		List<Module> modules = List.of(
 				new Module(EModule.ADMIN_MODULE.name()	 ,true ,EModule.ADMIN_MODULE		),
 				new Module(EModule.BASE_MODULE.name()	 ,true ,EModule.BASE_MODULE		),
-//				new Module(EModule.FINANCE_MODULE.name() ,false,EModule.FINANCE_MODULE	),
 				new Module(EModule.PROJECTS_MODULE.name(),false,EModule.PROJECTS_MODULE	),
-//				new Module(EModule.CRM_MODULE.name()	 ,false,EModule.CRM_MODULE		),
-//				new Module(EModule.CASH_MODULE.name()	 ,false,EModule.CASH_MODULE		),
-				new Module(EModule.SERVICE_MODULE.name() ,false,EModule.SERVICE_MODULE	)
+				new Module(EModule.SERVICE_MODULE.name() ,true,EModule.SERVICE_MODULE	)
 		);
 
 		moduleRepository.saveAll(modules);
@@ -68,9 +68,9 @@ public class ServiceAppApplication {
 				null,
 				LocalDateTime.now().plusMonths(1L),
 				LocalDateTime.now().plusMonths(1L),
-				false,
-				 false,
 				true,
+				 false,
+				false,
 				"rootpass",
 				List.of(
 						rootRole
@@ -81,4 +81,6 @@ public class ServiceAppApplication {
 
 
 	};}
+
+
 }
