@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class BasicController {
     private final AuthenticationService authenticationService;
@@ -36,7 +37,7 @@ public class BasicController {
         );
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<Response> login(@RequestBody @Validated LUserDTO userDTO){
         return  ResponseEntity.ok(
                 Response.builder()

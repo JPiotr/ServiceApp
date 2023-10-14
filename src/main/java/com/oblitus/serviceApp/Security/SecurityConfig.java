@@ -34,8 +34,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> 
                         authorizationManagerRequestMatcherRegistry.requestMatchers(
-                                        "/login",
-                                        "/register"
+                                        "/**"
                         ).permitAll()
                                 .anyRequest()
                                 .authenticated())
@@ -47,24 +46,6 @@ public class SecurityConfig {
 
 
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationProvider getAuthenticationProvider(){
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 
 }

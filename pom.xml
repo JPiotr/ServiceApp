@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.oblitus</groupId>
 	<artifactId>service-app</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.5.1-SNAPSHOT</version>
 	<name>ServiceApp</name>
 	<description>Service Track Backend</description>
 	<properties>
@@ -74,7 +74,7 @@
 		</dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
+            <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
         </dependency>
         <dependency>

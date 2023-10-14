@@ -1,9 +1,6 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
-import com.oblitus.serviceApp.Modules.Admin.DTOs.LUserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RUserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserMapper;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Security.jwt.JWTService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +16,7 @@ import java.util.stream.Collectors;
 public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
-    private final ModulesWrapper modulesWrapper;
+    private final RuleService ruleService;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthResponse register(RUserDTO userDTO){
@@ -28,13 +25,23 @@ public class AuthenticationService {
                 userDTO.surname(),
                 userDTO.email(),
                 passwordEncoder.encode(userDTO.password()),
-                modulesWrapper.adminModule.getAdminDAO().getRuleDao().getAll()
-                        .stream().filter(
-                                ruleDTO -> ruleDTO.name() == ERule.USER.toString()
-                        ).collect(Collectors.toList())
+                null
+//                modulesWrapper.adminModule.getAdminDAO().getRuleDao().getAll()
+//                        .stream().filter(
+//                                ruleDTO -> ruleDTO.name() == ERule.USER.toString()
+//                        ).collect(Collectors.toList())
         );
-        var userDetails = modulesWrapper.adminModule.getAdminDAO().getUserDao().save(user);
-        var optUser = userService.getUser(userDetails.id());
+        var userDetails = userService.addUser(
+                user.name(),
+                user.email(),
+                ruleService.getAllRoles().stream().filter(
+                        ruleDTO -> ruleDTO.getName() == ERule.USER.toString()
+                ).collect(Collectors.toList()),
+                user.password(),
+                user.username(),
+                user.surname()
+        );
+        var optUser = userService.getUser(userDetails.getID());
         if(optUser.isPresent()){
             var token = jwtService.generateToken(optUser.get());
             return AuthResponse.builder().token(token).build();
@@ -49,7 +56,6 @@ public class AuthenticationService {
                         userDTO.password()
                 )
         );
-        var user = userService.getUser(userDTO.userName());
         var optUser = userService.getUser(userDTO.userName());
         if(optUser.isPresent()){
             var token = jwtService.generateToken(optUser.get());

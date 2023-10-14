@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
@@ -23,8 +24,8 @@ public class UserService implements UserDetailsService {
      public Optional<User> getUser(String name){
         return Optional.ofNullable(userRepo.findAll().stream().filter(x-> Objects.equals(x.getUsername(), name)).toList().get(0));
     }
-    public User addUser(String name, String email, Collection<Rule> rules, String password){
-        return userRepo.save(new User(name, email, rules, password));
+    public User addUser(String name, String email, Collection<Rule> rules, String password, String username, String surname){
+        return userRepo.save(new User(username, name, surname, email, rules, password));
     }
     public List<User> getAllUsers(){
         return userRepo.findAll();

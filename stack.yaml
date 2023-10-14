@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   serviceApp:
-    image: serviceapp-server:0.2.1
+    image: serviceapp-server:0.5.1
     restart: always
     ports:
       - '8080:8080'
