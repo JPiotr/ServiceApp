@@ -27,7 +27,10 @@ public class UserMapper implements Function<User,UserDTO> {
                 user.isExpired(),
                 user.isCredentialsExpired(),
                 user.getPassword(),
-                user.getRules().stream().map(ruleMapper).collect(Collectors.toList())
+                user.getRules()
+                        .stream()
+                        .map(ruleMapper)
+                        .collect(Collectors.toList())
         );
     }
 

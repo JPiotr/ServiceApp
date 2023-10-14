@@ -255,7 +255,7 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All user tickets.")
                         .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll().stream().filter(
-                                ticket -> ticket.user().id() == userId
+                                ticket -> ticket.userId() == userId
                         )))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)

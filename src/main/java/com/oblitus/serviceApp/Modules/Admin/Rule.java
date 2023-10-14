@@ -3,10 +3,7 @@ package com.oblitus.serviceApp.Modules.Admin;
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.EModule;
 import com.oblitus.serviceApp.Modules.Module;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +18,7 @@ import java.util.List;
 @Table(name = "rules")
 public class Rule extends EntityBase implements GrantedAuthority {
 
-    @OneToMany(targetEntity = Module.class)
+    @ManyToMany(targetEntity = Module.class, fetch = FetchType.EAGER)
     private List<Module> Modules;
     private String Name;
     private ERule ruleType;

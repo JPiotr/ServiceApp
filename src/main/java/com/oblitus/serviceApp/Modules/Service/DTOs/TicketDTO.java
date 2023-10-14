@@ -11,9 +11,9 @@ public record TicketDTO(
         UUID id,
         String title,
         String description,
-        Collection<CommentDTO> comments,
+//        Collection<CommentDTO> comments,
         ClientDTO client,
-        UserDTO user,
+        UUID userId,
         TicketState state,
         TicketPriority priority
 ) {

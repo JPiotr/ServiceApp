@@ -41,7 +41,10 @@ public class TicketDAO implements DAO<TicketDTO> {
     @Override
     public TicketDTO save(TicketDTO ticketDTO) {
         Optional<Client> client = clientService.getClient(ticketDTO.client().id());
-        Optional<User> user = userService.getUser(ticketDTO.user().id());
+        Optional<User> user = Optional.empty();
+        if(ticketDTO.userId() != null){
+            user = userService.getUser(ticketDTO.userId());
+        }
         if(client.isPresent() && user.isPresent()){
 
             return ticketMapper.apply(

@@ -34,7 +34,7 @@ public class CommentDAO implements DAO<CommentDTO> {
     @Override
     public CommentDTO save(CommentDTO commentDTO) {
         return commentMapper.apply(
-                commentService.addComment(commentDTO.content()));
+                commentService.addComment(commentDTO));
     }
 
     @Override

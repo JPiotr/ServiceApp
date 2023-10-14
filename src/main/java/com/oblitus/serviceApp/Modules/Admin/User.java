@@ -1,10 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;

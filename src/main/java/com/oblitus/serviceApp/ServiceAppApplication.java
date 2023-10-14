@@ -3,11 +3,18 @@ package com.oblitus.serviceApp;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
+import com.oblitus.serviceApp.Modules.Admin.Rule;
+import com.oblitus.serviceApp.Modules.Admin.RuleRepository;
 import com.oblitus.serviceApp.Modules.EModule;
 import com.oblitus.serviceApp.Modules.Module;
 import com.oblitus.serviceApp.Modules.ModuleRepository;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
+import com.oblitus.serviceApp.Modules.Service.Comment;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
+import com.oblitus.serviceApp.Modules.Service.TicketPriority;
+import com.oblitus.serviceApp.Modules.Service.TicketState;
 import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
 //import com.oblitus.serviceApp.Modules.Admin.Role;
 //import com.oblitus.serviceApp.Modules.Admin.User;
@@ -25,10 +32,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootApplication
 @AllArgsConstructor
@@ -41,9 +45,9 @@ public class ServiceAppApplication {
 	@Bean
 	CommandLineRunner dbinit(
 		ModuleRepository moduleRepository,
-		ModulesWrapper modulesWrapper,
-		PasswordEncoder passwordEncoder
-	){return args -> {
+		RuleRepository ruleRepository,
+		ModulesWrapper modulesWrapper
+		){return args -> {
 		Crypt crypt = new Crypt();
 		List<Module> modules = List.of(
 				new Module(EModule.ADMIN_MODULE.name()	 ,true ,EModule.ADMIN_MODULE		),
@@ -54,15 +58,29 @@ public class ServiceAppApplication {
 
 		moduleRepository.saveAll(modules);
 
-		RuleDTO rootRole = new RuleDTO(
-				UUID.randomUUID(),
-				ERule.ADMIN.name(),
-				List.of(modules.get(0),
-						modules.get(1)
-				)
+		var rules = List.of(
+				new RuleDTO(
+						UUID.randomUUID(),
+						ERule.ADMIN.name(),
+						List.of(modules.get(0),
+								modules.get(1)
+						)),
+				new RuleDTO(
+						UUID.randomUUID(),
+						ERule.USER.name(),
+						List.of(modules.get(1))),
+				new RuleDTO(
+						UUID.randomUUID(),
+						ERule.CLIENT.name(),
+						List.of(modules.get(1),
+								modules.get(3)))
+
 		);
 
-		rootRole = modulesWrapper.adminModule.getAdminDAO().getRuleDao().save(rootRole);
+		for (var role : rules) {
+			modulesWrapper.adminModule.getAdminDAO().getRuleDao().save(role);
+		}
+
 
 		UserDTO root = new UserDTO(
 				UUID.randomUUID(),
@@ -78,16 +96,65 @@ public class ServiceAppApplication {
 				false,
 				"rootpass",
 				List.of(
-						rootRole
+						modulesWrapper.adminModule.getAdminDAO()
+								.getRuleDao().getAll()
+								.stream().filter(x-> Objects.equals(x.name(), ERule.ADMIN.toString()))
+								.findFirst()
+								.get()
 				)
 		);
 
-		modulesWrapper.adminModule.getAdminDAO().getUserDao().save(root);
+		root = modulesWrapper.adminModule.getAdminDAO().getUserDao().save(root);
 
-		ClientDTO client = new ClientDTO(UUID.randomUUID(), "S3rw1C3 TracK Cl13nt");
+		ClientDTO client = new ClientDTO(UUID.randomUUID(), "Client X");
 
-		modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(client);
+		client = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(client);
 
+		var ticket = new TicketDTO(
+				null,
+				"Ticket1",
+				"Mocking ticket from DB",
+//						new ArrayList<CommentDTO>(),
+				client,
+				root.id(),
+				TicketState.DONE,
+				TicketPriority.HIGH
+		);
+
+		var tickets = List.of(
+				new TicketDTO(
+						null,
+						"Ticket2",
+						"Mocking ticket from DB2",
+//						List.of(
+//								modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(comment.id()).get()
+//						),
+						client,
+						root.id(),
+						TicketState.OPEN,
+						TicketPriority.HIGH
+				),
+				new TicketDTO(
+						null,
+						"Ticket3",
+						"Mocking ticket from DB3",
+//						new ArrayList<CommentDTO>(),
+						client,
+						null,
+						TicketState.NEW,
+						TicketPriority.MEDIUM
+				)
+		);
+
+		for (var ticket2:tickets) {
+			modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket2);
+		}
+		ticket = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket);
+
+		CommentDTO comment = new CommentDTO(null, "Komentarz z backendu", ticket.id(), root.id());
+
+
+		comment = modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment);
 
 	};}
 

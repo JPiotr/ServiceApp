@@ -18,7 +18,7 @@ public class Client extends EntityBase {
 
     public Client(String name) {
         super();
-        this.ID = UUID.fromString("CL1ENT");
+        this.ID = UUID.randomUUID();
         Name = name;
     }
 }
