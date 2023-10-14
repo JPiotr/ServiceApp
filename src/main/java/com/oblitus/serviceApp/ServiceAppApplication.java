@@ -7,6 +7,7 @@ import com.oblitus.serviceApp.Modules.EModule;
 import com.oblitus.serviceApp.Modules.Module;
 import com.oblitus.serviceApp.Modules.ModuleRepository;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
 import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
 //import com.oblitus.serviceApp.Modules.Admin.Role;
 //import com.oblitus.serviceApp.Modules.Admin.User;
@@ -82,6 +83,10 @@ public class ServiceAppApplication {
 		);
 
 		modulesWrapper.adminModule.getAdminDAO().getUserDao().save(root);
+
+		ClientDTO client = new ClientDTO(UUID.randomUUID(), "S3rw1C3 TracK Cl13nt");
+
+		modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(client);
 
 
 	};}
