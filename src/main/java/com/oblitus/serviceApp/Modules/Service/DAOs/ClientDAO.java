@@ -4,6 +4,8 @@ import com.oblitus.serviceApp.Abstracts.DAO;
 import com.oblitus.serviceApp.Modules.Service.ClientService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientMapper;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponse;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +17,17 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class ClientDAO implements DAO<ClientDTO> {
+public class ClientDAO implements DAO<ClientResponse,ClientDTO> {
     private final ClientService service;
-    private final ClientMapper clientMapper;
+    private final ClientResponseMapper clientMapper;
     @Override
-    public Optional<ClientDTO> get(UUID id) {
+    public Optional<ClientResponse> get(UUID id) {
         var opt = service.getClient(id);
         return opt.map(clientMapper);
     }
 
     @Override
-    public List<ClientDTO> getAll() {
+    public List<ClientResponse> getAll() {
         return service.getAllClients()
                 .stream()
                 .map(clientMapper)
@@ -33,7 +35,7 @@ public class ClientDAO implements DAO<ClientDTO> {
     }
 
     @Override
-    public ClientDTO save(ClientDTO clientDTO) {
+    public ClientResponse save(ClientDTO clientDTO) {
         return clientMapper.apply(
                 service.addClient(
                         clientDTO.name()
@@ -42,7 +44,7 @@ public class ClientDAO implements DAO<ClientDTO> {
     }
 
     @Override
-    public ClientDTO update(ClientDTO clientDTO) throws AccountLockedException {
+    public ClientResponse update(ClientDTO clientDTO) throws AccountLockedException {
         return clientMapper.apply(
                 service.updateClient(
                         clientDTO.id(),
@@ -54,5 +56,10 @@ public class ClientDAO implements DAO<ClientDTO> {
     @Override
     public boolean delete(ClientDTO clientDTO) {
         return service.deleteClient(clientDTO.id());
+    }
+
+    @Override
+    public boolean delete(UUID id) {
+        return service.deleteClient(id);
     }
 }
