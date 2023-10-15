@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public final class RuleDAO implements DAO<RuleDTO> {
+public final class RuleDAO implements DAO<RuleDTO, RuleDTO> {
     private final RuleService ruleService;
     private final RuleMapper ruleMapper;
 
@@ -51,6 +51,11 @@ public final class RuleDAO implements DAO<RuleDTO> {
 
     @Override
     public boolean delete(RuleDTO ruleDTO) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(UUID id) {
         return false;
     }
 }

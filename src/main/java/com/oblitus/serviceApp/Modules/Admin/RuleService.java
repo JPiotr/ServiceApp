@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,6 +27,11 @@ public class RuleService {
     }
     public Rule getRule(UUID id){
         Optional<Rule> opt = ruleRepository.findById(id);
+        return opt.orElse(null);
+    }
+
+    public Rule getRule(String name){
+        Optional<Rule> opt = ruleRepository.findAll().stream().filter(r -> Objects.equals(r.getName(), name)).findFirst();
         return opt.orElse(null);
     }
     public List<Rule> getAllRoles(){
