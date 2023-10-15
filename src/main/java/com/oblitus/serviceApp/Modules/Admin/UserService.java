@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements UserDetailsService {
     private final UserRepository userRepo;
+    private final RuleService ruleService;
      public Optional<User> getUser(UUID id){
         return userRepo.findById(id);
     }
@@ -58,9 +59,28 @@ public class UserService implements UserDetailsService {
          return true;
     }
 
+    public User addRuleToUser(UUID userID, String name){
+         var opt = getUser(userID);
+         if(opt.isPresent()){
+             var rule = ruleService.getRule(name);
+             var user = opt.get().addRole(rule);
+             return userRepo.save(user);
+         }
+         return null;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUser(username).orElse(null);
+    }
+
+    public User disconnectRuleFromUser(UUID userID, String name) {
+        var opt = getUser(userID);
+        if(opt.isPresent()){
+            var rule = ruleService.getRule(name);
+            var user = opt.get().deleteRole(rule);
+            return userRepo.save(user);
+        }
+        return null;
     }
 }

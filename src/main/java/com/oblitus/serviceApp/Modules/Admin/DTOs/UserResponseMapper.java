@@ -9,30 +9,32 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserMapper implements Function<User,UserDTO> {
+public class UserResponseMapper implements Function<User, UserResponse> {
     private final RuleMapper ruleMapper;
 
     @Override
-    public UserDTO apply(User user) {
-        return new UserDTO(
+    public UserResponse apply(User user) {
+        if(user == null)
+            return null;
+        return new UserResponse(
                 user.getID(),
-                user.getName(),
-                user.getSurname(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getLastLoginDate(),
-                user.getCredentialExpirationDate(),
-                user.getCredentialExpirationDate(),
-                user.isEnabled(),
-                user.isExpired(),
-                user.isCredentialsExpired(),
-                user.getPassword(),
+                user.getName(),
+                user.getSurname(),
                 user.getRules()
                         .stream()
                         .map(ruleMapper)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                user.getLastLoginDate(),
+                user.getCredentialExpirationDate(),
+                user.getAccountExpirationDate(),
+                user.isEnabled(),
+                user.isExpired(),
+                user.isCredentialsExpired(),
+                user.getBase().getLastModificationDate(),
+                user.getBase().getCreationDate()
+
         );
     }
-
-
 }

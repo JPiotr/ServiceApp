@@ -2,11 +2,12 @@ package com.oblitus.serviceApp.Modules.Admin.DAOs;
 
 import com.oblitus.serviceApp.Abstracts.DAO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserMapper;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.ERule;
 import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
@@ -17,55 +18,51 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public final class UserDAO implements DAO<UserDTO> {
+public final class UserDAO implements DAO<UserResponse,UserDTO>{
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserResponseMapper userResponseMapper;
     private final RuleService ruleService;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Optional<UserDTO> get(UUID id) {
+    public Optional<UserResponse> get(UUID id) {
         var opt = userService.getUser(id);
-        if(opt.isEmpty()){
-            return Optional.empty();
-        }
-        return Optional.of(
-                userMapper.apply(opt.get())
-        );
+        return opt.map(userResponseMapper);
     }
 
     @Override
-    public List<UserDTO> getAll() {
+    public List<UserResponse> getAll() {
         return userService.getAllUsers()
                 .stream()
-                .map(userMapper)
+                .map(userResponseMapper)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDTO save(UserDTO userDTO) {
-        return userMapper.apply(userService.addUser(
-                    userDTO.username(),
-                    userDTO.email(),
-                    userDTO.roles()
-                            .stream()
-                            .map(
-                                    ruleDTO -> ruleService.getRule(ruleDTO.id()))
-                            .collect(Collectors.toList()
-                            ),
-                    passwordEncoder.encode(userDTO.password()),
-                userDTO.username(),
-                userDTO.surname()
+    public boolean delete(UserDTO userDTO) {
+        return userService.deleteUser(userDTO.id());
+    }
+
+    @Override
+    public UserResponse save(UserDTO userDTO) {
+        return userResponseMapper.apply(
+                userService.addUser(
+                        userDTO.name(),
+                        userDTO.email(),
+                        List.of(ruleService.getRule(ERule.ADMIN.toString())),
+                        userDTO.password(),
+                        userDTO.userName(),
+                        userDTO.surname()
                 )
         );
     }
 
+
     @Override
-    public UserDTO update(UserDTO userDTO) throws AccountLockedException {
-        return userMapper.apply(
+    public UserResponse update(UserDTO userDTO) throws AccountLockedException {
+        return userResponseMapper.apply(
                 userService.updateUser(
                         userDTO.id(),
-                        userDTO.username(),
+                        userDTO.userName(),
                         userDTO.email(),
                         userDTO.password()
                 )
@@ -73,7 +70,15 @@ public final class UserDAO implements DAO<UserDTO> {
     }
 
     @Override
-    public boolean delete(UserDTO userDTO) {
-        return userService.deleteUser(userDTO.id());
+    public boolean delete(UUID id) {
+        return false;
+    }
+
+    public UserResponse addRuleForUser(UUID userID, String name){
+        return userResponseMapper.apply(userService.addRuleToUser(userID, name));
+    }
+
+    public UserResponse disconnectRuleFromUser(UUID userID, String name){
+        return userResponseMapper.apply(userService.disconnectRuleFromUser(userID, name));
     }
 }

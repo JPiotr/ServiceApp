@@ -114,7 +114,9 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         Password = null;
     }
 
-
+    public EntityBase getBase(){
+        return (EntityBase) this;
+    }
 
 
 }
