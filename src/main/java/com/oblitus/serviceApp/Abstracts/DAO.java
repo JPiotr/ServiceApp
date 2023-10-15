@@ -5,14 +5,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface DAO<T> {
-    Optional<T> get(UUID id);
+public interface DAO<R,C> {
+    //C - creation
+    //R - response
+    Optional<R> get(UUID id);
 
-    List<T> getAll();
+    List<R> getAll();
 
-    T save(T t);
+    R save(C c);
 
-    T update(T t) throws AccountLockedException;
+    R update(C c) throws AccountLockedException;
 
-    boolean delete(T t);
+    boolean delete(C c);
+    boolean delete(UUID id);
 }
