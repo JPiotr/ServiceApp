@@ -1,12 +1,14 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,7 @@ public class AdminController {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<Response> getUser(@PathVariable @Validated UUID id){
-        Optional<UserDTO> opt = modulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
+        Optional<UserResponse> opt = modulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
@@ -43,6 +45,32 @@ public class AdminController {
                         .reason("There is no Entity with this ID!")
                         .build()
         ));
+    }
+
+    @GetMapping("/user/{id}/add/{ruleName}")
+    public ResponseEntity<Response> addRuleToUser(@PathVariable @Validated UUID id, @PathVariable @Validated String ruleName){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Rule added to User")
+                        .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(id,ruleName)))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
+    @GetMapping("/user/{id}/disconnect/{ruleName}")
+    public ResponseEntity<Response> disconnectRuleToUser(@PathVariable @Validated UUID id, @PathVariable @Validated String ruleName){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Rule disconnected from User")
+                        .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().disconnectRuleFromUser(id,ruleName)))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
     }
 
     @PutMapping("/users")
