@@ -3,6 +3,7 @@ package com.oblitus.serviceApp.Modules.Controllers;
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponse;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class ServiceController {
 
     @GetMapping("/clients/{id}")
     public ResponseEntity<Response> getClient(@PathVariable @Validated UUID id){
-        Optional<ClientDTO> opt = modulesWrapper.serviceModule.getServiceDAO().getClientDao().get(id);
+        Optional<ClientResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getClientDao().get(id);
         return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
