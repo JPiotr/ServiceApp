@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.oblitus</groupId>
 	<artifactId>service-app</artifactId>
-	<version>0.5.2-SNAPSHOT</version>
+	<version>0.5.3-SNAPSHOT</version>
 	<name>ServiceApp</name>
 	<description>Service Track Backend</description>
 	<properties>
