@@ -20,7 +20,7 @@ public class RuleService {
     public Rule addRule(String ruleName, List<Module> modules){
         return ruleRepository.save(
                 new Rule(
-                        ERule.valueOf(ruleName),
+                        ERule.getValue(ruleName),
                         modules
                 )
         );

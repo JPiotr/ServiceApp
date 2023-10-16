@@ -3,6 +3,7 @@ package com.oblitus.serviceApp.Modules.Controllers;
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.*;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountLockedException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/serviceModule")
@@ -209,15 +212,15 @@ public class ServiceController {
         );
     }
 
-    @GetMapping("/comments/{ticketId}")
-    public ResponseEntity<Response> getTicketsComments(@PathVariable @Validated UUID ticketId){
+    @GetMapping("/comments/")
+    public ResponseEntity<Response> getTicketsComments(@Nonnull @RequestParam @Validated UUID ticketId){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All ticket's comments.")
                         .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().getAll().stream().filter(
-                                commentResponse -> commentResponse.subject() == ticketId
-                        )))
+                                commentResponse -> ticketId.equals(commentResponse.subject())
+                        ).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -280,8 +283,9 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All user tickets.")
                         .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll().stream().filter(
-                                ticket -> ticket.userId() == userId
-                        )))
+                                ticket -> userId.equals(ticket.userId())
+                        )
+                                .collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -395,8 +399,8 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All ticket activity.")
                         .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().getAll().stream().filter(
-                                activity -> activity.ticketID() == ticketId
-                        )))
+                                activity -> ticketId.equals(activity.ticketID())
+                        ).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()

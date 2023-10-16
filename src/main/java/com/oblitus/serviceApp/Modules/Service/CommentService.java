@@ -76,6 +76,7 @@ public class CommentService {
                 )
         );
         opt.get().setContent(content);
+        opt.get().setLastModificationDate();
         return repository.save(opt.get());
     }
 }

@@ -16,7 +16,7 @@ import lombok.*;
 @Table(name = "comments")
 public class Comment extends EntityBase {
     private String Content;
-    @OneToOne(targetEntity = User.class)
+    @ManyToOne(targetEntity = User.class)
     private User Creator;
     @ManyToOne(targetEntity = com.oblitus.serviceApp.Modules.Service.Ticket.class)
     private Ticket Ticket;

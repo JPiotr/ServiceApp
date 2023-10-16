@@ -20,7 +20,7 @@ import java.util.UUID;
 public class User extends EntityBase implements UserDetails, CredentialsContainer {
     @Column(nullable = false)
     private String Email;
-    @OneToMany(targetEntity = Rule.class)
+    @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
     private Collection<Rule> Rules;
 
     @Column(nullable = false)

@@ -60,10 +60,10 @@ public class AdminController {
         );
     }
 
-    @GetMapping("/user/{id}{ruleName}{operation}")
+    @PostMapping("/user/{id}")
     public ResponseEntity<Response> ruleToUser(@PathVariable @Validated UUID id,
-                                                         @PathVariable @Validated String ruleName,
-                                                         @PathVariable @Validated boolean operation){
+                                                         @RequestParam @Validated String ruleName,
+                                                         @RequestParam @Validated boolean operation){
         if(operation){
             return ResponseEntity.ok(
                     Response.builder()

@@ -15,7 +15,7 @@ import java.util.UUID;
 public class TicketService {
 
     private final TicketRepository repository;
-    private final ActivityService activityService;
+    private final ActivityRepository activityRepository;
 
     public Optional<Ticket> getTicket(UUID id){
         return repository.findById(id);
@@ -49,44 +49,46 @@ public class TicketService {
         }
         if(title != null){
             opt.get().setTitle(title);
+            opt.get().setLastModificationDate();
         }
         if(description != null){
             opt.get().setDescription(description);
+            opt.get().setLastModificationDate();
         }
         if(ticketPriority != null){
             var oldValue = opt.get().getPriority();
             opt.get().setPriority(ticketPriority);
 
-            activityService.addActivity(
-                    new ActivityDTO(
-                            null,
+            activityRepository.save(
+                    new Activity(
                             EActivityHandle.TICKET.toString(),
                             "Priority",
                             ticketPriority.toString(),
                             oldValue.toString(),
                             EActivityTypes.SYSTEM.toString(),
                             null,
-                            id
+                            opt.get()
 
                     )
             );
+            opt.get().setLastModificationDate();
         }
         if(ticketState != null){
             var oldValue = opt.get().getState();
             opt.get().setState(ticketState);
 
-            activityService.addActivity(
-                    new ActivityDTO(
-                            null,
+            activityRepository.save(
+                    new Activity(
                             EActivityHandle.TICKET.toString(),
                             "State",
                             ticketState.toString(),
                             oldValue.toString(),
                             EActivityTypes.SYSTEM.toString(),
                             null,
-                            id
+                            opt.get()
                     )
             );
+            opt.get().setLastModificationDate();
         }
         return repository.save(opt.get());
 

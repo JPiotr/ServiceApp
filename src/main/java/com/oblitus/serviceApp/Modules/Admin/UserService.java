@@ -26,6 +26,9 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(userRepo.findAll().stream().filter(x-> Objects.equals(x.getUsername(), name)).toList().get(0));
     }
     public User addUser(String name, String email, Collection<Rule> rules, String password, String username, String surname){
+         if(rules == null || rules.isEmpty()){
+             return userRepo.save(new User(username, name, surname, email, List.of(ruleService.getRule(ERule.USER.toString())), password));
+         }
         return userRepo.save(new User(username, name, surname, email, rules, password));
     }
     public List<User> getAllUsers(){
@@ -41,12 +44,15 @@ public class UserService implements UserDetailsService {
          }
          if(email != null){
              user.get().setEmail(email);
+             user.get().setLastModificationDate();
          }
          if(username != null){
              user.get().setUsername(username);
+             user.get().setLastModificationDate();
          }
          if(password != null){
              user.get().setPassword(password);
+             user.get().setLastModificationDate();
          }
          return userRepo.save(user.get());
     }

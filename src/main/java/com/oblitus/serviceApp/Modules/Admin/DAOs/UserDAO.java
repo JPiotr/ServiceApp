@@ -48,7 +48,7 @@ public final class UserDAO implements DAO<UserResponse,UserDTO>{
                 userService.addUser(
                         userDTO.name(),
                         userDTO.email(),
-                        List.of(ruleService.getRule(ERule.ADMIN.toString())),
+                        null,
                         userDTO.password(),
                         userDTO.userName(),
                         userDTO.surname()

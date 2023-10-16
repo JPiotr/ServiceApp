@@ -93,7 +93,7 @@ public class ServiceAppApplication {
 						"rootpass"
 						));
 		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.ADMIN.toString());
-		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.USER.toString());
+//		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.USER.toString());
 
 		var clientResponse = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(UUID.randomUUID(), "Client X"));
 

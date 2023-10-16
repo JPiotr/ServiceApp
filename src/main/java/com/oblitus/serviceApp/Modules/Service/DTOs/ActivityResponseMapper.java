@@ -9,6 +9,20 @@ import java.util.function.Function;
 public class ActivityResponseMapper implements Function<Activity, ActivityResponse> {
     @Override
     public ActivityResponse apply(Activity activity) {
+        if(activity.getUser() == null){
+            return new ActivityResponse(
+                    activity.getID(),
+                    activity.getClassName(),
+                    activity.getFieldName(),
+                    activity.getNewValue(),
+                    activity.getOldValue(),
+                    activity.getActivityType(),
+                    null,
+                    activity.getTicket().getID(),
+                    activity.getCreationDate(),
+                    activity.getLastModificationDate()
+            );
+        }
         return new ActivityResponse(
                 activity.getID(),
                 activity.getClassName(),

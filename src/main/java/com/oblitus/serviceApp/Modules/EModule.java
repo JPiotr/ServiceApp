@@ -1,6 +1,6 @@
 package com.oblitus.serviceApp.Modules;
 
-public enum EModule { //todo : do camelCase
+public enum EModule {
     ADMIN_MODULE("adminModule"),
     @Deprecated
     CRM_MODULE("crmModule"),

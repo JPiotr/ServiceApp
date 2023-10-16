@@ -40,6 +40,7 @@ public class ClientService {
             return null;
         }
         opt.get().setName(newName);
+        opt.get().setLastModificationDate();
         return repository.save(opt.get());
 
     }
