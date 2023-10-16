@@ -3,7 +3,6 @@ package com.oblitus.serviceApp.Modules.Service.DAOs;
 import com.oblitus.serviceApp.Abstracts.DAO;
 import com.oblitus.serviceApp.Modules.Service.ClientService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
-import com.oblitus.serviceApp.Modules.Service.DTOs.ClientMapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponse;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponseMapper;
 import lombok.RequiredArgsConstructor;
