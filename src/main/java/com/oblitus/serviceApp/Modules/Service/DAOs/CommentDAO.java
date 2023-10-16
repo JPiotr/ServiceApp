@@ -3,7 +3,8 @@ package com.oblitus.serviceApp.Modules.Service.DAOs;
 import com.oblitus.serviceApp.Abstracts.DAO;
 import com.oblitus.serviceApp.Modules.Service.CommentService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
-import com.oblitus.serviceApp.Modules.Service.DTOs.CommentMapper;
+import com.oblitus.serviceApp.Modules.Service.DTOs.CommentResponse;
+import com.oblitus.serviceApp.Modules.Service.DTOs.CommentResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,30 +16,30 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CommentDAO implements DAO<CommentDTO> {
-    private final CommentMapper commentMapper;
+public class CommentDAO implements DAO<CommentResponse ,CommentDTO> {
+    private final CommentResponseMapper commentMapper;
     private final CommentService commentService;
     @Override
-    public Optional<CommentDTO> get(UUID id) {
+    public Optional<CommentResponse> get(UUID id) {
         var opt = commentService.getComment(id);
         return opt.map(commentMapper);
     }
 
     @Override
-    public List<CommentDTO> getAll() {
+    public List<CommentResponse> getAll() {
         return commentService.getAllComments().stream()
                 .map(commentMapper)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CommentDTO save(CommentDTO commentDTO) {
+    public CommentResponse save(CommentDTO commentDTO) {
         return commentMapper.apply(
                 commentService.addComment(commentDTO));
     }
 
     @Override
-    public CommentDTO update(CommentDTO commentDTO) throws AccountLockedException {
+    public CommentResponse update(CommentDTO commentDTO) throws AccountLockedException {
         return commentMapper.apply(commentService.updateComment(
                 commentDTO.id(),
                 commentDTO.content()));
@@ -47,5 +48,10 @@ public class CommentDAO implements DAO<CommentDTO> {
     @Override
     public boolean delete(CommentDTO commentDTO) {
         return commentService.deleteComment(commentDTO.id());
+    }
+
+    @Override
+    public boolean delete(UUID id) {
+        return commentService.deleteComment(id);
     }
 }

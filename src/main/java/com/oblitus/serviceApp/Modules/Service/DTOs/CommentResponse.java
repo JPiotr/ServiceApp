@@ -1,15 +1,14 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record CommentDTO(
+public record CommentResponse(
         UUID id,
         String content,
         UUID subject,
-        UUID user
+        UUID creator,
+        LocalDateTime creationDate,
+        LocalDateTime lastModyficationDate
 ) {
 }
-
