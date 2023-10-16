@@ -15,7 +15,8 @@ import lombok.*;
 @Entity
 @Table(name = "activity")
 public class Activity extends EntityBase {
-    private String fieldClassName;
+    private String className;
+    private String fieldName;
     private String newValue;
     private String oldValue;
     private String activityType;

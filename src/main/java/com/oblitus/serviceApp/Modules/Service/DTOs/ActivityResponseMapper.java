@@ -11,7 +11,8 @@ public class ActivityResponseMapper implements Function<Activity, ActivityRespon
     public ActivityResponse apply(Activity activity) {
         return new ActivityResponse(
                 activity.getID(),
-                activity.getFieldClassName(),
+                activity.getClassName(),
+                activity.getFieldName(),
                 activity.getNewValue(),
                 activity.getOldValue(),
                 activity.getActivityType(),

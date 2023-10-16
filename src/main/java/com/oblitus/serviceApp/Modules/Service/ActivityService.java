@@ -23,7 +23,8 @@ public class ActivityService {
     public Activity addActivity(ActivityDTO activity){
 
         return repository.save(new Activity(
-                activity.fieldClassName(),
+                activity.className(),
+                activity.fieldName(),
                 activity.newValue(),
                 activity.oldValue(),
                 activity.activityType(),

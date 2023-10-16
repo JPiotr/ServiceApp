@@ -60,6 +60,32 @@ public class AdminController {
         );
     }
 
+    @GetMapping("/user/{id}{ruleName}{operation}")
+    public ResponseEntity<Response> ruleToUser(@PathVariable @Validated UUID id,
+                                                         @PathVariable @Validated String ruleName,
+                                                         @PathVariable @Validated boolean operation){
+        if(operation){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Rule added to User")
+                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(id,ruleName)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Rule disconnected from User")
+                        .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().disconnectRuleFromUser(id,ruleName)))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
     @GetMapping("/user/{id}/disconnect/{ruleName}")
     public ResponseEntity<Response> disconnectRuleToUser(@PathVariable @Validated UUID id, @PathVariable @Validated String ruleName){
         return ResponseEntity.ok(

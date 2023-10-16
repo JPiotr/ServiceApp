@@ -5,7 +5,8 @@ import java.util.UUID;
 
 public record ActivityResponse(
         UUID id,
-        String fieldClassName,
+        String className,
+        String fieldName,
         String newValue,
         String oldValue,
         String activityType,
