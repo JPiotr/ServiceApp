@@ -20,7 +20,7 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthResponse register(RUserDTO userDTO){
-        UserDTO user = new UserDTO(userDTO.userName(),
+        UserDTO user = new UserDTO(null,
                 userDTO.name(),
                 userDTO.surname(),
                 userDTO.email(),
@@ -38,7 +38,7 @@ public class AuthenticationService {
                         ruleDTO -> ruleDTO.getName() == ERule.USER.toString()
                 ).collect(Collectors.toList()),
                 user.password(),
-                user.username(),
+                user.userName(),
                 user.surname()
         );
         var optUser = userService.getUser(userDetails.getID());
