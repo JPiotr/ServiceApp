@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service;
 
+import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityDTO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class TicketService {
 
     private final TicketRepository repository;
+    private final ActivityService activityService;
 
     public Optional<Ticket> getTicket(UUID id){
         return repository.findById(id);
@@ -40,7 +42,7 @@ public class TicketService {
         return true;
     }
 
-    public Ticket updateTicket(UUID id, String title, String description){
+    public Ticket updateTicket(UUID id, String title, String description, TicketPriority ticketPriority, TicketState ticketState){
         Optional<Ticket> opt = repository.findById(id);
         if(opt.isEmpty()){
             return null;
@@ -50,6 +52,41 @@ public class TicketService {
         }
         if(description != null){
             opt.get().setDescription(description);
+        }
+        if(ticketPriority != null){
+            var oldValue = opt.get().getPriority();
+            opt.get().setPriority(ticketPriority);
+
+            activityService.addActivity(
+                    new ActivityDTO(
+                            null,
+                            EActivityHandle.TICKET.toString(),
+                            "Priority",
+                            ticketPriority.toString(),
+                            oldValue.toString(),
+                            EActivityTypes.SYSTEM.toString(),
+                            null,
+                            id
+
+                    )
+            );
+        }
+        if(ticketState != null){
+            var oldValue = opt.get().getState();
+            opt.get().setState(ticketState);
+
+            activityService.addActivity(
+                    new ActivityDTO(
+                            null,
+                            EActivityHandle.TICKET.toString(),
+                            "State",
+                            ticketState.toString(),
+                            oldValue.toString(),
+                            EActivityTypes.SYSTEM.toString(),
+                            null,
+                            id
+                    )
+            );
         }
         return repository.save(opt.get());
 
