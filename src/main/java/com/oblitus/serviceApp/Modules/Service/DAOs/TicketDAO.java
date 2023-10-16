@@ -77,7 +77,9 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
                 ticketService.updateTicket(
                         ticketDTO.id(),
                         ticketDTO.title(),
-                        ticketDTO.description()
+                        ticketDTO.description(),
+                        ticketDTO.priority(),
+                        ticketDTO.state()
                 )
         );
     }
