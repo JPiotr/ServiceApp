@@ -6,7 +6,8 @@ import com.oblitus.serviceApp.Modules.Admin.UserService;
 import com.oblitus.serviceApp.Modules.Service.Client;
 import com.oblitus.serviceApp.Modules.Service.ClientService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
-import com.oblitus.serviceApp.Modules.Service.DTOs.TicketMapper;
+import com.oblitus.serviceApp.Modules.Service.DTOs.TicketResponse;
+import com.oblitus.serviceApp.Modules.Service.DTOs.TicketResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Ticket;
 import com.oblitus.serviceApp.Modules.Service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -21,26 +22,26 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class TicketDAO implements DAO<TicketDTO> {
+public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
     private final TicketService ticketService;
-    private final TicketMapper ticketMapper;
+    private final TicketResponseMapper ticketMapper;
     private final ClientService clientService;
     private final UserService userService;
     @Override
-    public Optional<TicketDTO> get(UUID id) {
+    public Optional<TicketResponse> get(UUID id) {
         var opt = ticketService.getTicket(id);
         return opt.map(ticketMapper);
     }
 
     @Override
-    public List<TicketDTO> getAll() {
+    public List<TicketResponse> getAll() {
         return ticketService.getAllTickets().stream()
                 .map(ticketMapper).collect(Collectors.toList());
     }
 
     @Override
-    public TicketDTO save(TicketDTO ticketDTO) {
-        Optional<Client> client = clientService.getClient(ticketDTO.client().id());
+    public TicketResponse save(TicketDTO ticketDTO) {
+        Optional<Client> client = clientService.getClient(ticketDTO.client());
         Optional<User> user = Optional.empty();
         if(ticketDTO.userId() != null){
             user = userService.getUser(ticketDTO.userId());
@@ -71,7 +72,7 @@ public class TicketDAO implements DAO<TicketDTO> {
     }
 
     @Override
-    public TicketDTO update(TicketDTO ticketDTO) throws AccountLockedException {
+    public TicketResponse update(TicketDTO ticketDTO) throws AccountLockedException {
         return ticketMapper.apply(
                 ticketService.updateTicket(
                         ticketDTO.id(),
@@ -84,5 +85,10 @@ public class TicketDAO implements DAO<TicketDTO> {
     @Override
     public boolean delete(TicketDTO ticketDTO) {
         return ticketService.deleteTicket(ticketDTO.id());
+    }
+
+    @Override
+    public boolean delete(UUID id) {
+        return ticketService.deleteTicket(id);
     }
 }

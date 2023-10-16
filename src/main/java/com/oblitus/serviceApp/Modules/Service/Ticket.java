@@ -16,8 +16,6 @@ import java.util.Collection;
 public class Ticket extends EntityBase {
     private String Title;
     private String Description;
-//    @ManyToMany(targetEntity = Comment.class)
-//    private Collection<Comment> Comments;
     @ManyToOne(targetEntity = Client.class)
     private Client Client;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
