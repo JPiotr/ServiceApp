@@ -1,5 +1,7 @@
 package com.oblitus.serviceApp;
 
+import com.oblitus.serviceApp.Modules.Admin.AuthenticationService;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
@@ -50,10 +52,10 @@ public class ServiceAppApplication {
 		){return args -> {
 		Crypt crypt = new Crypt();
 		List<Module> modules = List.of(
-				new Module(EModule.ADMIN_MODULE.name()	 ,true ,EModule.ADMIN_MODULE		),
-				new Module(EModule.BASE_MODULE.name()	 ,true ,EModule.BASE_MODULE		),
-				new Module(EModule.PROJECTS_MODULE.name(),false,EModule.PROJECTS_MODULE	),
-				new Module(EModule.SERVICE_MODULE.name() ,true,EModule.SERVICE_MODULE	)
+				new Module(EModule.ADMIN_MODULE.toString()	 ,true ,EModule.ADMIN_MODULE		),
+				new Module(EModule.BASE_MODULE.toString()	 ,true ,EModule.BASE_MODULE		),
+				new Module(EModule.PROJECTS_MODULE.toString(),false,EModule.PROJECTS_MODULE	),
+				new Module(EModule.SERVICE_MODULE.toString() ,true,EModule.SERVICE_MODULE	)
 		);
 
 		moduleRepository.saveAll(modules);
@@ -61,17 +63,17 @@ public class ServiceAppApplication {
 		var rules = List.of(
 				new RuleDTO(
 						UUID.randomUUID(),
-						ERule.ADMIN.name(),
+						ERule.ADMIN.toString(),
 						List.of(modules.get(0),
 								modules.get(1)
 						)),
 				new RuleDTO(
 						UUID.randomUUID(),
-						ERule.USER.name(),
+						ERule.USER.toString(),
 						List.of(modules.get(1))),
 				new RuleDTO(
 						UUID.randomUUID(),
-						ERule.CLIENT.name(),
+						ERule.CLIENT.toString(),
 						List.of(modules.get(1),
 								modules.get(3)))
 
@@ -81,42 +83,26 @@ public class ServiceAppApplication {
 			modulesWrapper.adminModule.getAdminDAO().getRuleDao().save(role);
 		}
 
+		var usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao()
+				.save(new UserDTO(
+						null,
+						"jdoe@domain.srvtrack",
+						"JohnDoeRoot",
+						"John",
+						"Doe",
+						"rootpass"
+						));
+		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.ADMIN.toString());
+		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.USER.toString());
 
-		UserDTO root = new UserDTO(
-				UUID.randomUUID(),
-				"root",
-				"root",
-				"root",
-				" ",
-				null,
-				LocalDateTime.now().plusMonths(1L),
-				LocalDateTime.now().plusMonths(1L),
-				true,
-				 false,
-				false,
-				"rootpass",
-				List.of(
-						modulesWrapper.adminModule.getAdminDAO()
-								.getRuleDao().getAll()
-								.stream().filter(x-> Objects.equals(x.name(), ERule.ADMIN.toString()))
-								.findFirst()
-								.get()
-				)
-		);
-
-		root = modulesWrapper.adminModule.getAdminDAO().getUserDao().save(root);
-
-		ClientDTO client = new ClientDTO(UUID.randomUUID(), "Client X");
-
-		client = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(client);
+		var clientResponse = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(UUID.randomUUID(), "Client X"));
 
 		var ticket = new TicketDTO(
 				null,
 				"Ticket1",
 				"Mocking ticket from DB",
-//						new ArrayList<CommentDTO>(),
-				client,
-				root.id(),
+				clientResponse.id(),
+				usrResponse.id(),
 				TicketState.DONE,
 				TicketPriority.HIGH
 		);
@@ -126,11 +112,8 @@ public class ServiceAppApplication {
 						null,
 						"Ticket2",
 						"Mocking ticket from DB2",
-//						List.of(
-//								modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(comment.id()).get()
-//						),
-						client,
-						root.id(),
+						clientResponse.id(),
+						usrResponse.id(),
 						TicketState.OPEN,
 						TicketPriority.HIGH
 				),
@@ -139,8 +122,8 @@ public class ServiceAppApplication {
 						"Ticket3",
 						"Mocking ticket from DB3",
 //						new ArrayList<CommentDTO>(),
-						client,
-						null,
+						clientResponse.id(),
+						usrResponse.id(),
 						TicketState.NEW,
 						TicketPriority.MEDIUM
 				)
@@ -149,12 +132,14 @@ public class ServiceAppApplication {
 		for (var ticket2:tickets) {
 			modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket2);
 		}
-		ticket = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket);
+		var ticketResponse = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket);
 
-		CommentDTO comment = new CommentDTO(null, "Komentarz z backendu", ticket.id(), root.id());
+		CommentDTO comment = new CommentDTO(null, "Komentarz z backendu", ticketResponse.id(), usrResponse.id());
+		CommentDTO comment2 = new CommentDTO(null, "Komentarz z backendu2", ticketResponse.id(), usrResponse.id());
 
 
-		comment = modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment);
+		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment);
+		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment2);
 
 	};}
 
