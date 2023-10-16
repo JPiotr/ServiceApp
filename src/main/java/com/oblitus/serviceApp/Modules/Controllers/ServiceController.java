@@ -2,10 +2,7 @@ package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
-import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
-import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponse;
-import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
-import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,8 +111,8 @@ public class ServiceController {
 
 
     @GetMapping("/comments/{id}")
-    public ResponseEntity<Response> getFunc(@PathVariable @Validated UUID id) {
-        Optional<CommentDTO> opt = modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(id);
+    public ResponseEntity<Response> getComment(@PathVariable @Validated UUID id) {
+        Optional<CommentResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(id);
         return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
                         .message("Comment with ID = " + id + ".")
@@ -135,7 +132,7 @@ public class ServiceController {
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<Response> getComment(){
+    public ResponseEntity<Response> getComments(){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
@@ -148,7 +145,7 @@ public class ServiceController {
     }
 
     @PutMapping("/comments")
-    public ResponseEntity<Response> putFunctionality(@RequestBody @Validated CommentDTO commentDTO){
+    public ResponseEntity<Response> putComment(@RequestBody @Validated CommentDTO commentDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
@@ -161,7 +158,7 @@ public class ServiceController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<Response> updateFunctionality(@RequestBody @Validated CommentDTO commentDTO) {
+    public ResponseEntity<Response> updateComment(@RequestBody @Validated CommentDTO commentDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -187,7 +184,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/comment")
-    public ResponseEntity<Response> deleteUser(@RequestBody @Validated CommentDTO commentDTO){
+    public ResponseEntity<Response> deleteComment(@RequestBody @Validated CommentDTO commentDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
@@ -199,11 +196,38 @@ public class ServiceController {
         );
     }
 
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<Response> deleteCommentByID(@PathVariable @Validated UUID id){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Try to drop Comment")
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().delete(id)))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
+    @GetMapping("/comments/{ticketId}")
+    public ResponseEntity<Response> getTicketsComments(@PathVariable @Validated UUID ticketId){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("All ticket's comments.")
+                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().getAll().stream().filter(
+                                commentResponse -> commentResponse.subject() == ticketId
+                        )))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
 
 
     @GetMapping("/ticket/{id}")
     public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
-        Optional<TicketDTO> opt = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id);
+        Optional<TicketResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id);
         return opt.<ResponseEntity<Response>>map(ticketDTO ->ResponseEntity.ok(
                 Response.builder().timestamp(LocalDateTime.now())
                         .message("Ticket with ID = " + id + ".")
@@ -302,4 +326,81 @@ public class ServiceController {
                         .build()
         );
     }
+
+    @DeleteMapping("/ticket/{id}")
+    public ResponseEntity<Response> deleteTicketById(@PathVariable @Validated UUID id){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Try to drop Ticket")
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().delete(id)))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
+    @GetMapping("/activity/{id}")
+    public ResponseEntity<Response> getActivity(@PathVariable @Validated UUID id) {
+        Optional<ActivityResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getActivityDao().get(id);
+        return opt.<ResponseEntity<Response>>map(activityResponse ->ResponseEntity.ok(
+                Response.builder().timestamp(LocalDateTime.now())
+                        .message("Activity with ID = " + id + ".")
+                        .data(Map.of("activity", activityResponse))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        )).orElseGet(() -> ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Activity " + id + " not found.")
+                        .data(Map.of("activity", " "))
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .status(HttpStatus.NOT_FOUND)
+                        .reason("There is no Entity with this ID!")
+                        .build()
+        ));
+    }
+
+    @GetMapping("/activities")
+    public ResponseEntity<Response> getActivities(){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("All existing activities.")
+                        .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().getAll()))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
+    @PutMapping("/activities")
+    public ResponseEntity<Response> putTicket(@RequestBody @Validated ActivityDTO activityDTO){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("New Activity putted to Database.")
+                        .data(Map.of("activity",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().save(activityDTO)))
+                        .statusCode(HttpStatus.CREATED.value())
+                        .status(HttpStatus.CREATED)
+                        .build()
+        );
+    }
+
+    @GetMapping("/activities/{ticketId}")
+    public ResponseEntity<Response> getTicketActivities(@PathVariable @Validated UUID ticketId){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("All ticket activity.")
+                        .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().getAll().stream().filter(
+                                activity -> activity.ticketID() == ticketId
+                        )))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
 }
