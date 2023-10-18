@@ -35,7 +35,7 @@ public class CommentService {
                         "Content",
                         commentDTO.content(),
                         "",
-                        EActivityTypes.SYSTEM.toString(),
+                        EActivityTypes.USER.toString(),
                         commentDTO.user(),
                         commentDTO.subject()
                 )
@@ -70,7 +70,7 @@ public class CommentService {
                         "Content",
                         content,
                         opt.get().getContent(),
-                        EActivityTypes.SYSTEM.toString(),
+                        EActivityTypes.USER.toString(),
                         opt.get().getCreator().getID(),
                         opt.get().getTicket().getID()
                 )
