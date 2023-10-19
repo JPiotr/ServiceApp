@@ -20,9 +20,8 @@ public class TaskService {
     }
 
     public Task addTask(String title, String description, UUID userID){
-        var opt = userService.getUser(userID);
-        return opt.map(user -> repository.save(new Task(title, description, user)))
-                .orElseGet(() -> repository.save(new Task(title, description, null)));
+        var user = userService.getUser(userID);
+        return repository.save(new Task(title, description, user));
     }
 
     public boolean deleteTask(UUID id){
