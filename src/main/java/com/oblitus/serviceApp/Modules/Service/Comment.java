@@ -16,13 +16,12 @@ import lombok.*;
 @Table(name = "comments")
 public class Comment extends EntityBase {
     private String Content;
-    @ManyToOne(targetEntity = User.class)
-    private User Creator;
     @ManyToOne(targetEntity = com.oblitus.serviceApp.Modules.Service.Ticket.class)
     private Ticket Ticket;
 
-    public Comment(String content) {
+    public Comment(String content, Ticket ticket, User creator) {
         super();
         Content = content;
+        Creator = creator;
     }
 }
