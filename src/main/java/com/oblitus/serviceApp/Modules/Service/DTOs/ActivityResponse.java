@@ -1,5 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,7 +12,7 @@ public record ActivityResponse(
         String newValue,
         String oldValue,
         String activityType,
-        UUID userId,
+        BaseUserResponse userId,
         UUID ticketID,
         LocalDateTime creationDate,
         LocalDateTime LastModificationDate
