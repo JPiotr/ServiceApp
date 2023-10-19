@@ -10,13 +10,13 @@ import com.oblitus.serviceApp.Modules.Service.DTOs.TicketResponse;
 import com.oblitus.serviceApp.Modules.Service.DTOs.TicketResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Ticket;
 import com.oblitus.serviceApp.Modules.Service.TicketService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,9 +28,9 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
     private final ClientService clientService;
     private final UserService userService;
     @Override
-    public Optional<TicketResponse> get(UUID id) {
-        var opt = ticketService.getTicket(id);
-        return opt.map(ticketMapper);
+    public TicketResponse get(UUID id) {
+        var ticket = ticketService.getTicket(id);
+        return ticketMapper.apply(ticket);
     }
 
     @Override
@@ -41,31 +41,39 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
 
     @Override
     public TicketResponse save(TicketDTO ticketDTO) {
-        Optional<Client> client = clientService.getClient(ticketDTO.client());
-        Optional<User> user = Optional.empty();
-        if(ticketDTO.userId() != null){
-            user = userService.getUser(ticketDTO.userId());
+        Client client = clientService.getClient(ticketDTO.client());
+        User assigned = userService.getUser(ticketDTO.assigned());
+        User creator = userService.getUser(ticketDTO.creator());
+        if(creator == null){
+            throw new EntityNotFoundException("User who is creating ticket is not found!");
         }
-        if(client.isPresent() && user.isPresent()){
+        if(ticketDTO.assigned() != null){
+            assigned = userService.getUser(ticketDTO.assigned());
+        }
+            if(client != null && assigned != null){
 
             return ticketMapper.apply(
                     ticketService.addTicket(
                             new Ticket(ticketDTO.title(),
                                     ticketDTO.description(),
-                                    client.get(),
-                                    user.get(),
-                                    ticketDTO.priority()))
+                                    client,
+                                    assigned,
+                                    ticketDTO.priority(),
+                                    creator,
+                                    ticketDTO.note()))
             );
         }
-        if(client.isPresent()){
+        if(client != null){
 
             return ticketMapper.apply(
                     ticketService.addTicket(
                             new Ticket(ticketDTO.title(),
                                     ticketDTO.description(),
-                                    client.get(),
+                                    client,
                                     null,
-                                    ticketDTO.priority()))
+                                    ticketDTO.priority(),
+                                    creator,
+                                    ticketDTO.note()))
             );
         }
         throw new NoSuchElementException();
@@ -79,7 +87,24 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
                         ticketDTO.title(),
                         ticketDTO.description(),
                         ticketDTO.priority(),
-                        ticketDTO.state()
+                        ticketDTO.state(),
+                        ticketDTO.assigned(),
+                        ticketDTO.note(),
+                        null
+                )
+        );
+    }
+    public TicketResponse updateWEditor(TicketDTO ticketDTO, UUID editorId) throws AccountLockedException {
+        return ticketMapper.apply(
+                ticketService.updateTicket(
+                        ticketDTO.id(),
+                        ticketDTO.title(),
+                        ticketDTO.description(),
+                        ticketDTO.priority(),
+                        ticketDTO.state(),
+                        ticketDTO.assigned(),
+                        ticketDTO.note(),
+                        editorId
                 )
         );
     }
