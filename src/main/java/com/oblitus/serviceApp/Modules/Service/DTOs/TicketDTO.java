@@ -1,11 +1,8 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.UUID;
 
 public record TicketDTO(
@@ -13,9 +10,11 @@ public record TicketDTO(
         String title,
         String description,
         UUID client,
-        UUID userId,
+        UUID assigned,
         TicketState state,
-        TicketPriority priority
+        TicketPriority priority,
+        UUID creator,
+        String note
 ) {
 }
 
