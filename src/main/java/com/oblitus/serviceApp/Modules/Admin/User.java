@@ -4,12 +4,10 @@ import com.oblitus.serviceApp.Abstracts.EntityBase;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,53 +20,32 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     private String Email;
     @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
     private Collection<Rule> Rules;
-
     @Column(nullable = false)
     private String Username;
-
     private String Name;
     private String Surname;
-
     private LocalDateTime LastLoginDate;
-
     private LocalDateTime CredentialExpirationDate;
-
     private LocalDateTime AccountExpirationDate;
-
-//    @Override
+    @Setter
     @Getter
     private boolean Enabled;
     @Getter
     private boolean Expired;
     @Getter
     private boolean CredentialsExpired;
-
+    @Getter
+    @Setter
     private String Password;
 
-
-    public User(UUID id, String email, Collection<Rule> rules, String username, LocalDateTime lastLoginDate, LocalDateTime credentialExpirationDate, LocalDateTime accountExpirationDate, boolean enabled, boolean expired, boolean credentialsExpired, String password) {
-        super();
-        super.ID = id;
-        Email = email;
-        Rules = rules;
+    public User(String id, String username, String password){
+        super(id);
         Username = username;
-        LastLoginDate = lastLoginDate;
-        CredentialExpirationDate = credentialExpirationDate;
-        AccountExpirationDate = accountExpirationDate;
-        Enabled = enabled;
-        Expired = expired;
-        CredentialsExpired = credentialsExpired;
         Password = password;
+        Enabled = true;
+        Locked = true;
+        Expired = false;
     }
-
-    protected User(String username, String email, Collection<Rule> rules, String password) {
-        super();
-        Username = username;
-        Email = email;
-        Rules = rules;
-        Password = password;
-    }
-
     protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
         super();
         Username = username;
@@ -78,45 +55,35 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         Name = name;
         Surname = surname;
     }
-
     protected User addRole(Rule rule){
         Rules.add(rule);
         return this;
     }
-
     protected User deleteRole(Rule rule){
         Rules.remove(rule);
         return this;
     }
-
-    //@Override
     public Collection<Rule> getAuthorities() {
         return getRules();
     }
-
-    //@Override
     public boolean isAccountNonExpired() {
         return Expired;
     }
-
-    //@Override
     public boolean isAccountNonLocked() {
         return !super.Locked;
     }
-
-    //@Override
     public boolean isCredentialsNonExpired() {
         return CredentialsExpired;
     }
-
     @Override
     public void eraseCredentials() {
         Password = null;
     }
-
     public EntityBase getBase(){
         return (EntityBase) this;
     }
-
-
+    @Override
+    public String toString() {
+        return getName()+ " " + getSurname();
+    }
 }
