@@ -1,39 +1,27 @@
 package com.oblitus.serviceApp;
 
-import com.oblitus.serviceApp.Modules.Admin.AuthenticationService;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RUserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
+import com.oblitus.serviceApp.Modules.Admin.*;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
-import com.oblitus.serviceApp.Modules.Admin.ERule;
-import com.oblitus.serviceApp.Modules.Admin.Rule;
-import com.oblitus.serviceApp.Modules.Admin.RuleRepository;
-import com.oblitus.serviceApp.Modules.EModule;
-import com.oblitus.serviceApp.Modules.Module;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.ModuleRepository;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
-import com.oblitus.serviceApp.Modules.Service.Comment;
+import com.oblitus.serviceApp.Modules.Service.ClientRepository;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
-import com.oblitus.serviceApp.Security.DataCrypt.Crypt;
-//import com.oblitus.serviceApp.Modules.Admin.Role;
-//import com.oblitus.serviceApp.Modules.Admin.User;
-//import com.oblitus.serviceApp.Modules.Admin.RoleService;
-//import com.oblitus.serviceApp.Modules.Admin.UserService;
+import com.oblitus.serviceApp.Utils.StaticInfo;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @SpringBootApplication
@@ -48,98 +36,99 @@ public class ServiceAppApplication {
 	CommandLineRunner dbinit(
 		ModuleRepository moduleRepository,
 		RuleRepository ruleRepository,
-		ModulesWrapper modulesWrapper
+		UserRepository userRepository,
+		ClientRepository clientRepository,
+		ModulesWrapper modulesWrapper,
+		PasswordEncoder encoder
 		){return args -> {
-		Crypt crypt = new Crypt();
-		List<Module> modules = List.of(
-				new Module(EModule.ADMIN_MODULE.toString()	 ,true ,EModule.ADMIN_MODULE		),
-				new Module(EModule.BASE_MODULE.toString()	 ,true ,EModule.BASE_MODULE		),
-				new Module(EModule.PROJECTS_MODULE.toString(),false,EModule.PROJECTS_MODULE	),
-				new Module(EModule.SERVICE_MODULE.toString() ,true,EModule.SERVICE_MODULE	)
-		);
 
-		moduleRepository.saveAll(modules);
 
-		var rules = List.of(
-				new RuleDTO(
-						UUID.randomUUID(),
-						ERule.ADMIN.toString(),
-						List.of(modules.get(0),
-								modules.get(1)
-						)),
-				new RuleDTO(
-						UUID.randomUUID(),
-						ERule.USER.toString(),
-						List.of(modules.get(1))),
-				new RuleDTO(
-						UUID.randomUUID(),
-						ERule.CLIENT.toString(),
-						List.of(modules.get(1),
-								modules.get(3)))
+		moduleRepository.saveAll(StaticInfo.Modules);
+		ruleRepository.saveAll(StaticInfo.PredefinedRules);
+		StaticInfo.SuperUser.setPassword(encoder.encode(UUID.randomUUID().toString()));
+		userRepository.save(StaticInfo.SuperUser);
+		modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(StaticInfo.SuperUser.getID(), ERule.ADMIN.toString());
+		clientRepository.save(StaticInfo.Internal);
 
-		);
+		//users
+		List<UserResponse> users =
+				List.of(
+						modulesWrapper.adminModule.getAdminDAO().getUserDao()
+								//John Doe
+								.save(new UserDTO(
+										null,
+										"jdoe@domain.srvtrack",
+										"JohnDoeRoot",
+										"John",
+										"Doe",
+										"simplePass"
+								)),
+						modulesWrapper.adminModule.getAdminDAO().getUserDao()
+								//John Necessary
+								.save(new UserDTO(
+										null,
+										"jnecessary@domain.srvtrack",
+										"JohnNecessaryClient",
+										"John",
+										"Necessary",
+										"simplePass"
+								)),
+						modulesWrapper.adminModule.getAdminDAO().getUserDao()
+								//Grzegorz Brzęczyszczykiewicz
+								.save(new UserDTO(
+										null,
+										"gbrzeczyszczykiewicz@domain.srvtrack",
+										"JohnDoeRoot",
+										"Grzegorz",
+										"Brzęczyszczykiewicz",
+										"jakrozpetalemdrugawojneswiatowa"
+								))
+				);
 
-		for (var role : rules) {
-			modulesWrapper.adminModule.getAdminDAO().getRuleDao().save(role);
-		}
+		var jdoe = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(users.get(0).id(), ERule.ADMIN.toString());
+		var jnes = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(users.get(1).id(), ERule.CLIENT.toString());
+		var gbrz = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(users.get(2).id(), ERule.SERVICE.toString());
 
-		var usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao()
-				.save(new UserDTO(
-						null,
-						"jdoe@domain.srvtrack",
-						"JohnDoeRoot",
-						"John",
-						"Doe",
-						"rootpass"
-						));
-		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.ADMIN.toString());
-//		usrResponse = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(usrResponse.id(), ERule.USER.toString());
-
-		var clientResponse = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(UUID.randomUUID(), "Client X"));
-
-		var ticket = new TicketDTO(
-				null,
-				"Ticket1",
-				"Mocking ticket from DB",
-				clientResponse.id(),
-				usrResponse.id(),
-				TicketState.DONE,
-				TicketPriority.HIGH
-		);
+		var client1 = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(null, "Client X", jdoe.id()));
+		var client2 = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(null, "Client Y", jdoe.id()));
 
 		var tickets = List.of(
 				new TicketDTO(
 						null,
-						"Ticket2",
-						"Mocking ticket from DB2",
-						clientResponse.id(),
-						usrResponse.id(),
+						"Hello World",
+						"First simple Ticket",
+						client1.id(),
+						gbrz.id(),
 						TicketState.OPEN,
-						TicketPriority.HIGH
+						TicketPriority.HIGH,
+						jnes.id(),
+						null
 				),
 				new TicketDTO(
 						null,
-						"Ticket3",
-						"Mocking ticket from DB3",
+						"Need Help - URGENT",
+						"I don't know how to pronounce Your IT Guy name. Can You assign someone else?",
 //						new ArrayList<CommentDTO>(),
-						clientResponse.id(),
-						usrResponse.id(),
+						client2.id(),
+						null,
 						TicketState.NEW,
-						TicketPriority.MEDIUM
+						TicketPriority.MEDIUM,
+						jnes.id(),
+						null
 				)
 		);
 
-		for (var ticket2:tickets) {
-			modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket2);
-		}
-		var ticketResponse = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticket);
+		modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(tickets.get(0));
+		var ticketResponse = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(tickets.get(1));
 
-		CommentDTO comment = new CommentDTO(null, "Komentarz z backendu", ticketResponse.id(), usrResponse.id());
-		CommentDTO comment2 = new CommentDTO(null, "Komentarz z backendu2", ticketResponse.id(), usrResponse.id());
+		CommentDTO comment = new CommentDTO(null, "We don't have anyone else :(", ticketResponse.id(), jdoe.id());
+		CommentDTO comment2 = new CommentDTO(null, "How can I call him then?", ticketResponse.id(), jnes.id());
+		CommentDTO comment3 = new CommentDTO(null, "Gregory?", ticketResponse.id(), jdoe.id());
 
 
 		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment);
 		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment2);
+		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment3);
 
 	};}
 
