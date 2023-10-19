@@ -41,7 +41,9 @@ public class ServiceAppApplication {
 		ModulesWrapper modulesWrapper,
 		PasswordEncoder encoder
 		){return args -> {
-
+		if(userRepository.existsById(StaticInfo.SuperUser.getID())){
+			return;
+		}
 
 		moduleRepository.saveAll(StaticInfo.Modules);
 		ruleRepository.saveAll(StaticInfo.PredefinedRules);

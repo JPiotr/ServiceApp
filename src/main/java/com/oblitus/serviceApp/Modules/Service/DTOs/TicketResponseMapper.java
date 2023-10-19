@@ -25,7 +25,8 @@ public class TicketResponseMapper implements Function<Ticket, TicketResponse> {
                     ticket.getCreationDate(),
                     ticket.getLastModificationDate(),
                     baseUserResponseMapper.apply(ticket.getCreator()),
-                    ticket.getNumber()
+                    ticket.getNumber(),
+                    ticket.getNote()
             );
         }
         return new TicketResponse(
@@ -39,7 +40,8 @@ public class TicketResponseMapper implements Function<Ticket, TicketResponse> {
                 ticket.getCreationDate(),
                 ticket.getLastModificationDate(),
                 baseUserResponseMapper.apply(ticket.getCreator()),
-                ticket.getNumber()
+                ticket.getNumber(),
+                ticket.getNote()
         );
     }
 }

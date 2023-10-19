@@ -18,6 +18,7 @@ public record TicketResponse(
         LocalDateTime creationDate,
         LocalDateTime LastModificationDate,
         BaseUserResponse creator,
-        int Number
+        int number,
+        String note
 ) {
 }
