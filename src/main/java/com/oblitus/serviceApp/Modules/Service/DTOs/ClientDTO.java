@@ -1,11 +1,14 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ClientDTO(
         UUID id,
-        String name
+        String name,
+        UUID creator
 ) {
 }
 
