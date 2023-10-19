@@ -1,6 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Ticket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +10,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class TicketResponseMapper implements Function<Ticket, TicketResponse> {
+    private final BaseUserResponseMapper baseUserResponseMapper;
     @Override
     public TicketResponse apply(Ticket ticket) {
         if(ticket.getAssigned() == null){
@@ -22,7 +23,9 @@ public class TicketResponseMapper implements Function<Ticket, TicketResponse> {
                     ticket.getState(),
                     ticket.getPriority(),
                     ticket.getCreationDate(),
-                    ticket.getLastModificationDate()
+                    ticket.getLastModificationDate(),
+                    baseUserResponseMapper.apply(ticket.getCreator()),
+                    ticket.getNumber()
             );
         }
         return new TicketResponse(
@@ -30,11 +33,13 @@ public class TicketResponseMapper implements Function<Ticket, TicketResponse> {
                 ticket.getTitle(),
                 ticket.getDescription(),
                 ticket.getClient().getID(),
-                ticket.getAssigned().getID(),
+                baseUserResponseMapper.apply(ticket.getAssigned()),
                 ticket.getState(),
                 ticket.getPriority(),
                 ticket.getCreationDate(),
-                ticket.getLastModificationDate()
+                ticket.getLastModificationDate(),
+                baseUserResponseMapper.apply(ticket.getCreator()),
+                ticket.getNumber()
         );
     }
 }
