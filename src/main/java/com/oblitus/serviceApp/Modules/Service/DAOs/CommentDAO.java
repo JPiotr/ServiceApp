@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service.DAOs;
 
 import com.oblitus.serviceApp.Abstracts.DAO;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.Service.CommentService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentResponse;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -20,9 +20,8 @@ public class CommentDAO implements DAO<CommentResponse ,CommentDTO> {
     private final CommentResponseMapper commentMapper;
     private final CommentService commentService;
     @Override
-    public Optional<CommentResponse> get(UUID id) {
-        var opt = commentService.getComment(id);
-        return opt.map(commentMapper);
+    public CommentResponse get(UUID id) {
+        return commentMapper.apply(commentService.getComment(id));
     }
 
     @Override

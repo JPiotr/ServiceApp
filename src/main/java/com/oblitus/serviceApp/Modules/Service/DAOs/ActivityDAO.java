@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -20,9 +19,8 @@ public class ActivityDAO implements DAO<ActivityResponse, ActivityDTO> {
     private final ActivityResponseMapper activityMapper;
     private final ActivityService service;
     @Override
-    public Optional<ActivityResponse> get(UUID id) {
-        var opt = service.getActivity(id);
-        return opt.map(activityMapper);
+    public ActivityResponse get(UUID id) {
+        return activityMapper.apply(service.getActivity(id));
     }
 
     @Override
