@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//todo: ModuleDTO
 @Entity
 @Table(name="modules")
 @NoArgsConstructor
@@ -18,5 +17,10 @@ public class Module extends EntityBase {
     public boolean Enabled;
     public EModule Type;
 
-
+    public Module(String uuid, String name, boolean enabled, EModule type) {
+        super(uuid);
+        Name = name;
+        Enabled = enabled;
+        Type = type;
+    }
 }
