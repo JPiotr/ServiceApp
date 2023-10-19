@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Modules.Service;
 
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,13 @@ public class ActivityService {
     private final UserService userService;
     private final TicketService ticketService;
 
-    public Optional<Activity> getActivity(UUID id){ return repository.findById(id);}
+    public Activity getActivity(UUID id){
+        var opt = repository.findById(id);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new EntityNotFoundException();
+    }
 
     public List<Activity> getAllActivity(){ return repository.findAll();}
 
@@ -28,18 +35,9 @@ public class ActivityService {
                 activity.newValue(),
                 activity.oldValue(),
                 activity.activityType(),
-                userService.getUser(activity.userId()).get(),
-                ticketService.getTicket(activity.ticketID()).get()
+                userService.getUser(activity.userId()),
+                ticketService.getTicket(activity.ticketID())
         ));
-    }
-
-    public boolean deleteActivity(UUID id){
-        Optional<Activity> opt = repository.findById(id);
-        if(opt.isEmpty()){
-            return false;
-        }
-        repository.delete(opt.get());
-        return true;
     }
 
 }

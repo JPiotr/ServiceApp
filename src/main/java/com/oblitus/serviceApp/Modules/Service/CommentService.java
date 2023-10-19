@@ -3,6 +3,7 @@ package com.oblitus.serviceApp.Modules.Service;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,12 @@ public class CommentService {
     private final TicketService ticketService;
     private final ActivityService activityService;
 
-    public Optional<Comment> getComment(UUID id){
-        return repository.findById(id);
+    public Comment getComment(UUID id){
+        var opt = repository.findById(id);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new EntityNotFoundException();
     }
 
     public List<Comment> getAllComments(){
@@ -36,16 +41,15 @@ public class CommentService {
                         commentDTO.content(),
                         "",
                         EActivityTypes.USER.toString(),
-                        commentDTO.user(),
+                        commentDTO.creator(),
                         commentDTO.subject()
                 )
         );
         return repository.save(
                 new Comment(
                         commentDTO.content(),
-                        userService.getUser(commentDTO.user()).get(),
-                        ticketService.getTicket(commentDTO.subject()).get()
-                ));
+                        ticketService.getTicket(commentDTO.subject())
+                        ,userService.getUser(commentDTO.creator())));
     }
 
     public boolean deleteComment(UUID id){
@@ -59,24 +63,21 @@ public class CommentService {
     }
 
     public Comment updateComment(UUID id, String content){
-        var opt = repository.findById(id);
-        if(opt.isEmpty()){
-            return null;
-        }
+        var comment = getComment(id);
         activityService.addActivity(
                 new ActivityDTO(
                         null,
                         EActivityHandle.COMMENT.toString(),
                         "Content",
                         content,
-                        opt.get().getContent(),
+                        comment.getContent(),
                         EActivityTypes.USER.toString(),
-                        opt.get().getCreator().getID(),
-                        opt.get().getTicket().getID()
+                        comment.getCreator().getID(),
+                        comment.getTicket().getID()
                 )
         );
-        opt.get().setContent(content);
-        opt.get().setLastModificationDate();
-        return repository.save(opt.get());
+        comment.setContent(content);
+        comment.setLastModificationDate();
+        return repository.save(comment);
     }
 }

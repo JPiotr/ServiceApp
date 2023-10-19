@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Modules.EModule;
 import com.oblitus.serviceApp.Modules.Module;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,10 @@ public class RuleService {
     }
     public Rule getRule(UUID id){
         Optional<Rule> opt = ruleRepository.findById(id);
-        return opt.orElse(null);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new EntityNotFoundException();
     }
 
     public Rule getRule(String name){

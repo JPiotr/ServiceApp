@@ -20,9 +20,8 @@ public class ProjectService {
     }
 
     public Project addProject(String name, String description, UUID userID){
-        var opt = userService.getUser(userID);
-        return opt.map(user -> repository.save(new Project(name, description, user)))
-                .orElseGet(() -> repository.save(new Project(name, description, null)));
+        var user = userService.getUser(userID);
+        return repository.save(new Project(name, description, user));
     }
 
     public boolean deleteProject(UUID id){

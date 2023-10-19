@@ -1,5 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service;
 
+import com.oblitus.serviceApp.Modules.Admin.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,17 +14,26 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class ClientService {
     private final ClientRepository repository;
+    private final UserService userService;
 
-    public Optional<Client> getClient(UUID id){
-        return repository.findById(id);
+    public Client getClient(UUID id){
+        var client = repository.findById(id);
+        if(client.isPresent()){
+            return client.get();
+        }
+        throw new EntityNotFoundException();
     }
 
     public List<Client> getAllClients(){
         return repository.findAll();
     }
 
-    public Client addClient(String name){
-        return repository.save(new Client(name));
+    public Client addClient(String name, UUID creatorID){
+        if(creatorID == null){
+            return repository.save(new Client(name,null));
+        }
+        var user = userService.getUser(creatorID);
+        return repository.save(new Client(name, user));
     }
 
     public boolean deleteClient(UUID id){
@@ -35,13 +46,10 @@ public class ClientService {
     }
 
     public Client updateClient(UUID id, String newName){
-        Optional<Client> opt = repository.findById(id);
-        if(opt.isEmpty()){
-            return null;
-        }
-        opt.get().setName(newName);
-        opt.get().setLastModificationDate();
-        return repository.save(opt.get());
+        Client client = getClient(id);
+        client.setName(newName);
+        client.setLastModificationDate();
+        return repository.save(client);
 
     }
 }
