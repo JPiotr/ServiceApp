@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,17 +20,13 @@ public class AuthenticationService {
     private final RuleService ruleService;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
-    public AuthResponse register(RUserDTO userDTO){
+    public AuthResponse register(RUserDTO userDTO) {
         UserDTO user = new UserDTO(null,
                 userDTO.name(),
                 userDTO.surname(),
                 userDTO.email(),
                 passwordEncoder.encode(userDTO.password()),
                 null
-//                modulesWrapper.adminModule.getAdminDAO().getRuleDao().getAll()
-//                        .stream().filter(
-//                                ruleDTO -> ruleDTO.name() == ERule.USER.toString()
-//                        ).collect(Collectors.toList())
         );
         var userDetails = userService.addUser(
                 user.name(),
@@ -41,14 +38,9 @@ public class AuthenticationService {
                 user.userName(),
                 user.surname()
         );
-        var optUser = userService.getUser(userDetails.getID());
-        if(optUser.isPresent()){
-            var token = jwtService.generateToken(optUser.get());
-            return AuthResponse.builder().token(token).build();
-        }
-        return AuthResponse.builder().build();
+        var token = jwtService.generateToken(userService.getUser(userDetails.getID()));
+        return AuthResponse.builder().token(token).build();
     }
-
     public AuthResponse login(LUserDTO userDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
