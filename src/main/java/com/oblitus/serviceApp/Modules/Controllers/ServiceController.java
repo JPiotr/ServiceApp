@@ -4,6 +4,8 @@ import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.*;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,27 +28,30 @@ public class ServiceController {
 
     @GetMapping("/clients/{id}")
     public ResponseEntity<Response> getClient(@PathVariable @Validated UUID id){
-        Optional<ClientResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getClientDao().get(id);
-        return opt.<ResponseEntity<Response>>map(userDTO -> ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("Client with ID = " + id + ".")
-                        .data(Map.of("client", userDTO))
-                        .statusCode(HttpStatus.OK.value())
-                        .status(HttpStatus.OK)
-                        .build()
-        )).orElseGet(() -> ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("Client " + id + " not found.")
-                        .data(Map.of("client", " "))
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .status(HttpStatus.NOT_FOUND)
-                        .reason("There is no Entity with this ID!")
-                        .build()
-        ));
+        try {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Client with ID = " + id + ".")
+                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientDao().get(id)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Client " + id + " not found.")
+                            .data(Map.of("client", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
+                            .build()
+            );
+        }
     }
-
     @GetMapping("/clients")
     public ResponseEntity<Response> getClients(){
         return ResponseEntity.ok(
@@ -59,7 +64,6 @@ public class ServiceController {
                         .build()
         );
     }
-
     @PutMapping("/clients")
     public ResponseEntity<Response> putClient(@RequestBody @Validated ClientDTO clientDTO){
         return ResponseEntity.ok(
@@ -72,7 +76,6 @@ public class ServiceController {
                         .build()
         );
     }
-
     @PostMapping("/client")
     public ResponseEntity<Response> updateClient(@RequestBody @Validated ClientDTO clientDTO) {
         try {
@@ -97,6 +100,18 @@ public class ServiceController {
                             .build()
             );
         }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Client " + clientDTO.id() + " not found.")
+                            .data(Map.of("client", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
+                            .build()
+            );
+        }
     }
 
     @DeleteMapping("/client")
@@ -115,23 +130,27 @@ public class ServiceController {
 
     @GetMapping("/comments/{id}")
     public ResponseEntity<Response> getComment(@PathVariable @Validated UUID id) {
-        Optional<CommentResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(id);
-        return opt.<ResponseEntity<Response>>map(task -> ResponseEntity.ok(
-                Response.builder().timestamp(LocalDateTime.now())
-                        .message("Comment with ID = " + id + ".")
-                        .data(Map.of("comment", task))
-                        .statusCode(HttpStatus.OK.value())
-                        .status(HttpStatus.OK)
-                        .build()
-        )).orElseGet(() -> ResponseEntity.ok(
-                Response.builder().timestamp(LocalDateTime.now())
-                        .message("Comment with ID = " + id + ".")
-                        .data(Map.of("comment", " "))
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .status(HttpStatus.NOT_FOUND)
-                        .reason("There is no Entity with this ID!")
-                        .build()
-        ));
+        try{
+            return ResponseEntity.ok(
+                    Response.builder().timestamp(LocalDateTime.now())
+                            .message("Comment with ID = " + id + ".")
+                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(id)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.ok(
+                    Response.builder().timestamp(LocalDateTime.now())
+                            .message("Comment with ID = " + id + ".")
+                            .data(Map.of("comment", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
+                            .build()
+            );
+        }
     }
 
     @GetMapping("/comments")
@@ -173,14 +192,14 @@ public class ServiceController {
                             .build()
             );
         }
-        catch (Exception e){
+        catch (EntityNotFoundException | AccountLockedException e){
             return ResponseEntity.ok(
                     Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message(e.getMessage())
-                            .data(Map.of("comment"," "))
-                            .statusCode(HttpStatus.EXPECTATION_FAILED.value())
-                            .status(HttpStatus.EXPECTATION_FAILED)
+                            .message("Comment with ID = " + commentDTO.id() + ".")
+                            .data(Map.of("comment", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
                             .build()
             );
         }
@@ -230,24 +249,28 @@ public class ServiceController {
 
     @GetMapping("/ticket/{id}")
     public ResponseEntity<Response> getTicket(@PathVariable @Validated UUID id) {
-        Optional<TicketResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id);
-        return opt.<ResponseEntity<Response>>map(ticketDTO ->ResponseEntity.ok(
-                Response.builder().timestamp(LocalDateTime.now())
-                        .message("Ticket with ID = " + id + ".")
-                        .data(Map.of("ticket", ticketDTO))
-                        .statusCode(HttpStatus.OK.value())
-                        .status(HttpStatus.OK)
-                        .build()
-        )).orElseGet(() -> ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("Ticket " + id + " not found.")
-                        .data(Map.of("ticket", " "))
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .status(HttpStatus.NOT_FOUND)
-                        .reason("There is no Entity with this ID!")
-                        .build()
-        ));
+        try{
+            return ResponseEntity.ok(
+                    Response.builder().timestamp(LocalDateTime.now())
+                            .message("Ticket with ID = " + id + ".")
+                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Ticket " + id + " not found.")
+                            .data(Map.of("ticket", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
+                            .build()
+            );
+        }
     }
 
     @GetMapping("/tickets")
@@ -283,7 +306,7 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All user tickets.")
                         .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll().stream().filter(
-                                ticket -> userId.equals(ticket.userId())
+                                ticket -> userId.equals(ticket.assigned().id()) || userId.equals(ticket.creator().id())
                         )
                                 .collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
@@ -293,26 +316,27 @@ public class ServiceController {
     }
 
     @PostMapping("/ticket")
-    public ResponseEntity<Response> updateTicket(@RequestBody @Validated TicketDTO ticketDTO) {
+    public ResponseEntity<Response> updateTicket(@RequestBody @Validated TicketDTO ticketDTO, @Nullable @RequestParam @Validated UUID editingUser) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Ticket updated.")
-                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().update(ticketDTO)))
+                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().updateWEditor(ticketDTO, editingUser)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
             );
         }
-        catch (Exception e){
+        catch (EntityNotFoundException | AccountLockedException e){
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .message(e.getMessage())
-                            .data(Map.of("ticket"," "))
-                            .statusCode(HttpStatus.EXPECTATION_FAILED.value())
-                            .status(HttpStatus.EXPECTATION_FAILED)
+                            .message("Ticket " + ticketDTO.id() + " not found.")
+                            .data(Map.of("ticket", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
                             .build()
             );
         }
@@ -346,24 +370,28 @@ public class ServiceController {
 
     @GetMapping("/activity/{id}")
     public ResponseEntity<Response> getActivity(@PathVariable @Validated UUID id) {
-        Optional<ActivityResponse> opt = modulesWrapper.serviceModule.getServiceDAO().getActivityDao().get(id);
-        return opt.<ResponseEntity<Response>>map(activityResponse ->ResponseEntity.ok(
-                Response.builder().timestamp(LocalDateTime.now())
-                        .message("Activity with ID = " + id + ".")
-                        .data(Map.of("activity", activityResponse))
-                        .statusCode(HttpStatus.OK.value())
-                        .status(HttpStatus.OK)
-                        .build()
-        )).orElseGet(() -> ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("Activity " + id + " not found.")
-                        .data(Map.of("activity", " "))
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .status(HttpStatus.NOT_FOUND)
-                        .reason("There is no Entity with this ID!")
-                        .build()
-        ));
+        try{
+            return ResponseEntity.ok(
+                    Response.builder().timestamp(LocalDateTime.now())
+                            .message("Activity with ID = " + id + ".")
+                            .data(Map.of("activity", modulesWrapper.serviceModule.getServiceDAO().getActivityDao().get(id)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Activity " + id + " not found.")
+                            .data(Map.of("activity", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("There is no Entity with this ID!")
+                            .build()
+            );
+        }
     }
 
     @GetMapping("/activities")

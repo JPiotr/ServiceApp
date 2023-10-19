@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class BasicController {
     private final AuthenticationService authenticationService;
 
     @PutMapping("/register")
-    public ResponseEntity<Response> registerUser(@RequestBody @Validated RUserDTO userDTO){
+    public ResponseEntity<Response> registerUser(@RequestBody @Validated RUserDTO userDTO) {
         return  ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
