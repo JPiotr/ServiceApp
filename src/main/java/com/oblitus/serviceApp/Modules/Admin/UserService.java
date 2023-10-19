@@ -3,24 +3,24 @@ package com.oblitus.serviceApp.Modules.Admin;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountLockedException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements UserDetailsService {
     private final UserRepository userRepo;
     private final RuleService ruleService;
-     public Optional<User> getUser(UUID id){
-        return userRepo.findById(id);
+     public User getUser(UUID id) {
+         var opt = userRepo.findById(id);
+         if(opt.isPresent()){
+             return opt.get();
+         }
+        throw new EntityNotFoundException();
     }
      public Optional<User> getUser(String name){
         return Optional.ofNullable(userRepo.findAll().stream().filter(x-> Objects.equals(x.getUsername(), name)).toList().get(0));
@@ -34,59 +34,42 @@ public class UserService implements UserDetailsService {
     public List<User> getAllUsers(){
         return userRepo.findAll();
     }
-    public User updateUser(UUID id, String username, String email, String password) throws AccountLockedException {
-         Optional<User> user = userRepo.findById(id);
-         if(user.isEmpty()){
-             throw new EntityNotFoundException("User with id "+ id + "not found!");
-         }
-         if(!user.get().isAccountNonLocked()){
-             throw new AccountLockedException("Account " + user.get().getUsername() + " is locked!");
-         }
+    public User updateUser(UUID id, String username, String email, String password) {
+         User user = getUser(id);
          if(email != null){
-             user.get().setEmail(email);
-             user.get().setLastModificationDate();
+             user.setEmail(email);
+             user.setLastModificationDate();
          }
          if(username != null){
-             user.get().setUsername(username);
-             user.get().setLastModificationDate();
+             user.setUsername(username);
+             user.setLastModificationDate();
          }
          if(password != null){
-             user.get().setPassword(password);
-             user.get().setLastModificationDate();
+             user.setPassword(password);
+             user.setLastModificationDate();
          }
-         return userRepo.save(user.get());
+         return userRepo.save(user);
     }
-    public boolean deleteUser(UUID id){
-         Optional<User> user = userRepo.findById(id);
-         if(user.isEmpty()){
-             return false;
-         }
-        userRepo.delete(user.get());
+    public boolean deleteUser(UUID id) {
+         User user = getUser(id);
+         userRepo.delete(user);
          return true;
     }
-
-    public User addRuleToUser(UUID userID, String name){
-         var opt = getUser(userID);
-         if(opt.isPresent()){
-             var rule = ruleService.getRule(name);
-             var user = opt.get().addRole(rule);
-             return userRepo.save(user);
-         }
-         return null;
+    public User addRuleToUser(UUID userID, String name) {
+        var rule = ruleService.getRule(name);
+        return userRepo.save(getUser(userID).addRole(rule));
     }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUser(username).orElse(null);
     }
-
     public User disconnectRuleFromUser(UUID userID, String name) {
-        var opt = getUser(userID);
-        if(opt.isPresent()){
-            var rule = ruleService.getRule(name);
-            var user = opt.get().deleteRole(rule);
-            return userRepo.save(user);
-        }
-        return null;
+        var rule = ruleService.getRule(name);
+        return userRepo.save(getUser(userID).deleteRole(rule));
+    }
+    public User changeUserEnabled(UUID userId) {
+         var user = getUser(userId);
+         user.setEnabled(!user.isEnabled());
+         return userRepo.save(user);
     }
 }
