@@ -1,9 +1,10 @@
 package com.oblitus.serviceApp.Abstracts;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import com.oblitus.serviceApp.Modules.Admin.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -21,7 +22,10 @@ public abstract class EntityBase{
      */
     @Getter
     @Id
-    public UUID ID;
+    protected UUID ID;
+    @Getter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    protected int Number;
     @Getter
     @CreatedDate
     protected LocalDateTime CreationDate;
@@ -29,8 +33,15 @@ public abstract class EntityBase{
     @LastModifiedDate
     protected LocalDateTime LastModificationDate;
     public Boolean ReadOnly;
-    //Once Locked it can't be edited anyway
     protected Boolean Locked;
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User Creator;
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User LastEditedBy;
 
     /**
      * Constructor witch set properties:
@@ -44,8 +55,19 @@ public abstract class EntityBase{
         ID = UUID.randomUUID();
         CreationDate = LocalDateTime.now();
         LastModificationDate = LocalDateTime.now();
+        Creator = null;
         ReadOnly = false;
         Locked = false;
+    }
+
+    public EntityBase(String uuid){
+        ID = UUID.fromString(uuid);
+        CreationDate = LocalDateTime.now();
+        LastModificationDate = LocalDateTime.now();
+        Creator = null;
+        ReadOnly = false;
+        Locked = false;
+
     }
 
     /**
