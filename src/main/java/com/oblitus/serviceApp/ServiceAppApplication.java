@@ -45,7 +45,7 @@ public class ServiceAppApplication {
 
 		moduleRepository.saveAll(StaticInfo.Modules);
 		ruleRepository.saveAll(StaticInfo.PredefinedRules);
-		StaticInfo.SuperUser.setPassword(encoder.encode(UUID.randomUUID().toString()));
+		StaticInfo.SuperUser.setPassword(encoder.encode(StaticInfo.SuperUserPasswd));
 		userRepository.save(StaticInfo.SuperUser);
 		modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(StaticInfo.SuperUser.getID(), ERule.ADMIN.toString());
 		clientRepository.save(StaticInfo.Internal);
@@ -110,7 +110,7 @@ public class ServiceAppApplication {
 						"I don't know how to pronounce Your IT Guy name. Can You assign someone else?",
 //						new ArrayList<CommentDTO>(),
 						client2.id(),
-						null,
+						jdoe.id(),
 						TicketState.NEW,
 						TicketPriority.MEDIUM,
 						jnes.id(),

@@ -24,7 +24,7 @@ public abstract class EntityBase{
     @Id
     protected UUID ID;
     @Getter
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected int Number;
     @Getter
     @CreatedDate

@@ -47,14 +47,14 @@ public final class StaticInfo {
                             ERule.SERVICE
                     )
             );
-    //public static String SuperUserPasswd = "root"; //todo: getting variable from properties
+    public static String SuperUserPasswd = "root"; //todo: getting variable from properties
     public static User SuperUser = new User(
-            "00000000-0000-0000-0003-0000000000001",
+            "00000000-0000-0000-0003-000000000001",
             "System",
             "");
 
     public static Client Internal = new Client(
-            "00000000-0000-0000-0004-0000000000001",
+            "00000000-0000-0000-0004-000000000001",
             "Internal",
             SuperUser
     );

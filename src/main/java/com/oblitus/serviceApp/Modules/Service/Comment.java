@@ -23,5 +23,6 @@ public class Comment extends EntityBase {
         super();
         Content = content;
         Creator = creator;
+        Ticket = ticket;
     }
 }

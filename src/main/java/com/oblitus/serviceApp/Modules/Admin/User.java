@@ -45,6 +45,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         Enabled = true;
         Locked = true;
         Expired = false;
+        Email = username.toLowerCase() + "@srvctrack.root";
     }
     protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
         super();

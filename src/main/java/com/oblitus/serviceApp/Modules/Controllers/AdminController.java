@@ -90,7 +90,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("/user/{id}")
+    @PostMapping("/user/state/{id}")
     public ResponseEntity<Response> changeEnabled(@PathVariable @Validated UUID id) {
         try{
             return ResponseEntity.ok(

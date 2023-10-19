@@ -22,7 +22,7 @@ public class Ticket extends EntityBase {
     private TicketState State;
     private TicketPriority Priority;
     private String Note;
-
+    private static int Num = 1;
     public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User assigned, TicketPriority priority, User creator, String note){
         super();
         Title = title;
@@ -33,5 +33,7 @@ public class Ticket extends EntityBase {
         Priority = priority;
         Creator = creator;
         Note = note;
+        Number = Num;
+        Num = Num+1;
     }
 }
