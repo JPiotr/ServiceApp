@@ -5,7 +5,6 @@ import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Collection;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,25 +19,19 @@ public class Ticket extends EntityBase {
     private Client Client;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     private User Assigned;
-    private TicketState state;
-    private TicketPriority priority;
+    private TicketState State;
+    private TicketPriority Priority;
+    private String Note;
 
-    public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client) {
+    public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User assigned, TicketPriority priority, User creator, String note){
         super();
         Title = title;
         Description = description;
         Client = client;
-        state = TicketState.NEW;
-        priority = TicketPriority.MEDIUM;
-    }
-
-    public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User user, TicketPriority priority){
-        super();
-        Title = title;
-        Description = description;
-        Client = client;
-        state = TicketState.NEW;
-        Assigned = user;
-        this.priority = priority;
+        State = TicketState.NEW;
+        Assigned = assigned;
+        Priority = priority;
+        Creator = creator;
+        Note = note;
     }
 }
