@@ -4,31 +4,26 @@ import com.oblitus.serviceApp.Abstracts.DAO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
-import com.oblitus.serviceApp.Modules.Admin.ERule;
-import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public final class UserDAO implements DAO<UserResponse,UserDTO>{
+public final class UserDAO implements DAO<UserResponse,UserDTO> {
     private final UserService userService;
     private final UserResponseMapper userResponseMapper;
-    private final RuleService ruleService;
 
     @Override
-    public Optional<UserResponse> get(UUID id) {
-        var opt = userService.getUser(id);
-        return opt.map(userResponseMapper);
+    public UserResponse get(UUID id) {
+        return userResponseMapper.apply(userService.getUser(id));
     }
-
     @Override
     public List<UserResponse> getAll() {
         return userService.getAllUsers()
@@ -36,12 +31,10 @@ public final class UserDAO implements DAO<UserResponse,UserDTO>{
                 .map(userResponseMapper)
                 .collect(Collectors.toList());
     }
-
     @Override
     public boolean delete(UserDTO userDTO) {
         return userService.deleteUser(userDTO.id());
     }
-
     @Override
     public UserResponse save(UserDTO userDTO) {
         return userResponseMapper.apply(
@@ -55,8 +48,6 @@ public final class UserDAO implements DAO<UserResponse,UserDTO>{
                 )
         );
     }
-
-
     @Override
     public UserResponse update(UserDTO userDTO) throws AccountLockedException {
         return userResponseMapper.apply(
@@ -68,17 +59,17 @@ public final class UserDAO implements DAO<UserResponse,UserDTO>{
                 )
         );
     }
-
     @Override
     public boolean delete(UUID id) {
-        return false;
+        return userService.deleteUser(id);
     }
-
-    public UserResponse addRuleForUser(UUID userID, String name){
+    public UserResponse addRuleForUser(UUID userID, String name) {
         return userResponseMapper.apply(userService.addRuleToUser(userID, name));
     }
-
-    public UserResponse disconnectRuleFromUser(UUID userID, String name){
+    public UserResponse disconnectRuleFromUser(UUID userID, String name) {
         return userResponseMapper.apply(userService.disconnectRuleFromUser(userID, name));
+    }
+    public UserResponse changeEnabled(UUID userId) {
+        return userResponseMapper.apply(userService.changeUserEnabled(userId));
     }
 }
