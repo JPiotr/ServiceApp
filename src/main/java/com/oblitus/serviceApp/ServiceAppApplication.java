@@ -78,7 +78,7 @@ public class ServiceAppApplication {
 								.save(new UserDTO(
 										null,
 										"gbrzeczyszczykiewicz@domain.srvtrack",
-										"JohnDoeRoot",
+										"Grzegorz",
 										"Grzegorz",
 										"Brzęczyszczykiewicz",
 										"jakrozpetalemdrugawojneswiatowa"

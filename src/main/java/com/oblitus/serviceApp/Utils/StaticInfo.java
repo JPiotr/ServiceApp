@@ -6,6 +6,8 @@ import com.oblitus.serviceApp.Modules.Admin.User;
 import com.oblitus.serviceApp.Modules.EModule;
 import com.oblitus.serviceApp.Modules.Module;
 import com.oblitus.serviceApp.Modules.Service.Client;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 
@@ -47,7 +49,8 @@ public final class StaticInfo {
                             ERule.SERVICE
                     )
             );
-    public static String SuperUserPasswd = "root"; //todo: getting variable from properties
+
+    public static String SuperUserPasswd = "root";
     public static User SuperUser = new User(
             "00000000-0000-0000-0003-000000000001",
             "System",
