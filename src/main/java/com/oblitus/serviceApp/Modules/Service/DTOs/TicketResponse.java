@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
 import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
 
@@ -11,10 +12,12 @@ public record TicketResponse(
         String title,
         String description,
         UUID client,
-        UUID userId,
+        BaseUserResponse assigned,
         TicketState state,
         TicketPriority priority,
         LocalDateTime creationDate,
-        LocalDateTime LastModificationDate
+        LocalDateTime LastModificationDate,
+        BaseUserResponse creator,
+        int Number
 ) {
 }
