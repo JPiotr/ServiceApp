@@ -55,7 +55,9 @@ public final class UserDAO implements DAO<UserResponse,UserDTO> {
                         userDTO.id(),
                         userDTO.userName(),
                         userDTO.email(),
-                        userDTO.password()
+                        userDTO.password(),
+                        userDTO.name(),
+                        userDTO.surname()
                 )
         );
     }

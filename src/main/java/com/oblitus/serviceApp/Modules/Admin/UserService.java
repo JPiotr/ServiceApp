@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
     public List<User> getAllUsers(){
         return userRepo.findAll();
     }
-    public User updateUser(UUID id, String username, String email, String password) {
+    public User updateUser(UUID id, String username, String email, String password, String name, String surname) {
          User user = getUser(id);
          if(email != null){
              user.setEmail(email);
@@ -48,6 +48,14 @@ public class UserService implements UserDetailsService {
              user.setPassword(password);
              user.setLastModificationDate();
          }
+        if(name != null){
+            user.setName(name);
+            user.setLastModificationDate();
+        }
+        if(surname != null){
+            user.setSurname(surname);
+            user.setLastModificationDate();
+        }
          return userRepo.save(user);
     }
     public boolean deleteUser(UUID id) {

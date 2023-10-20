@@ -53,8 +53,8 @@ public class TicketService {
         User usr = null;
         if(assigned != null){
             usr = userService.getUser(assigned);
-            var oldValue = ticket.getCreator();
-            ticket.setCreator(usr);
+            var oldValue = ticket.getAssigned();
+            ticket.setAssigned(usr);
             activityRepository.save(new Activity(
                     EActivityHandle.TICKET.toString(),
                     "Assigned",
@@ -124,6 +124,7 @@ public class TicketService {
                     )
             );
         }
+        ticket.setNote(note);
         return repository.save(ticket);
 
     }
