@@ -27,6 +27,7 @@ public class AuthenticationService {
                 userDTO.email(),
                 passwordEncoder.encode(userDTO.password()),
                 null,
+                null,
                 null
         );
         var userDetails = userService.addUser(
@@ -37,7 +38,8 @@ public class AuthenticationService {
                 ).collect(Collectors.toList()),
                 user.password(),
                 user.userName(),
-                user.surname()
+                user.surname(),
+                user.photoId()
         );
         var token = jwtService.generateToken(userService.getUser(userDetails.getID()));
         return AuthResponse.builder().token(token).build();

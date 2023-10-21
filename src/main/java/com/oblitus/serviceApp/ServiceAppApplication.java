@@ -66,7 +66,8 @@ public class ServiceAppApplication {
 										"John",
 										"Doe",
 										"simplePass",
-										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1)))
+										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										null
 								)),
 						modulesWrapper.adminModule.getAdminDAO().getUserDao()
 								//John Necessary
@@ -77,7 +78,8 @@ public class ServiceAppApplication {
 										"John",
 										"Necessary",
 										"simplePass",
-										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1)))
+										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										null
 								)),
 						modulesWrapper.adminModule.getAdminDAO().getUserDao()
 								//Grzegorz Brzęczyszczykiewicz
@@ -88,7 +90,8 @@ public class ServiceAppApplication {
 										"Grzegorz",
 										"Brzęczyszczykiewicz",
 										"jakrozpetalemdrugawojneswiatowa",
-										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1)))
+										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										null
 								))
 				);
 
@@ -109,6 +112,7 @@ public class ServiceAppApplication {
 						TicketState.OPEN,
 						TicketPriority.HIGH,
 						jnes.id(),
+						null,
 						null
 				),
 				new TicketDTO(
@@ -121,6 +125,7 @@ public class ServiceAppApplication {
 						TicketState.NEW,
 						TicketPriority.MEDIUM,
 						jnes.id(),
+						null,
 						null
 				)
 		);
