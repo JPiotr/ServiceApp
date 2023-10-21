@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleToUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
@@ -55,15 +56,14 @@ public class AdminController {
 
     @PostMapping("/user/{id}")
     public ResponseEntity<Response> ruleToUser(@PathVariable @Validated UUID id,
-                                               @RequestParam @Validated String ruleName,
-                                               @RequestParam @Validated boolean operation) {
+                                               @RequestBody @Validated RuleToUserDTO ruleToUserDTO) {
         try{
-            if(operation){
+            if(ruleToUserDTO.operation()){
                 return ResponseEntity.ok(
                         Response.builder()
                                 .timestamp(LocalDateTime.now())
                                 .message("Rule added to User")
-                                .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(id,ruleName)))
+                                .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(id, ruleToUserDTO.ruleName())))
                                 .statusCode(HttpStatus.OK.value())
                                 .status(HttpStatus.OK)
                                 .build()
@@ -73,7 +73,7 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Rule disconnected from User")
-                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().disconnectRuleFromUser(id,ruleName)))
+                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().disconnectRuleFromUser(id,ruleToUserDTO.ruleName())))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
