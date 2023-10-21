@@ -3,7 +3,9 @@ package com.oblitus.serviceApp.Modules.Controllers;
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
+import com.oblitus.serviceApp.Modules.Admin.ERule;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -132,7 +136,20 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Response> getUsers(){
+    public ResponseEntity<Response> getUsers(@RequestParam @Nullable @Validated String ruleName){
+        if(ruleName != null && Arrays.stream(ERule.values()).anyMatch(x-> Objects.equals(x.toString(), ruleName))){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("All users with rule "+ruleName)
+                            .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()
+                                    .stream().filter(userResponse -> userResponse.rules().stream()
+                                            .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
