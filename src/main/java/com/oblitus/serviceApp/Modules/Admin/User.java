@@ -55,6 +55,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         Password = password;
         Name = name;
         Surname = surname;
+        Enabled = true;
     }
     protected User addRole(Rule rule){
         Rules.add(rule);

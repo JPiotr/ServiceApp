@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp;
 
 import com.oblitus.serviceApp.Modules.Admin.*;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.ModuleRepository;
@@ -38,6 +39,7 @@ public class ServiceAppApplication {
 		RuleRepository ruleRepository,
 		UserRepository userRepository,
 		ClientRepository clientRepository,
+		RuleMapper ruleMapper,
 		ModulesWrapper modulesWrapper,
 		PasswordEncoder encoder
 		){return args -> {
@@ -63,7 +65,9 @@ public class ServiceAppApplication {
 										"JohnDoeRoot",
 										"John",
 										"Doe",
-										"simplePass"
+										"simplePass",
+										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										null
 								)),
 						modulesWrapper.adminModule.getAdminDAO().getUserDao()
 								//John Necessary
@@ -73,7 +77,9 @@ public class ServiceAppApplication {
 										"JohnNecessaryClient",
 										"John",
 										"Necessary",
-										"simplePass"
+										"simplePass",
+										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										null
 								)),
 						modulesWrapper.adminModule.getAdminDAO().getUserDao()
 								//Grzegorz Brzęczyszczykiewicz
@@ -83,7 +89,9 @@ public class ServiceAppApplication {
 										"Grzegorz",
 										"Grzegorz",
 										"Brzęczyszczykiewicz",
-										"jakrozpetalemdrugawojneswiatowa"
+										"jakrozpetalemdrugawojneswiatowa",
+										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										null
 								))
 				);
 
@@ -104,6 +112,7 @@ public class ServiceAppApplication {
 						TicketState.OPEN,
 						TicketPriority.HIGH,
 						jnes.id(),
+						null,
 						null
 				),
 				new TicketDTO(
@@ -116,6 +125,7 @@ public class ServiceAppApplication {
 						TicketState.NEW,
 						TicketPriority.MEDIUM,
 						jnes.id(),
+						null,
 						null
 				)
 		);
