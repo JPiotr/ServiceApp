@@ -140,22 +140,25 @@ public class TicketService {
                     )
             );
         }
-        if(!files.isEmpty()){
+        if(files != null && !files.isEmpty()){
             for (var fileId:
                     files) {
                 var file = fileService.getFileById(fileId);
-                file.setObjectId(ticket.getID());
-                fileService.updateFile(file);
-                activityRepository.save(new Activity(
-                        EActivityHandle.TICKET.toString(),
-                        "Attachments",
-                        file.getFileName(),
-                        "",
-                        EActivityTypes.SYSTEM.toString(),
-                        editor,
-                        ticket)
-                );
-                ticket.setLastModificationDate();
+                if(file != null){
+                    file.setObjectId(ticket.getID());
+                    fileService.updateFile(file);
+                    activityRepository.save(new Activity(
+                            EActivityHandle.TICKET.toString(),
+                            "Attachments",
+                            file.getFileName(),
+                            "",
+                            EActivityTypes.SYSTEM.toString(),
+                            editor,
+                            ticket)
+                    );
+                    ticket.setLastModificationDate();
+                }
+
             }
         }
 
