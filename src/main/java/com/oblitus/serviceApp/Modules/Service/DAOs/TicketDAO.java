@@ -60,7 +60,8 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
                                     assigned,
                                     ticketDTO.priority(),
                                     creator,
-                                    ticketDTO.note()))
+                                    ticketDTO.note()),
+                                    ticketDTO.files())
             );
         }
         if(client != null){
@@ -73,7 +74,8 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
                                     null,
                                     ticketDTO.priority(),
                                     creator,
-                                    ticketDTO.note()))
+                                    ticketDTO.note()),
+                                    ticketDTO.files())
             );
         }
         throw new NoSuchElementException();
@@ -90,7 +92,8 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
                         ticketDTO.state(),
                         ticketDTO.assigned(),
                         ticketDTO.note(),
-                        null
+                        null,
+                        ticketDTO.files()
                 )
         );
     }
@@ -104,7 +107,8 @@ public class TicketDAO implements DAO<TicketResponse, TicketDTO> {
                         ticketDTO.state(),
                         ticketDTO.assigned(),
                         ticketDTO.note(),
-                        editorId
+                        editorId,
+                        ticketDTO.files()
                 )
         );
     }

@@ -1,5 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service;
 
+import com.oblitus.serviceApp.Common.File.FileService;
+import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -7,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +21,7 @@ public class TicketService {
     private final TicketRepository repository;
     private final ActivityRepository activityRepository;
     private final UserService userService;
+    private final FileService fileService;
 
     public Ticket getTicket(UUID id){
         var opt = repository.findById(id);
@@ -31,11 +35,22 @@ public class TicketService {
         return repository.findAll();
     }
 
-    public Ticket addTicket(Ticket ticket){
+    public Ticket addTicket(Ticket ticket, Collection<UUID> files){
+        if(files != null && !files.isEmpty()){
+            for (var fileId:
+                    files) {
+                var file = fileService.getFileById(fileId);
+                if(file != null){
+                    file.setObjectId(ticket.getID());
+                    fileService.updateFile(file);
+                }
+            }
+        }
+
         return repository.save(ticket);
     }
 
-    public boolean deleteTicket(UUID id){ //todo: check all deletes
+    public boolean deleteTicket(UUID id){
         Optional<Ticket> opt = repository.findById(id);
         if(opt.isEmpty()){
             return false;
@@ -44,7 +59,9 @@ public class TicketService {
         return true;
     }
 
-    public Ticket updateTicket(UUID id, String title, String description, TicketPriority ticketPriority, TicketState ticketState, UUID assigned, String note, UUID edditingUser){
+    public Ticket updateTicket(UUID id, String title, String description, TicketPriority ticketPriority,
+                               TicketState ticketState, UUID assigned, String note, UUID edditingUser,
+                               Collection<UUID> files){
         Ticket ticket = getTicket(id);
         User editor = null;
         if(edditingUser != null){
@@ -66,7 +83,6 @@ public class TicketService {
             );
             ticket.setLastModificationDate();
         }
-
         if(title != null){
             ticket.setTitle(title);
             ticket.setLastModificationDate();
@@ -124,6 +140,25 @@ public class TicketService {
                     )
             );
         }
+        if(!files.isEmpty()){
+            for (var fileId:
+                    files) {
+                var file = fileService.getFileById(fileId);
+                file.setObjectId(ticket.getID());
+                fileService.updateFile(file);
+                activityRepository.save(new Activity(
+                        EActivityHandle.TICKET.toString(),
+                        "Attachments",
+                        file.getFileName(),
+                        "",
+                        EActivityTypes.SYSTEM.toString(),
+                        editor,
+                        ticket)
+                );
+                ticket.setLastModificationDate();
+            }
+        }
+
         ticket.setNote(note);
         return repository.save(ticket);
 
