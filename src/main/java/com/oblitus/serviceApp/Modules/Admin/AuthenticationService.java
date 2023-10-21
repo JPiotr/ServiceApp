@@ -26,6 +26,7 @@ public class AuthenticationService {
                 userDTO.surname(),
                 userDTO.email(),
                 passwordEncoder.encode(userDTO.password()),
+                null,
                 null
         );
         var userDetails = userService.addUser(
