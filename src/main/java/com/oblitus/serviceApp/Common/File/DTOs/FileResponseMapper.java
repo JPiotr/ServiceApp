@@ -11,14 +11,19 @@ import java.util.function.Function;
 public class FileResponseMapper implements Function<File, FileResponse> {
     @Override
     public FileResponse apply(File file) {
-        return new FileResponse(
-                file.getID(),
-                file.getObjectId(),
-                file.getFileName(),
-                file.getFileExtension(),
-                file.getCreationDate(),
-                file.getLastModificationDate(),
-                "localhost:8080/files/"+file.getObjectId()+"/"+file.getFileName()+"."+file.getFileExtension()
-        );
+        if(file != null){
+            return new FileResponse(
+                    file.getID(),
+                    file.getObjectId(),
+                    file.getFileName(),
+                    file.getFileExtension(),
+                    file.getFileType(),
+                    file.getCreationDate(),
+                    file.getLastModificationDate(),
+                    "localhost:8080/files/"+file.getObjectId()+"/"+file.getFileName(), //todo: czy nie inny url?
+                    file.getDescription()
+            );
+        }
+        return null;
     }
 }

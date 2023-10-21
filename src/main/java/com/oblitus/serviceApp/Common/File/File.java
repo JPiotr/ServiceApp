@@ -16,22 +16,28 @@ import java.util.UUID;
 public class File extends EntityBase {
     UUID ObjectId;
     String FileName;
+    String FileType;
     String FileExtension;
+    String Description;
     @Lob
     byte[] Blob;
 
-    public File(String uuid, UUID objectId, String fileName, String fileExtension, byte[] blob) {
+    public File(String uuid, UUID objectId, String fileName, String fileExtension, byte[] blob, String description) {
         super(uuid);
         ObjectId = objectId;
         FileName = fileName;
         FileExtension = fileExtension;
         Blob = blob;
+        FileType = fileName.substring(fileName.lastIndexOf('.'));
+        Description = description;
     }
 
-    public File(UUID objectId, String fileName, String fileExtension, byte[] blob) {
+    public File(UUID objectId, String fileName, String fileExtension, byte[] blob, String description) {
         ObjectId = objectId;
         FileName = fileName;
         FileExtension = fileExtension;
         Blob = blob;
+        FileType = fileName.substring(fileName.lastIndexOf('.'));
+        Description = description;
     }
 }

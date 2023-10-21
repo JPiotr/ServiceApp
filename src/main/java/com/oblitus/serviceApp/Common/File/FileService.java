@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -17,17 +18,41 @@ import java.util.stream.Collectors;
 public class FileService {
     private final FileRespository fileRespository;
 
-    public File addFile(UUID objectID, MultipartFile file) throws IOException {
-        return  fileRespository.save(new File(objectID,file.getName(),file.getContentType(), file.getBytes()));
+    public File addFile(UUID objectID, MultipartFile file, String description){
+        try {
+            return fileRespository.save(
+                    new File(objectID, file.getOriginalFilename(), file.getContentType(), file.getBytes(), description)
+            );
+        }
+        catch (IOException ex){
+            return new File();
+        }
     }
 
-    public boolean addFiles(UUID objectID, Collection<MultipartFile> files) throws IOException {
+    public File addFileWithoutObj(MultipartFile file, String description){
+        try {
+            return fileRespository.save(
+                    new File(null, file.getOriginalFilename(), file.getContentType(), file.getBytes(), description)
+            );
+        }
+        catch (IOException ex){
+            return new File();
+        }
+    }
+
+    public boolean addFiles(UUID objectID, Map<String,MultipartFile> files) {
         if(files.isEmpty()){
             return false;
         }
-        for (var file:
-             files) {
-            fileRespository.save(new File(objectID,file.getName(),file.getContentType(), file.getBytes()));
+        for (var file:files.keySet()) {
+            var f = files.get(file);
+            try{
+                fileRespository.save(
+                        new File(objectID, f.getOriginalFilename(),f.getContentType(),f.getBytes(),file));
+            }
+            catch (IOException ex){
+                fileRespository.save(new File());
+            }
         }
         return true;
     }
@@ -36,10 +61,18 @@ public class FileService {
     }
 
     public File getFile(UUID objectId, String name){
-        return fileRespository.findAll().stream().filter(file -> (file.FileName + file.FileExtension).equals(name))
-                .findFirst().orElse(null);
+        return fileRespository.findAll().stream()
+                .filter(file -> (file.getObjectId()).equals(objectId))
+                .filter(file -> (file.getFileName()).equals(name)).toList().get(0);
     }
 
+    public File getFileById(UUID fileId){
+        return fileRespository.findById(fileId).orElse(null);
+    }
+
+    public void updateFile(File file){
+        fileRespository.save(file);
+    }
     public boolean deleteFile(UUID id){
         Optional<File> opt = fileRespository.findById(id);
         if(opt.isEmpty()){
@@ -49,5 +82,4 @@ public class FileService {
         return true;
     }
 
-//    public
 }

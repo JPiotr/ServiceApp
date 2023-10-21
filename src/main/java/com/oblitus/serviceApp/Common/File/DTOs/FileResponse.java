@@ -9,9 +9,11 @@ public record FileResponse(
         UUID id,
         UUID objectId,
         String name,
+        String fileExtension,
         String fileType,
         LocalDateTime creationDate,
         LocalDateTime lastModificationDate,
-        String url
+        String url,
+        String description
 ) {
 }
