@@ -20,7 +20,7 @@ public class FileResponseMapper implements Function<File, FileResponse> {
                     file.getFileType(),
                     file.getCreationDate(),
                     file.getLastModificationDate(),
-                    "localhost:8080/files/"+file.getObjectId()+"/"+file.getFileName(), //todo: czy nie inny url?
+                    "http://localhost:8080/files/"+file.getObjectId()+"/"+file.getFileName(), //todo: czy nie inny url?
                     file.getDescription()
             );
         }
