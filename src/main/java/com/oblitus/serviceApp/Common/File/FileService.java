@@ -57,13 +57,19 @@ public class FileService {
         return true;
     }
     public Collection<File> getObjectFiles(UUID objectID){
-        return fileRespository.findAll().stream().filter(file -> file.ObjectId == objectID).collect(Collectors.toList());
+        var list = fileRespository.findAll().stream()
+                .filter(file -> file.ObjectId != null)
+                .filter(
+                        file -> file.ObjectId.equals(objectID))
+                .collect(Collectors.toList());
+        return list;
     }
 
     public File getFile(UUID objectId, String name){
         return fileRespository.findAll().stream()
+                .filter(file -> (file.getFileName()).equals(name))
                 .filter(file -> (file.getObjectId()).equals(objectId))
-                .filter(file -> (file.getFileName()).equals(name)).toList().get(0);
+                .toList().get(0);
     }
 
     public File getFileById(UUID fileId){
