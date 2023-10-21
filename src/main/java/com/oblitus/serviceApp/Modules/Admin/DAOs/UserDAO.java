@@ -4,6 +4,7 @@ import com.oblitus.serviceApp.Abstracts.DAO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.RuleService;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public final class UserDAO implements DAO<UserResponse,UserDTO> {
     private final UserService userService;
     private final UserResponseMapper userResponseMapper;
+    private final RuleService ruleService;
 
     @Override
     public UserResponse get(UUID id) {
@@ -41,7 +43,12 @@ public final class UserDAO implements DAO<UserResponse,UserDTO> {
                 userService.addUser(
                         userDTO.name(),
                         userDTO.email(),
-                        null,
+                        userDTO.rules()
+                                .stream()
+                                .map(
+                                        ruleDTO -> ruleService.getRule(ruleDTO.id()))
+                                .collect(Collectors.toList()
+                                ),
                         userDTO.password(),
                         userDTO.userName(),
                         userDTO.surname()

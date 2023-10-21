@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public record UserDTO(
@@ -8,6 +9,7 @@ public record UserDTO(
       String userName,
       String name,
       String surname,
-      String password
+      String password,
+      Collection<RuleDTO> rules
 ){}
 
