@@ -1,5 +1,8 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
+import com.oblitus.serviceApp.Common.File.DTOs.FileResponseMapper;
+import com.oblitus.serviceApp.Common.File.File;
+import com.oblitus.serviceApp.Common.File.FileService;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserResponseMapper implements Function<User, UserResponse> {
     private final RuleMapper ruleMapper;
+    private final FileResponseMapper fileMapper;
+    private final FileService fileService;
 
     @Override
     public UserResponse apply(User user) {
@@ -32,7 +37,8 @@ public class UserResponseMapper implements Function<User, UserResponse> {
                     user.isExpired(),
                     user.isCredentialsExpired(),
                     user.getBase().getLastModificationDate(),
-                    user.getBase().getCreationDate()
+                    user.getBase().getCreationDate(),
+                    fileMapper.apply(fileService.getObjectFiles(user.getID()).stream().findFirst().orElse(null))
 
             );
         }
@@ -53,7 +59,8 @@ public class UserResponseMapper implements Function<User, UserResponse> {
                 user.isExpired(),
                 user.isCredentialsExpired(),
                 user.getBase().getLastModificationDate(),
-                user.getBase().getCreationDate()
+                user.getBase().getCreationDate(),
+                fileMapper.apply(fileService.getObjectFiles(user.getID()).stream().findFirst().orElse(null))
 
         );
     }

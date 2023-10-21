@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin.DAOs;
 
 import com.oblitus.serviceApp.Abstracts.DAO;
+import com.oblitus.serviceApp.Common.File.FileService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
@@ -51,7 +52,8 @@ public final class UserDAO implements DAO<UserResponse,UserDTO> {
                                 ),
                         userDTO.password(),
                         userDTO.userName(),
-                        userDTO.surname()
+                        userDTO.surname(),
+                        userDTO.photoId()
                 )
         );
     }
@@ -64,7 +66,8 @@ public final class UserDAO implements DAO<UserResponse,UserDTO> {
                         userDTO.email(),
                         userDTO.password(),
                         userDTO.name(),
-                        userDTO.surname()
+                        userDTO.surname(),
+                        userDTO.photoId()
                 )
         );
     }

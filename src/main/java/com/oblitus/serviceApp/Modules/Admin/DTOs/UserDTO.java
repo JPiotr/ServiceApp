@@ -10,6 +10,7 @@ public record UserDTO(
       String name,
       String surname,
       String password,
-      Collection<RuleDTO> rules
+      Collection<RuleDTO> rules,
+      UUID photoId
 ){}
 

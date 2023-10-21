@@ -1,5 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
+import com.oblitus.serviceApp.Common.File.DTOs.FileResponse;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
@@ -18,5 +20,6 @@ public record UserResponse(
         boolean isExpired,
         boolean isCredentialsExpired,
         LocalDateTime creationDate,
-        LocalDateTime lastModificationDate
+        LocalDateTime lastModificationDate,
+        FileResponse file
 ) {}
