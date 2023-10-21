@@ -12,7 +12,7 @@ public record ActivityResponse(
         String newValue,
         String oldValue,
         String activityType,
-        BaseUserResponse userId,
+        BaseUserResponse creator,
         UUID ticketID,
         LocalDateTime creationDate,
         LocalDateTime LastModificationDate
