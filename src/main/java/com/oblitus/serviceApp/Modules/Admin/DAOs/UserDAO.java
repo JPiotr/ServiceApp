@@ -67,7 +67,8 @@ public final class UserDAO implements DAO<UserResponse,UserDTO> {
                         userDTO.password(),
                         userDTO.name(),
                         userDTO.surname(),
-                        userDTO.photoId()
+                        userDTO.photoId(),
+                        userDTO.rules()
                 )
         );
     }

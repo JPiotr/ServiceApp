@@ -54,46 +54,6 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/user/{id}")
-    public ResponseEntity<Response> ruleToUser(@PathVariable @Validated UUID id,
-                                               @RequestBody @Validated RuleToUserDTO ruleToUserDTO) {
-        try{
-            if(ruleToUserDTO.operation()){
-                return ResponseEntity.ok(
-                        Response.builder()
-                                .timestamp(LocalDateTime.now())
-                                .message("Rule added to User")
-                                .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(id, ruleToUserDTO.ruleName())))
-                                .statusCode(HttpStatus.OK.value())
-                                .status(HttpStatus.OK)
-                                .build()
-                );
-            }
-            return ResponseEntity.ok(
-                    Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message("Rule disconnected from User")
-                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().disconnectRuleFromUser(id,ruleToUserDTO.ruleName())))
-                            .statusCode(HttpStatus.OK.value())
-                            .status(HttpStatus.OK)
-                            .build()
-            );
-        }
-        catch (EntityNotFoundException exception){
-            return ResponseEntity.ok(
-                    Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message("User " + id + " not found.")
-                            .data(Map.of("user", null))
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .status(HttpStatus.NOT_FOUND)
-                            .reason("There is no Entity with this ID!")
-                            .build()
-            );
-        }
-
-    }
-
     @PostMapping("/user/state/{id}")
     public ResponseEntity<Response> changeEnabled(@PathVariable @Validated UUID id) {
         try{
