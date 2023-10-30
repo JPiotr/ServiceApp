@@ -48,7 +48,7 @@ public class ServiceAppApplication {
 		PasswordEncoder encoder,
 		EmailSender emailSender
 		){return args -> {
-		if(modulesWrapper.adminModule.getAdminDAO().getUserService().getAll().size() > 0){
+		if(!modulesWrapper.adminModule.getAdminDAO().getUserService().getAll().isEmpty()){
 			return;
 		}
 
@@ -164,7 +164,7 @@ public class ServiceAppApplication {
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment2);
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment3);
 
-//		emailSender.sendEmail("test","test", "srvctrack@gmail.com");
+		emailSender.sendEmail("test","test", "srvctrack@gmail.com");
 
 	};}
 
