@@ -1,9 +1,9 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleToUserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import jakarta.annotation.Nullable;
@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountLockedException;
-import javax.security.auth.login.AccountNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Map;
@@ -26,12 +24,14 @@ import java.util.UUID;
 @RequestMapping("/adminModule")
 @RequiredArgsConstructor
 public class AdminController {
+    private final UserResponseMapper userResponseMapper;
     private final ModulesWrapper modulesWrapper;
 
     @GetMapping("/user/{id}")
     public ResponseEntity<Response> getUser(@PathVariable @Validated UUID id){
         try{
-            UserResponse user = modulesWrapper.adminModule.getAdminDAO().getUserDao().get(id);
+            UserResponse user = userResponseMapper.apply(
+                    modulesWrapper.adminModule.getAdminDAO().getUserService().get(new UserDTO(id)));
             return ResponseEntity.ok(
                     Response.builder()
                     .timestamp(LocalDateTime.now())
@@ -46,22 +46,24 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("User " + id + " not found.")
-                            .data(Map.of("user", null))
+                            .data(Map.of("user", " "))
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
                             .reason("There is no Entity with this ID!")
+                            .devMessage(exception.getMessage())
                             .build());
         }
     }
 
-    @PostMapping("/user/state/{id}")
+    @PatchMapping("/user/state/{id}")
     public ResponseEntity<Response> changeEnabled(@PathVariable @Validated UUID id) {
         try{
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Changed user enabled")
-                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().changeEnabled(id)))
+                            .data(Map.of("user", userResponseMapper.apply(
+                                    modulesWrapper.adminModule.getAdminDAO().getUserService().changeUserEnabled(new UserDTO(id)))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -72,23 +74,25 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("User " + id + " not found.")
-                            .data(Map.of("user", null))
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .status(HttpStatus.NOT_FOUND)
+                            .data(Map.of("user",  " "))
+                            .statusCode(HttpStatus.NO_CONTENT.value())
+                            .status(HttpStatus.NO_CONTENT)
                             .reason("There is no Entity with this ID!")
+                            .devMessage(exception.getMessage())
                             .build()
             );
         }
 
     }
 
-    @PutMapping("/users")
-    public ResponseEntity<Response> putUser(@RequestBody @Validated UserDTO userDTO){
+    @PostMapping("/users")
+    public ResponseEntity<Response> addUser(@RequestBody @Validated UserDTO userDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("New User putted to Database.")
-                        .data(Map.of("user",modulesWrapper.adminModule.getAdminDAO().getUserDao().save(userDTO)))
+                        .message("New User added to Database.")
+                        .data(Map.of("user", userResponseMapper.apply(
+                                modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -102,9 +106,9 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("All users with rule "+ruleName)
-                            .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()
-                                    .stream().filter(userResponse -> userResponse.rules().stream()
-                                            .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))))
+                            .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()
+                                    .stream().filter(userResponse -> userResponse.getRules().stream()
+                                            .anyMatch(ruleDTO -> Objects.equals(ruleDTO.getName(), ruleName)))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -114,47 +118,37 @@ public class AdminController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing users.")
-                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserDao().getAll()))
+                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
 
-    @PostMapping("/user")
-    public ResponseEntity<Response> updateUser(@RequestBody @Validated UserDTO userDTO) {
+    @PutMapping("/user")
+    public ResponseEntity<Response> updateOrCreateUser(@RequestBody @Validated UserDTO userDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("User updated.")
-                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserDao().update(userDTO)))
-                            .statusCode(HttpStatus.CREATED.value())
-                            .status(HttpStatus.CREATED)
+                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserService().update(userDTO)))
+                            .statusCode(HttpStatus.ACCEPTED.value())
+                            .status(HttpStatus.ACCEPTED)
                             .build()
             );
-        }
-        catch (AccountLockedException e){
-            return ResponseEntity.ok(
-                    Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message(e.getMessage())
-                            .data(Map.of("user",null))
-                            .statusCode(HttpStatus.LOCKED.value())
-                            .status(HttpStatus.LOCKED)
-                            .build()
-            );
+
         }
         catch(EntityNotFoundException e){
             return ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("User " + userDTO.id() + " not found.")
-                        .data(Map.of("user", null))
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .status(HttpStatus.NOT_FOUND)
-                        .reason("There is no Entity with this ID!")
-                        .build()
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("New User added to Database.")
+                            .data(Map.of("user", userResponseMapper.apply(
+                                    modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))))
+                            .statusCode(HttpStatus.CREATED.value())
+                            .status(HttpStatus.CREATED)
+                            .build()
             );
         }
     }
@@ -166,7 +160,7 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Try to drop User")
-                            .data(Map.of("result", modulesWrapper.adminModule.getAdminDAO().getUserDao().delete(userDTO)))
+                            .data(Map.of("result", modulesWrapper.adminModule.getAdminDAO().getUserService().delete(userDTO)))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -177,7 +171,7 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("User " + userDTO.id() + " not found.")
-                            .data(Map.of("user", null))
+                            .data(Map.of("user", " "))
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
                             .reason("There is no Entity with this ID!")

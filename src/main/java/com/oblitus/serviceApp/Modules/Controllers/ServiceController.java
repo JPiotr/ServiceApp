@@ -4,7 +4,6 @@ import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.*;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,11 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountLockedException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,7 +29,7 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Client with ID = " + id + ".")
-                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientDao().get(id)))
+                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientService().get(new ClientDTO(id))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -48,6 +44,7 @@ public class ServiceController {
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
                             .reason("There is no Entity with this ID!")
+                            .devMessage(e.getMessage())
                             .build()
             );
         }
@@ -58,45 +55,34 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing clients.")
-                        .data(Map.of("clients",modulesWrapper.serviceModule.getServiceDAO().getClientDao().getAll()))
+                        .data(Map.of("clients",modulesWrapper.serviceModule.getServiceDAO().getClientService().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
-    @PutMapping("/clients")
-    public ResponseEntity<Response> putClient(@RequestBody @Validated ClientDTO clientDTO){
+    @PostMapping("/clients")
+    public ResponseEntity<Response> addClient(@RequestBody @Validated ClientDTO clientDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("New Client putted to Database.")
-                        .data(Map.of("client",modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(clientDTO)))
+                        .message("New Client added to Database.")
+                        .data(Map.of("client",modulesWrapper.serviceModule.getServiceDAO().getClientService().add(clientDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
         );
     }
-    @PostMapping("/client")
-    public ResponseEntity<Response> updateClient(@RequestBody @Validated ClientDTO clientDTO) {
+    @PutMapping("/client")
+    public ResponseEntity<Response> updateOrAddClient(@RequestBody @Validated ClientDTO clientDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Client updated.")
-                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientDao().update(clientDTO)))
-                            .statusCode(HttpStatus.CREATED.value())
-                            .status(HttpStatus.CREATED)
-                            .build()
-            );
-        }
-        catch (AccountLockedException e){
-            return ResponseEntity.ok(
-                    Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message(e.getMessage())
-                            .data(Map.of("client"," "))
-                            .statusCode(HttpStatus.LOCKED.value())
-                            .status(HttpStatus.LOCKED)
+                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientService().update(clientDTO)))
+                            .statusCode(HttpStatus.ACCEPTED.value())
+                            .status(HttpStatus.ACCEPTED)
                             .build()
             );
         }
@@ -104,11 +90,11 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .message("Client " + clientDTO.id() + " not found.")
-                            .data(Map.of("client", " "))
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .status(HttpStatus.NOT_FOUND)
-                            .reason("There is no Entity with this ID!")
+                            .message("New Client added to Database.")
+                            .data(Map.of("client",modulesWrapper.serviceModule.getServiceDAO().getClientService().add(clientDTO)))
+                            .statusCode(HttpStatus.CREATED.value())
+                            .status(HttpStatus.CREATED)
+                            .devMessage(e.getMessage())
                             .build()
             );
         }
@@ -120,7 +106,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Client")
-                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getClientDao().delete(clientDTO)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getClientService().delete(clientDTO)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -134,7 +120,7 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Comment with ID = " + id + ".")
-                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().get(id)))
+                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentService().get(new CommentDTO(id))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -148,6 +134,7 @@ public class ServiceController {
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
                             .reason("There is no Entity with this ID!")
+                            .devMessage(e.getMessage())
                             .build()
             );
         }
@@ -159,47 +146,50 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing comments.")
-                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().getAll()))
+                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentService().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
 
-    @PutMapping("/comments")
-    public ResponseEntity<Response> putComment(@RequestBody @Validated CommentDTO commentDTO){
+    @PostMapping("/comments")
+    public ResponseEntity<Response> addComment(@RequestBody @Validated CommentDTO commentDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("New Comment putted to Database.")
-                        .data(Map.of("comment",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(commentDTO)))
+                        .message("New Comment added to Database.")
+                        .data(Map.of("comment",modulesWrapper.serviceModule.getServiceDAO()
+                                .getCommentService().add(commentDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
         );
     }
 
-    @PostMapping("/comment")
-    public ResponseEntity<Response> updateComment(@RequestBody @Validated CommentDTO commentDTO) {
+    @PutMapping("/comment")
+    public ResponseEntity<Response> updateOrAddComment(@RequestBody @Validated CommentDTO commentDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Comment updated.")
-                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().update(commentDTO)))
-                            .statusCode(HttpStatus.CREATED.value())
-                            .status(HttpStatus.CREATED)
+                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentService().update(commentDTO)))
+                            .statusCode(HttpStatus.ACCEPTED.value())
+                            .status(HttpStatus.ACCEPTED)
                             .build()
             );
         }
-        catch (EntityNotFoundException | AccountLockedException e){
+        catch (EntityNotFoundException e){
             return ResponseEntity.ok(
                     Response.builder()
-                            .message("Comment with ID = " + commentDTO.id() + ".")
-                            .data(Map.of("comment", " "))
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .status(HttpStatus.NOT_FOUND)
-                            .reason("There is no Entity with this ID!")
+                            .timestamp(LocalDateTime.now())
+                            .message("New Comment added to Database.")
+                            .data(Map.of("comment",modulesWrapper.serviceModule.getServiceDAO()
+                                    .getCommentService().add(commentDTO)))
+                            .statusCode(HttpStatus.CREATED.value())
+                            .status(HttpStatus.CREATED)
+                            .devMessage(e.getMessage())
                             .build()
             );
         }
@@ -211,7 +201,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Comment")
-                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().delete(commentDTO)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentService().delete(commentDTO)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -224,7 +214,7 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Comment")
-                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentDao().delete(id)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentService().delete(new CommentDTO(id))))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -237,8 +227,8 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All ticket's comments.")
-                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentDao().getAll().stream().filter(
-                                commentResponse -> ticketId.equals(commentResponse.subject())
+                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentService().getAll().stream().filter(
+                                commentResponse -> ticketId.equals(commentResponse.getTicket().getUuid())
                         ).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -253,7 +243,7 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Ticket with ID = " + id + ".")
-                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().get(id)))
+                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketService().get(new TicketDTO(id))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -268,6 +258,7 @@ public class ServiceController {
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
                             .reason("There is no Entity with this ID!")
+                            .devMessage(e.getMessage())
                             .build()
             );
         }
@@ -279,20 +270,21 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing tickets.")
-                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll()))
+                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketService().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
 
-    @PutMapping("/tickets")
-    public ResponseEntity<Response> putTicket(@RequestBody @Validated TicketDTO ticketDTO){
+    @PostMapping("/tickets")
+    public ResponseEntity<Response> addTicket(@RequestBody @Validated TicketDTO ticketDTO){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("New Ticket putted to Database.")
-                        .data(Map.of("ticket",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(ticketDTO)))
+                        .message("New Ticket added to Database.")
+                        .data(Map.of("ticket",modulesWrapper.serviceModule.getServiceDAO()
+                                .getTicketService().add(ticketDTO)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -305,8 +297,10 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All user tickets.")
-                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketDao().getAll().stream().filter(
-                                ticket -> userId.equals(ticket.assigned().id()) || userId.equals(ticket.creator().id())
+                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                .getAll().stream().filter(
+                                ticket -> userId.equals(ticket.getAssigned().getUuid())
+                                        || userId.equals(ticket.getCreator().getUuid())
                         )
                                 .collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
@@ -315,28 +309,28 @@ public class ServiceController {
         );
     }
 
-    @PostMapping("/ticket")
-    public ResponseEntity<Response> updateTicket(@RequestBody @Validated TicketDTO ticketDTO, @Nullable @RequestParam @Validated UUID editingUser) {
+    @PutMapping("/ticket")
+    public ResponseEntity<Response> updateOrAddTicket(@RequestBody @Validated TicketDTO ticketDTO) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Ticket updated.")
-                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().updateWEditor(ticketDTO, editingUser)))
+                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketService().update(ticketDTO)))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
             );
         }
-        catch (EntityNotFoundException | AccountLockedException e){
+        catch (EntityNotFoundException e){
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .message("Ticket " + ticketDTO.id() + " not found.")
-                            .data(Map.of("ticket", " "))
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .status(HttpStatus.NOT_FOUND)
-                            .reason("There is no Entity with this ID!")
+                            .message("New Ticket added to Database.")
+                            .data(Map.of("ticket",modulesWrapper.serviceModule.getServiceDAO()
+                                    .getTicketService().add(ticketDTO)))
+                            .statusCode(HttpStatus.CREATED.value())
+                            .status(HttpStatus.CREATED)
                             .build()
             );
         }
@@ -348,7 +342,8 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Ticket")
-                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().delete(ticketDTO)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                .delete(ticketDTO)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -361,7 +356,8 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Ticket")
-                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getTicketDao().delete(id)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                .delete(new TicketDTO(id))))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -374,7 +370,8 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Activity with ID = " + id + ".")
-                            .data(Map.of("activity", modulesWrapper.serviceModule.getServiceDAO().getActivityDao().get(id)))
+                            .data(Map.of("activity", modulesWrapper.serviceModule.getServiceDAO()
+                                    .getActivityService().get(new ActivityDTO(id))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -400,34 +397,23 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing activities.")
-                        .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().getAll()))
+                        .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO()
+                                .getActivityService().getAll()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
 
-    @PutMapping("/activities")
-    public ResponseEntity<Response> putTicket(@RequestBody @Validated ActivityDTO activityDTO){
-        return ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("New Activity putted to Database.")
-                        .data(Map.of("activity",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().save(activityDTO)))
-                        .statusCode(HttpStatus.CREATED.value())
-                        .status(HttpStatus.CREATED)
-                        .build()
-        );
-    }
-
-    @GetMapping("/activities/{ticketId}")
-    public ResponseEntity<Response> getTicketActivities(@PathVariable @Validated UUID ticketId){
+    @GetMapping("/activities/{objectId}")
+    public ResponseEntity<Response> getObjectActivities(@PathVariable @Validated UUID objectId){
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All ticket activity.")
-                        .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO().getActivityDao().getAll().stream().filter(
-                                activity -> ticketId.equals(activity.ticketID())
+                        .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO()
+                                .getActivityService().getAll().stream().filter(
+                                activity -> objectId.equals(activity.getObjectActivity())
                         ).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
