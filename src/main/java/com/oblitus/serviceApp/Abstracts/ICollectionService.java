@@ -2,9 +2,9 @@ package com.oblitus.serviceApp.Abstracts;
 
 import java.util.Collection;
 
-public interface ICollectionService<TEntity, TDtoRecord> {
-    Collection<TEntity> addCollection(Collection<TDtoRecord> dtoRecords);
+public interface ICollectionService<TEntity> {
+    Collection<TEntity> addCollection(Collection<TEntity> collection);
 
-    Collection<Boolean> deleteCollection(Collection<TDtoRecord> tDtoRecords);
+    Collection<Boolean> deleteCollection(Collection<TEntity> collection);
 
 }
