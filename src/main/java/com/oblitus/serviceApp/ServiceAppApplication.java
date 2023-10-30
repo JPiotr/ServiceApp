@@ -4,6 +4,7 @@ import com.oblitus.serviceApp.Modules.Admin.*;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
 import com.oblitus.serviceApp.Modules.ModuleRepository;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.ClientRepository;
@@ -24,6 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 @AllArgsConstructor
@@ -40,6 +42,7 @@ public class ServiceAppApplication {
 		UserRepository userRepository,
 		ClientRepository clientRepository,
 		RuleMapper ruleMapper,
+		UserResponseMapper userMapper,
 		ModulesWrapper modulesWrapper,
 		PasswordEncoder encoder
 		){return args -> {
@@ -51,67 +54,80 @@ public class ServiceAppApplication {
 		ruleRepository.saveAll(StaticInfo.PredefinedRules);
 		StaticInfo.SuperUser.setPassword(encoder.encode(StaticInfo.SuperUserPasswd));
 		userRepository.save(StaticInfo.SuperUser);
-		modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(StaticInfo.SuperUser.getID(), ERule.ADMIN.toString());
+		modulesWrapper.adminModule.getAdminDAO().getUserService().update(
+				new UserDTO(StaticInfo.SuperUser.getUuid()
+						,null
+						,null
+						,null
+						,null
+						,null
+						,List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(0)))
+						,null)
+		);
 		clientRepository.save(StaticInfo.Internal);
 
 		//users
 		List<UserResponse> users =
-				List.of(
-						modulesWrapper.adminModule.getAdminDAO().getUserDao()
+				Stream.of(
+						modulesWrapper.adminModule.getAdminDAO().getUserService()
 								//John Doe
-								.save(new UserDTO(
+								.add(new UserDTO(
 										null,
 										"jdoe@domain.srvtrack",
 										"JohnDoeRoot",
 										"John",
 										"Doe",
 										"simplePass",
-										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										Stream.of(
+												StaticInfo.PredefinedRules.get(1)
+												,StaticInfo.PredefinedRules.get(0)).map(ruleMapper).toList(),
 										null
 								)),
-						modulesWrapper.adminModule.getAdminDAO().getUserDao()
+						modulesWrapper.adminModule.getAdminDAO().getUserService()
 								//John Necessary
-								.save(new UserDTO(
+								.add(new UserDTO(
 										null,
 										"jnecessary@domain.srvtrack",
 										"JohnNecessaryClient",
 										"John",
 										"Necessary",
 										"simplePass",
-										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										Stream.of(StaticInfo.PredefinedRules.get(1)
+												 ,StaticInfo.PredefinedRules.get(2)).map(ruleMapper).toList(),
 										null
 								)),
-						modulesWrapper.adminModule.getAdminDAO().getUserDao()
+						modulesWrapper.adminModule.getAdminDAO().getUserService()
 								//Grzegorz Brzęczyszczykiewicz
-								.save(new UserDTO(
+								.add(new UserDTO(
 										null,
 										"gbrzeczyszczykiewicz@domain.srvtrack",
 										"Grzegorz",
 										"Grzegorz",
 										"Brzęczyszczykiewicz",
 										"jakrozpetalemdrugawojneswiatowa",
-										List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(1))),
+										Stream.of(StaticInfo.PredefinedRules.get(1)
+												,StaticInfo.PredefinedRules.get(3)).map(ruleMapper).toList(),
 										null
 								))
-				);
+				).map(userMapper).toList();
 
-		var jdoe = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(users.get(0).id(), ERule.ADMIN.toString());
-		var jnes = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(users.get(1).id(), ERule.CLIENT.toString());
-		var gbrz = modulesWrapper.adminModule.getAdminDAO().getUserDao().addRuleForUser(users.get(2).id(), ERule.SERVICE.toString());
 
-		var client1 = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(null, "Client X", jdoe.id()));
-		var client2 = modulesWrapper.serviceModule.getServiceDAO().getClientDao().save(new ClientDTO(null, "Client Y", jdoe.id()));
+		var client1 = modulesWrapper.serviceModule.getServiceDAO().getClientService()
+				.add(new ClientDTO(null, "Client X", users.get(0).getUuid()));
+		var client2 = modulesWrapper.serviceModule.getServiceDAO().getClientService()
+				.add(new ClientDTO(null, "Client Y", users.get(0).getUuid()));
 
 		var tickets = List.of(
 				new TicketDTO(
 						null,
 						"Hello World",
 						"First simple Ticket",
-						client1.id(),
-						gbrz.id(),
+						client1.getUuid(),
+						users.get(2).getUuid(),
 						TicketState.OPEN,
 						TicketPriority.HIGH,
-						jnes.id(),
+						users.get(1).getUuid(),
+						null,
 						null,
 						null
 				),
@@ -120,27 +136,31 @@ public class ServiceAppApplication {
 						"Need Help - URGENT",
 						"I don't know how to pronounce Your IT Guy name. Can You assign someone else?",
 //						new ArrayList<CommentDTO>(),
-						client2.id(),
-						jdoe.id(),
+						client2.getUuid(),
+						users.get(0).getUuid(),
 						TicketState.NEW,
 						TicketPriority.MEDIUM,
-						jnes.id(),
+						users.get(1).getUuid(),
+						null,
 						null,
 						null
 				)
 		);
 
-		modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(tickets.get(0));
-		var ticketResponse = modulesWrapper.serviceModule.getServiceDAO().getTicketDao().save(tickets.get(1));
+		modulesWrapper.serviceModule.getServiceDAO().getTicketService().add(tickets.get(0));
+		var ticketResponse = modulesWrapper.serviceModule.getServiceDAO().getTicketService().add(tickets.get(1));
 
-		CommentDTO comment = new CommentDTO(null, "We don't have anyone else :(", ticketResponse.id(), jdoe.id());
-		CommentDTO comment2 = new CommentDTO(null, "How can I call him then?", ticketResponse.id(), jnes.id());
-		CommentDTO comment3 = new CommentDTO(null, "Gregory?", ticketResponse.id(), jdoe.id());
+		CommentDTO comment = new CommentDTO(null, "We don't have anyone else :("
+				, ticketResponse.getUuid(), users.get(0).getUuid());
+		CommentDTO comment2 = new CommentDTO(null, "How can I call him then?"
+				, ticketResponse.getUuid(), users.get(1).getUuid());
+		CommentDTO comment3 = new CommentDTO(null, "Gregory?"
+				, ticketResponse.getUuid(), users.get(0).getUuid());
 
 
-		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment);
-		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment2);
-		modulesWrapper.serviceModule.getServiceDAO().getCommentDao().save(comment3);
+		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment);
+		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment2);
+		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment3);
 
 	};}
 
