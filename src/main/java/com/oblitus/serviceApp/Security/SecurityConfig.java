@@ -22,7 +22,14 @@ public class SecurityConfig {
     private final AuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private static final String[] WHITE_LIST = {
-            "/auth/**",
+            "/auth/login",
+            "/auth/register",
+            "/open-api-docs",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/actuator",
+
+
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -30,9 +37,7 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/configuration/ui",
             "/configuration/security",
-            "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"
     };
 
     @Bean
