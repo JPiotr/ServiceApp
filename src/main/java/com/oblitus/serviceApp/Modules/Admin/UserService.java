@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService, IService<User, UserDTO>, IActivityCreator {
     private final UserRepository userRepo;
     private final RuleService ruleService;
-    private final FileService fileService; //todo: assign photo to user
+    private final FileService fileService;
     private final ActivityFactory activityFabric;
 
     @Override

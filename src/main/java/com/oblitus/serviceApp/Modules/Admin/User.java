@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,6 +17,8 @@ import java.util.Collection;
 @Entity
 @Table(name = "users")
 public class User extends EntityBase implements UserDetails, CredentialsContainer {
+    @Id
+    protected UUID uuid;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
@@ -51,7 +54,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         this.enabled = true;
         locked = true;
         expired = false;
-        email = username.toLowerCase() + "@srvctrack.root";
+        email = "srvctrack@gmail.com";
     }
     protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
         super();

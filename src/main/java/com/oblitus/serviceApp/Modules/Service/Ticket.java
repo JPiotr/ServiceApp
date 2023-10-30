@@ -5,6 +5,8 @@ import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,6 +15,8 @@ import lombok.*;
 @Entity
 @Table(name = "tickets")
 public class Ticket extends EntityBase {
+    @Id
+    protected UUID uuid;
     private String title;
     private String description;
     @ManyToOne(targetEntity = Client.class)

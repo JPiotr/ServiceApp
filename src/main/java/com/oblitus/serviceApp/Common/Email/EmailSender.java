@@ -34,7 +34,6 @@ import java.util.Properties;
 import java.util.Set;
 
 @Service
-@NoArgsConstructor
 public class EmailSender {
     private static final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     private static final String appName = "Service Track";

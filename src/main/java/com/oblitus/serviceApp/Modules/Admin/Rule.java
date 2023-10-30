@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,7 +17,8 @@ import java.util.List;
 @Entity
 @Table(name = "rules")
 public class Rule extends EntityBase implements GrantedAuthority {
-
+    @Id
+    protected UUID uuid;
     @ManyToMany(targetEntity = Module.class, fetch = FetchType.EAGER)
     private List<Module> modules;
     private String name;
