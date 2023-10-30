@@ -13,27 +13,24 @@ import lombok.*;
 @Entity
 @Table(name = "tickets")
 public class Ticket extends EntityBase {
-    private String Title;
-    private String Description;
+    private String title;
+    private String description;
     @ManyToOne(targetEntity = Client.class)
-    private Client Client;
+    private Client client;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    private User Assigned;
-    private TicketState State;
-    private TicketPriority Priority;
-    private String Note;
-    private static int Num = 1;
+    private User assigned;
+    private TicketState state;
+    private TicketPriority priority;
+    private String note;
     public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User assigned, TicketPriority priority, User creator, String note){
         super();
-        Title = title;
-        Description = description;
-        Client = client;
-        State = TicketState.NEW;
-        Assigned = assigned;
-        Priority = priority;
-        Creator = creator;
-        Note = note;
-        Number = Num;
-        Num = Num+1;
+        this.title = title;
+        this.description = description;
+        this.client = client;
+        this.state = TicketState.NEW;
+        this.assigned = assigned;
+        this.priority = priority;
+        this.creator = creator;
+        this.note = note;
     }
 }

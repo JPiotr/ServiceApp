@@ -17,23 +17,23 @@ import java.util.List;
 public class Rule extends EntityBase implements GrantedAuthority {
 
     @ManyToMany(targetEntity = Module.class, fetch = FetchType.EAGER)
-    private List<Module> Modules;
-    private String Name;
-    private ERule RuleType;
-    protected Rule(ERule roleType, List<Module> modules) {
+    private List<Module> modules;
+    private String name;
+    private ERule ruleType;
+    protected Rule(ERule ruleType, List<Module> modules) {
         super();
-        Name = roleType.toString();
-        Modules = modules;
-        RuleType = roleType;
+        name = ruleType.toString();
+        this.modules = modules;
+        this.ruleType = ruleType;
     }
     public Rule(String uuid, List<Module> modules, ERule ruleType) {
         super(uuid);
-        Modules = modules;
-        Name = ruleType.toString();
-        RuleType = ruleType;
+        this.modules = modules;
+        name = ruleType.toString();
+        this.ruleType = ruleType;
     }
     public String getAuthority() {
-        return RuleType.toString();
+        return ruleType.toString();
     }
 
 }

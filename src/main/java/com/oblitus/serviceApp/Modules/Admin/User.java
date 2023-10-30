@@ -17,73 +17,81 @@ import java.util.Collection;
 @Table(name = "users")
 public class User extends EntityBase implements UserDetails, CredentialsContainer {
     @Column(nullable = false)
-    private String Email;
-    @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
-    private Collection<Rule> Rules;
+    private String email;
     @Column(nullable = false)
-    private String Username;
-    private String Name;
-    private String Surname;
-    private LocalDateTime LastLoginDate;
-    private LocalDateTime CredentialExpirationDate;
-    private LocalDateTime AccountExpirationDate;
+    private String username;
+
+    private String name;
+    private String surname;
+    private LocalDateTime lastLoginDate;
+    private LocalDateTime credentialExpirationDate;
+    private LocalDateTime accountExpirationDate;
+
     @Setter
     @Getter
-    private boolean Enabled;
+    private boolean enabled;
+
     @Getter
-    private boolean Expired;
+    private boolean expired;
+
     @Getter
-    private boolean CredentialsExpired;
+    private boolean credentialsExpired;
+
     @Getter
     @Setter
-    private String Password;
+    private String password;
+
+    @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
+    private Collection<Rule> rules;
 
     public User(String id, String username, String password){
         super(id);
-        Username = username;
-        Password = password;
-        Enabled = true;
-        Locked = true;
-        Expired = false;
-        Email = username.toLowerCase() + "@srvctrack.root";
+        this.username = username;
+        this.password = password;
+        this.enabled = true;
+        locked = true;
+        expired = false;
+        email = username.toLowerCase() + "@srvctrack.root";
     }
     protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
         super();
-        Username = username;
-        Email = email;
-        Rules = rules;
-        Password = password;
-        Name = name;
-        Surname = surname;
-        Enabled = true;
+        this.username = username;
+        this.email = email;
+        this.rules = rules;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.enabled = true;
     }
     protected User addRole(Rule rule){
-        Rules.add(rule);
+        rules.add(rule);
         return this;
     }
     protected User deleteRole(Rule rule){
-        Rules.remove(rule);
+        rules.remove(rule);
         return this;
     }
     public Collection<Rule> getAuthorities() {
         return getRules();
     }
     public boolean isAccountNonExpired() {
-        return Expired;
+        return expired;
     }
     public boolean isAccountNonLocked() {
-        return !super.Locked;
+        return !locked;
     }
     public boolean isCredentialsNonExpired() {
-        return CredentialsExpired;
+        return credentialsExpired;
     }
+
     @Override
     public void eraseCredentials() {
-        Password = null;
+        password = null;
     }
     public EntityBase getBase(){
         return (EntityBase) this;
     }
+
     @Override
     public String toString() {
         return getName()+ " " + getSurname();
