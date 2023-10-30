@@ -1,14 +1,17 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.oblitus.serviceApp.Abstracts.BaseResponse;
 import com.oblitus.serviceApp.Common.File.DTOs.FileResponse;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.util.UUID;
-
-public record BaseUserResponse(
-        UUID id,
-        String userName,
-        String name,
-        String surname,
-        FileResponse photo
-) {
+@EqualsAndHashCode(callSuper = true)
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class BaseUserResponse extends BaseResponse {
+        private String userName;
+        private String name;
+        private String surname;
+        private FileResponse photo;
 }
