@@ -16,7 +16,6 @@ public final class AdminModule implements ModuleBase{
 
     public final EModule Type = EModule.ADMIN_MODULE;
 
-    //for db
     public  ModuleBase getModule(){
         return this;
     }
