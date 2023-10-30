@@ -2,12 +2,11 @@ package com.oblitus.serviceApp.Modules.Service;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.Admin.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
-//todo: notes
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,9 +20,7 @@ public class Activity extends EntityBase {
     private String oldValue;
     private String activityType;
     @ManyToOne(targetEntity = User.class)
-    private User user;
-    @ManyToOne(targetEntity = Ticket.class)
-    private Ticket ticket;
-
+    private User creator;
+    private UUID objectActivity;
 }
 
