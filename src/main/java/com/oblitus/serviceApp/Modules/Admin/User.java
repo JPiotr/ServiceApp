@@ -47,8 +47,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
     private Collection<Rule> rules;
 
-    public User(String id, String username, String password){
-        super(id);
+    public User(String uuid, String username, String password){
+        super(uuid);
         this.username = username;
         this.password = password;
         this.enabled = true;

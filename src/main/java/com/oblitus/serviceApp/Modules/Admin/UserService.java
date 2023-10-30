@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService, IService<User, UserDTO>,
 
     @Override
     public User get(UserDTO dto) {
-        var opt = userRepo.findByUuid(dto.id());
+        var opt = userRepo.findById(dto.id());
         if(opt.isPresent()){
             return opt.get();
         }

@@ -23,6 +23,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class EmailSender {
     private static final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     private static final String appName = "Service Track";
@@ -50,7 +52,7 @@ public class EmailSender {
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(jsonFactory,
-                        new InputStreamReader(Objects.requireNonNull(EmailSender.class.getResourceAsStream("/credential,json"))));
+                        new InputStreamReader(Objects.requireNonNull(EmailSender.class.getResourceAsStream("/credential.json"))));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
