@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
+import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
 import com.oblitus.serviceApp.Common.File.DTOs.FileResponseMapper;
 import com.oblitus.serviceApp.Common.File.File;
 import com.oblitus.serviceApp.Common.File.FileService;
@@ -13,55 +14,43 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserResponseMapper implements Function<User, UserResponse> {
+public class UserResponseMapper extends BaseResponseMapper<UserResponseBuilder> implements Function<User, UserResponse> {
     private final RuleMapper ruleMapper;
     private final FileResponseMapper fileMapper;
     private final FileService fileService;
-
     @Override
     public UserResponse apply(User user) {
         if(user == null)
             return null;
-        if(user.getRules() == null || user.getRules().isEmpty()){
-            return new UserResponse(
-                    user.getID(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getName(),
-                    user.getSurname(),
-                    List.of(),
-                    user.getLastLoginDate(),
-                    user.getCredentialExpirationDate(),
-                    user.getAccountExpirationDate(),
-                    user.isEnabled(),
-                    user.isExpired(),
-                    user.isCredentialsExpired(),
-                    user.getBase().getLastModificationDate(),
-                    user.getBase().getCreationDate(),
-                    fileMapper.apply(fileService.getObjectFiles(user.getID()).stream().findFirst().orElse(null))
 
-            );
+        this.useBuilder(new UserResponseBuilder())
+                .setUserName(user.getUsername())
+                .setEmail(user.getEmail())
+                .setName(user.getName())
+                .setSurname(user.getSurname())
+                .setLastLoginDate(user.getLastLoginDate())
+                .setCredentialExpirationDate(user.getCredentialExpirationDate())
+                .setAccountExpirationDate(user.getAccountExpirationDate())
+                .setIsEnabled(user.isEnabled())
+                .setIsExpired(user.isExpired())
+                .setIsCredentialExpired(user.isCredentialsExpired())
+                .setFile(
+                    fileMapper.apply(fileService.getObjectFiles(user.getUuid()).stream().findFirst().orElse(null))
+                )
+                .setId(user.getID())
+                .setUUID(user.getUuid())
+                .setCreationDate(user.getCreationDate())
+                .setLastModificationDate(user.getLastModificationDate());
+
+        if(user.getRules() == null || user.getRules().isEmpty()){
+            builder.setRules(List.of());
+            return builder.build();
         }
-        return new UserResponse(
-                user.getID(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getName(),
-                user.getSurname(),
+        return builder.setRules(
                 user.getRules()
                         .stream()
                         .map(ruleMapper)
-                        .collect(Collectors.toList()),
-                user.getLastLoginDate(),
-                user.getCredentialExpirationDate(),
-                user.getAccountExpirationDate(),
-                user.isEnabled(),
-                user.isExpired(),
-                user.isCredentialsExpired(),
-                user.getBase().getLastModificationDate(),
-                user.getBase().getCreationDate(),
-                fileMapper.apply(fileService.getObjectFiles(user.getID()).stream().findFirst().orElse(null))
-
-        );
+                        .collect(Collectors.toList())
+                ).build();
     }
 }

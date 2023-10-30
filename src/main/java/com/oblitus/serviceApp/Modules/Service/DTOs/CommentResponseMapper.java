@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Comment;
@@ -10,17 +11,19 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class CommentResponseMapper implements Function<Comment, CommentResponse> {
+public class CommentResponseMapper extends BaseResponseMapper<CommentResponseBuilder> implements Function<Comment, CommentResponse> {
     private final BaseUserResponseMapper baseUserResponseMapper;
     @Override
     public CommentResponse apply(Comment comment) {
-        return new CommentResponse(
-          comment.getID(),
-          comment.getContent(),
-          comment.getTicket().getID(),
-          baseUserResponseMapper.apply(comment.getCreator()),
-          comment.getCreationDate(),
-          comment.getLastModificationDate()
-        );
+        return this.useBuilder(new CommentResponseBuilder())
+                .setCreator(
+                        baseUserResponseMapper.apply(comment.getCreator())
+                )
+                .setContent(comment.getContent())
+                .setSubject(comment.getTicket().getUuid())
+                .setUUID(comment.getUuid())
+                .setCreationDate(comment.getCreationDate())
+                .setLastModificationDate(comment.getLastModificationDate())
+                .build();
     }
 }

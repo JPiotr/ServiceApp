@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
 import com.oblitus.serviceApp.Common.File.DTOs.FileResponseMapper;
 import com.oblitus.serviceApp.Common.File.FileService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponseMapper;
@@ -11,43 +12,34 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class TicketResponseMapper implements Function<Ticket, TicketResponse> {
+public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuilder> implements Function<Ticket, TicketResponse> {
     private final BaseUserResponseMapper baseUserResponseMapper;
     private final FileResponseMapper fileMapper;
     private final FileService fileService;
     @Override
     public TicketResponse apply(Ticket ticket) {
-        if(ticket.getAssigned() == null){
-            return new TicketResponse(
-                    ticket.getID(),
-                    ticket.getTitle(),
-                    ticket.getDescription(),
-                    ticket.getClient().getID(),
-                    null,
-                    ticket.getState(),
-                    ticket.getPriority(),
-                    ticket.getCreationDate(),
-                    ticket.getLastModificationDate(),
-                    baseUserResponseMapper.apply(ticket.getCreator()),
-                    ticket.getNumber(),
-                    ticket.getNote(),
-                    fileService.getObjectFiles(ticket.getID()).stream().map(fileMapper).toList()
+        this.useBuilder(new TicketResponseBuilder())
+                .setTitle(ticket.getTitle())
+                .setDescription(ticket.getDescription())
+                .setClient(ticket.getClient().getUuid())
+                .setState(ticket.getState())
+                .setNumber(ticket.getID())
+                .setPriority(ticket.getPriority())
+                .setCreator(
+                        baseUserResponseMapper.apply(ticket.getCreator())
+                )
+                .setNote(ticket.getNote())
+                .setFiles(
+                        fileService.getObjectFiles(ticket.getUuid()).stream().map(fileMapper).toList()
+                )
+                .setUUID(ticket.getUuid())
+                .setCreationDate(ticket.getCreationDate())
+                .setLastModificationDate(ticket.getLastModificationDate());
+        if(ticket.getAssigned() != null){
+            builder.setAssigned(
+                    baseUserResponseMapper.apply(ticket.getAssigned())
             );
         }
-        return new TicketResponse(
-                ticket.getID(),
-                ticket.getTitle(),
-                ticket.getDescription(),
-                ticket.getClient().getID(),
-                baseUserResponseMapper.apply(ticket.getAssigned()),
-                ticket.getState(),
-                ticket.getPriority(),
-                ticket.getCreationDate(),
-                ticket.getLastModificationDate(),
-                baseUserResponseMapper.apply(ticket.getCreator()),
-                ticket.getNumber(),
-                ticket.getNote(),
-                fileService.getObjectFiles(ticket.getID()).stream().map(fileMapper).toList()
-        );
+        return builder.build();
     }
 }
