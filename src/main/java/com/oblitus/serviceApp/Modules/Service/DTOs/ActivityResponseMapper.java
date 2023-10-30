@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
+import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Activity;
 import lombok.RequiredArgsConstructor;
@@ -9,35 +10,26 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class ActivityResponseMapper implements Function<Activity, ActivityResponse> {
+public class ActivityResponseMapper extends BaseResponseMapper<ActivityResponseBuilder> implements Function<Activity, ActivityResponse> {
     private final BaseUserResponseMapper baseUserResponseMapper;
     @Override
     public ActivityResponse apply(Activity activity) {
-        if(activity.getUser() == null){
-            return new ActivityResponse(
-                    activity.getID(),
-                    activity.getClassName(),
-                    activity.getFieldName(),
-                    activity.getNewValue(),
-                    activity.getOldValue(),
-                    activity.getActivityType(),
-                    null,
-                    activity.getTicket().getID(),
-                    activity.getCreationDate(),
-                    activity.getLastModificationDate()
+        this.useBuilder(new ActivityResponseBuilder())
+                .setClassName(activity.getClassName())
+                .setFieldName(activity.getFieldName())
+                .setNewValue(activity.getNewValue())
+                .setOldValue(activity.getOldValue())
+                .setActivityType(activity.getActivityType())
+                .setObjectUuid(activity.getObjectActivity())
+                .setUUID(activity.getUuid())
+                .setCreationDate(activity.getCreationDate())
+                .setLastModificationDate(activity.getLastModificationDate());
+
+        if(activity.getCreator() != null){
+            builder.setCreator(
+                    baseUserResponseMapper.apply(activity.getCreator())
             );
         }
-        return new ActivityResponse(
-                activity.getID(),
-                activity.getClassName(),
-                activity.getFieldName(),
-                activity.getNewValue(),
-                activity.getOldValue(),
-                activity.getActivityType(),
-                baseUserResponseMapper.apply(activity.getUser()),
-                activity.getTicket().getID(),
-                activity.getCreationDate(),
-                activity.getLastModificationDate()
-        );
+        return builder.build();
     }
 }
