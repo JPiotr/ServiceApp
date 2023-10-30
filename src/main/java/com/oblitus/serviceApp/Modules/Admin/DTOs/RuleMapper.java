@@ -11,7 +11,7 @@ public class RuleMapper implements Function<Rule, RuleDTO> {
     @Override
     public RuleDTO apply(Rule rule) {
         return new RuleDTO(
-                rule.getID(),
+                rule.getUuid(),
                 rule.getName(),
                 rule.getModules()
         );
