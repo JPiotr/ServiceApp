@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp;
 
+import com.oblitus.serviceApp.Common.Email.EmailSender;
 import com.oblitus.serviceApp.Modules.Admin.*;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
@@ -44,9 +45,10 @@ public class ServiceAppApplication {
 		RuleMapper ruleMapper,
 		UserResponseMapper userMapper,
 		ModulesWrapper modulesWrapper,
-		PasswordEncoder encoder
+		PasswordEncoder encoder,
+		EmailSender emailSender
 		){return args -> {
-		if(userRepository.findById(StaticInfo.SuperUser.getUuid()).isEmpty()){
+		if(modulesWrapper.adminModule.getAdminDAO().getUserService().getAll().size() > 0){
 			return;
 		}
 
@@ -161,6 +163,8 @@ public class ServiceAppApplication {
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment);
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment2);
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment3);
+
+//		emailSender.sendEmail("test","test", "srvctrack@gmail.com");
 
 	};}
 

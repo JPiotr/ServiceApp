@@ -5,6 +5,10 @@ import com.oblitus.serviceApp.Common.File.DTOs.FileResponse;
 
 
 public class BaseUserResponseBuilder extends BaseBuilder<BaseUserResponse> {
+    @Override
+    public void setEntity() {
+        entity = new BaseUserResponse();
+    }
 
     public BaseUserResponseBuilder setUserName(String userName){
         super.entity.setUserName(userName);

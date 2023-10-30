@@ -10,6 +10,11 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class TicketResponseBuilder extends BaseBuilder<TicketResponse> {
+    @Override
+    public void setEntity() {
+        entity = new TicketResponse();
+    }
+
     public TicketResponseBuilder setTitle(String title){
         entity.setTitle(title);
         return this;

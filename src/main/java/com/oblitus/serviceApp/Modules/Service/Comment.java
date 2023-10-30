@@ -17,8 +17,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "comments")
 public class Comment extends EntityBase {
-    @Id
-    protected UUID uuid;
     private String content;
     @ManyToOne(targetEntity = com.oblitus.serviceApp.Modules.Service.Ticket.class)
     private Ticket ticket;

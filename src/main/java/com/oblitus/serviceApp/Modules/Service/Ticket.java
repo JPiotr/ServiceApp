@@ -15,8 +15,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "tickets")
 public class Ticket extends EntityBase {
-    @Id
-    protected UUID uuid;
     private String title;
     private String description;
     @ManyToOne(targetEntity = Client.class)

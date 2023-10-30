@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class UserResponseBuilder extends BaseBuilder<UserResponse> {
+    @Override
+    public void setEntity() {
+        entity = new UserResponse();
+    }
+
     public UserResponseBuilder setUserName(String userName){
         super.entity.setUserName(userName);
         return this;

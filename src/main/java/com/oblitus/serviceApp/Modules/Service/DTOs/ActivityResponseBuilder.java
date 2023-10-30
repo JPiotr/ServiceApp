@@ -6,6 +6,10 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
 import java.util.UUID;
 
 public class ActivityResponseBuilder extends BaseBuilder<ActivityResponse> {
+    @Override
+    public void setEntity() {
+        entity = new ActivityResponse();
+    }
 
     public ActivityResponseBuilder setClassName(String className){
         this.entity.setClassName(className);

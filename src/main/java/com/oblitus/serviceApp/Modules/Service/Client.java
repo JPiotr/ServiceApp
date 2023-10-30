@@ -15,8 +15,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "clients")
 public class Client extends EntityBase {
-    @Id
-    protected UUID uuid;
     private String name;
 
     public Client(String name, User creator) {

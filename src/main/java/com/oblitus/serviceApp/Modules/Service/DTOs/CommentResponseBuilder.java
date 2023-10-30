@@ -6,6 +6,11 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
 import java.util.UUID;
 
 public class CommentResponseBuilder extends BaseBuilder<CommentResponse> {
+    @Override
+    public void setEntity() {
+        entity = new CommentResponse();
+    }
+
     public CommentResponseBuilder setContent(String content){
         entity.setContent(content);
         return this;

@@ -14,6 +14,8 @@ public abstract class BaseBuilder<T extends BaseResponse> implements IBuilder{
     public T build(){
         return entity;
     }
+    @Override
+    public abstract void setEntity();
 
     public BaseBuilder<T> setUUID(UUID uuid){
         entity.setUuid(uuid);

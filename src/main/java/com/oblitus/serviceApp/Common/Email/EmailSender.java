@@ -9,17 +9,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.Json;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
-import lombok.NoArgsConstructor;
 import com.google.api.services.gmail.model.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -69,7 +66,7 @@ public class EmailSender {
 
         // Encode as MIME message
         Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
+        Session session = Session.getDefaultInstance(props);
         MimeMessage email = new MimeMessage(session);
         email.setFrom(new InternetAddress(appEmail));
         email.addRecipient(javax.mail.Message.RecipientType.TO,

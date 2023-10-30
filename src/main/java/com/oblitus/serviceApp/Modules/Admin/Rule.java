@@ -17,8 +17,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "rules")
 public class Rule extends EntityBase implements GrantedAuthority {
-    @Id
-    protected UUID uuid;
     @ManyToMany(targetEntity = Module.class, fetch = FetchType.EAGER)
     private List<Module> modules;
     private String name;

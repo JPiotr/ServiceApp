@@ -17,8 +17,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User extends EntityBase implements UserDetails, CredentialsContainer {
-    @Id
-    protected UUID uuid;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
