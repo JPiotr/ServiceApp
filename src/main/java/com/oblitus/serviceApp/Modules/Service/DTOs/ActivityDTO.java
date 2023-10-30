@@ -12,5 +12,8 @@ public record ActivityDTO(
         UUID userId,
         UUID ticketID
 ) {
+    public ActivityDTO(UUID id) {
+        this(id, null, null, null, null, null, null, null);
+    }
 }
 
