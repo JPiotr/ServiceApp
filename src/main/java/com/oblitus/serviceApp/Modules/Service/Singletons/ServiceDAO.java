@@ -1,26 +1,26 @@
 package com.oblitus.serviceApp.Modules.Service.Singletons;
 
-import com.oblitus.serviceApp.Modules.Service.DAOs.ActivityDAO;
-import com.oblitus.serviceApp.Modules.Service.DAOs.ClientDAO;
-import com.oblitus.serviceApp.Modules.Service.DAOs.CommentDAO;
-import com.oblitus.serviceApp.Modules.Service.DAOs.TicketDAO;
+import com.oblitus.serviceApp.Modules.Service.ActivityService;
+import com.oblitus.serviceApp.Modules.Service.ClientService;
+import com.oblitus.serviceApp.Modules.Service.CommentService;
+import com.oblitus.serviceApp.Modules.Service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ServiceDAO {
-    private final ClientDAO CLIENT_DAO;
-    private final TicketDAO TICKET_DAO;
-    private final CommentDAO COMMENT_DAO;
-    private final ActivityDAO ACTIVITY_DAO;
+    private final ClientService CLIENT_SERVICE;
+    private final TicketService TICKET_SERVICE;
+    private final CommentService COMMENT_SERVICE;
+    private final ActivityService ACTIVITY_SERVICE;
 
     public ServiceDAO getInstance(){return this;}
 
-    public ClientDAO getClientDao(){return CLIENT_DAO;}
+    public ClientService getClientService(){return CLIENT_SERVICE;}
 
-    public TicketDAO getTicketDao(){return TICKET_DAO;}
+    public TicketService getTicketService(){return TICKET_SERVICE;}
 
-    public CommentDAO getCommentDao(){return COMMENT_DAO;}
-    public ActivityDAO getActivityDao(){return ACTIVITY_DAO;}
+    public CommentService getCommentService(){return COMMENT_SERVICE;}
+    public ActivityService getActivityService(){return ACTIVITY_SERVICE;}
 }
