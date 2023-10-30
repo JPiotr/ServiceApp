@@ -1,7 +1,6 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
-import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Security.jwt.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountNotFoundException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +17,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final RuleService ruleService;
+    private final RuleMapper ruleMapper;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthResponse register(RUserDTO userDTO) {
@@ -30,18 +30,21 @@ public class AuthenticationService {
                 null,
                 null
         );
-        var userDetails = userService.addUser(
-                user.name(),
-                user.email(),
-                ruleService.getAllRoles().stream().filter(
-                        ruleDTO -> ruleDTO.getName() == ERule.USER.toString()
-                ).collect(Collectors.toList()),
-                user.password(),
-                user.userName(),
-                user.surname(),
-                user.photoId()
+        var userDetails = userService.add(
+                new UserDTO(
+                        null,
+                        user.email(),
+                        user.userName(),
+                        user.name(),
+                        user.surname(),
+                        user.password(),
+                        ruleService.getAll().stream().filter(
+                                ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
+                                ).map(ruleMapper).collect(Collectors.toList()),
+                        user.photoId()
+                )
         );
-        var token = jwtService.generateToken(userService.getUser(userDetails.getID()));
+        var token = jwtService.generateToken(userService.get(new UserDTO(userDetails.getUuid())));
         return AuthResponse.builder().token(token).build();
     }
     public AuthResponse login(LUserDTO userDTO){
@@ -51,12 +54,9 @@ public class AuthenticationService {
                         userDTO.password()
                 )
         );
-        var optUser = userService.getUser(userDTO.userName());
-        if(optUser.isPresent()){
-            var token = jwtService.generateToken(optUser.get());
-            return AuthResponse.builder().token(token).build();
-        }
-        return AuthResponse.builder().build();
+        var optUser = userService.loadUserByUsername(userDTO.userName());
+        var token = jwtService.generateToken(optUser);
+        return AuthResponse.builder().token(token).build();
 
     }
 }
