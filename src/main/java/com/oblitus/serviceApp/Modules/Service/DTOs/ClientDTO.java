@@ -10,5 +10,8 @@ public record ClientDTO(
         String name,
         UUID creator
 ) {
+    public ClientDTO(UUID id) {
+        this(id, null, null);
+    }
 }
 

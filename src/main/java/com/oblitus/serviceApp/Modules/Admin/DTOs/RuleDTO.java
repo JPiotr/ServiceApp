@@ -9,4 +9,7 @@ public record RuleDTO(
         String name,
         List<Module> modules
 ) {
+    public RuleDTO(String name) {
+        this(null, name, null);
+    }
 }

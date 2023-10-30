@@ -7,10 +7,5 @@ public record RUserDTO (
     String userName,
 
     String password
-){
-//    @Override
-//    public String userName() {
-//        return name() + surname();
-//    }
-}
+){}
 

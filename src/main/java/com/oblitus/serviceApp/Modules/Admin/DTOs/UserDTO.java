@@ -12,5 +12,9 @@ public record UserDTO(
       String password,
       Collection<RuleDTO> rules,
       UUID photoId
-){}
+){
+    public UserDTO(UUID id) {
+        this(id, null, null, null, null, null, null, null);
+    }
+}
 

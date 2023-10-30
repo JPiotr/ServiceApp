@@ -16,7 +16,11 @@ public record TicketDTO(
         TicketPriority priority,
         UUID creator,
         String note,
+        UUID editing,
         Collection<UUID> files
 ) {
+    public TicketDTO(UUID id) {
+        this(id, null, null, null, null, null, null, null, null, null, null);
+    }
 }
 

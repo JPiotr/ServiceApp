@@ -8,5 +8,8 @@ public record CommentDTO(
         UUID subject,
         UUID creator
 ) {
+    public CommentDTO(UUID id) {
+        this(id, null, null, null);
+    }
 }
 
