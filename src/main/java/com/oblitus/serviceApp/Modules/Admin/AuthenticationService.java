@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
-import com.oblitus.serviceApp.Security.jwt.JWTService;
+import com.oblitus.serviceApp.Security.JWT.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
