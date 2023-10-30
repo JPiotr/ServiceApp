@@ -46,9 +46,9 @@ public class ServiceAppApplication {
 		ModulesWrapper modulesWrapper,
 		PasswordEncoder encoder
 		){return args -> {
-//		if(userRepository.findById(StaticInfo.SuperUser.getUuid()).isEmpty()){
-//			return;
-//		}
+		if(userRepository.findById(StaticInfo.SuperUser.getUuid()).isEmpty()){
+			return;
+		}
 
 		moduleRepository.saveAll(StaticInfo.Modules);
 		ruleRepository.saveAll(StaticInfo.PredefinedRules);
