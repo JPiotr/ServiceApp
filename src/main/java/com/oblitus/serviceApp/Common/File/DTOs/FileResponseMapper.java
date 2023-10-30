@@ -13,14 +13,14 @@ public class FileResponseMapper implements Function<File, FileResponse> {
     public FileResponse apply(File file) {
         if(file != null){
             return new FileResponse(
-                    file.getID(),
+                    file.getUuid(),
                     file.getObjectId(),
                     file.getFileName(),
                     file.getFileExtension(),
                     file.getFileType(),
                     file.getCreationDate(),
                     file.getLastModificationDate(),
-                    "http://localhost:8080/files/"+file.getObjectId()+"/"+file.getFileName(), //todo: czy nie inny url?
+                    "http://localhost:8080/files/"+file.getObjectId()+"/"+file.getFileName(),
                     file.getDescription()
             );
         }
