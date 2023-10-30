@@ -1,57 +1,140 @@
 package com.oblitus.serviceApp.Modules.Service;
 
+import com.oblitus.serviceApp.Abstracts.EntityBase;
+import com.oblitus.serviceApp.Abstracts.IActivityCreator;
+import com.oblitus.serviceApp.Abstracts.IService;
 import com.oblitus.serviceApp.Common.File.FileService;
-import com.oblitus.serviceApp.Modules.Admin.RuleService;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class TicketService {
+public class TicketService implements IService<Ticket, TicketDTO>, IActivityCreator {
 
     private final TicketRepository repository;
-    private final ActivityRepository activityRepository;
+    private final ActivityFactory activityFabric;
     private final UserService userService;
+    private final ClientService clientService;
     private final FileService fileService;
 
-    public Ticket getTicket(UUID id){
-        var opt = repository.findById(id);
+    @Override
+    public boolean createActivity(String fieldName, String newValue, String oldValue, User creator, EntityBase objectActivity) {
+        activityFabric.prepare(Ticket.class.getName())
+                .create(fieldName,newValue,oldValue,creator,objectActivity);
+        return true;
+    }
+
+    @Override
+    public Ticket get(TicketDTO dto) {
+        var opt = repository.findById(dto.id());
         if(opt.isPresent()){
             return opt.get();
         }
         throw new EntityNotFoundException();
     }
 
-    public List<Ticket> getAllTickets(){
+    @Override
+    public Collection<Ticket> getAll() {
         return repository.findAll();
     }
 
-    public Ticket addTicket(Ticket ticket, Collection<UUID> files){
-        if(files != null && !files.isEmpty()){
+    @Override
+    public Ticket update(TicketDTO dto) {
+        Ticket ticket = get(dto);
+        User editor = null;
+        if(dto.editing() != null){
+            editor = userService.get(new UserDTO(dto.editing()));
+        }
+        User usr = null;
+        if(dto.assigned() != null){
+            usr = userService.get(new UserDTO(dto.assigned()));
+            ticket.setAssigned(usr);
+            createActivity("Assigned",dto.assigned().toString(),ticket.getAssigned().getUuid().toString(),editor,ticket);
+            ticket.setLastModificationDate();
+        }
+        if(dto.title() != null){
+            ticket.setTitle(dto.title());
+            ticket.setLastModificationDate();
+        }
+        if(dto.description() != null){
+            ticket.setDescription(dto.description());
+            ticket.setLastModificationDate();
+        }
+        if(dto.priority() != null){
+            var oldValue = ticket.getPriority();
+            ticket.setPriority(dto.priority());
+            createActivity("Priority",dto.priority().toString(),oldValue.toString(),editor,ticket);
+            ticket.setLastModificationDate();
+        }
+        if(dto.state() != null){
+            var oldValue = ticket.getState();
+            ticket.setState(dto.state());
+            createActivity("State",dto.state().toString(),oldValue.toString(),editor,ticket);
+            ticket.setLastModificationDate();
+        }
+        if(dto.note() != null){
+            var oldValue = ticket.getNote();
+            createActivity("Note",dto.note(),oldValue,editor,ticket);
+            ticket.setNote(dto.note());
+            ticket.setLastModificationDate();
+        }
+        if(dto.files() != null && !dto.files().isEmpty()){
             for (var fileId:
-                    files) {
+                    dto.files()) {
                 var file = fileService.getFileById(fileId);
                 if(file != null){
-                    file.setObjectId(ticket.getID());
+                    file.setObjectId(ticket.getUuid());
                     fileService.updateFile(file);
+                    createActivity("Attachments",file.getFileName(),"",editor,ticket);
+                    ticket.setLastModificationDate();
                 }
+
             }
         }
 
         return repository.save(ticket);
     }
 
-    public boolean deleteTicket(UUID id){
-        Optional<Ticket> opt = repository.findById(id);
+    @Override
+    public Ticket add(TicketDTO dto) {
+        var ticket = new Ticket(
+                dto.title(),
+                dto.description(),
+                clientService.get(new ClientDTO(dto.client())),
+                userService.get(new UserDTO(dto.assigned())),
+                dto.priority(),
+                userService.get(new UserDTO(dto.creator())),
+                dto.note());
+        if(dto.files() != null && !dto.files().isEmpty()){
+            for (var fileId:
+                    dto.files()) {
+                var file = fileService.getFileById(fileId);
+                if(file != null){
+                    file.setObjectId(ticket.getUuid());
+                    fileService.updateFile(file);
+                    createActivity("Attachments",file.getFileName(),"",null,ticket);
+                    ticket.setLastModificationDate();
+                }
+
+            }
+        }
+        return repository.save(ticket);
+    }
+
+    @Override
+    public boolean delete(TicketDTO dto) {
+        Optional<Ticket> opt = repository.findById(dto.id());
         if(opt.isEmpty()){
             return false;
         }
@@ -59,112 +142,9 @@ public class TicketService {
         return true;
     }
 
-    public Ticket updateTicket(UUID id, String title, String description, TicketPriority ticketPriority,
-                               TicketState ticketState, UUID assigned, String note, UUID edditingUser,
-                               Collection<UUID> files){
-        Ticket ticket = getTicket(id);
-        User editor = null;
-        if(edditingUser != null){
-            editor = userService.getUser(edditingUser);
-        }
-        User usr = null;
-        if(assigned != null){
-            usr = userService.getUser(assigned);
-            var oldValue = ticket.getAssigned();
-            ticket.setAssigned(usr);
-            activityRepository.save(new Activity(
-                    EActivityHandle.TICKET.toString(),
-                    "Assigned",
-                    usr.toString(),
-                    oldValue.toString(),
-                    EActivityTypes.SYSTEM.toString(),
-                    editor,
-                    ticket)
-            );
-            ticket.setLastModificationDate();
-        }
-        if(title != null){
-            ticket.setTitle(title);
-            ticket.setLastModificationDate();
-        }
-        if(description != null){
-            ticket.setDescription(description);
-            ticket.setLastModificationDate();
-        }
-        if(ticketPriority != null){
-            var oldValue = ticket.getPriority();
-            ticket.setPriority(ticketPriority);
-
-            activityRepository.save(
-                    new Activity(
-                            EActivityHandle.TICKET.toString(),
-                            "Priority",
-                            ticketPriority.toString(),
-                            oldValue.toString(),
-                            EActivityTypes.SYSTEM.toString(),
-                            editor,
-                            ticket
-
-                    )
-            );
-            ticket.setLastModificationDate();
-        }
-        if(ticketState != null){
-            var oldValue = ticket.getState();
-            ticket.setState(ticketState);
-
-            activityRepository.save(
-                    new Activity(
-                            EActivityHandle.TICKET.toString(),
-                            "State",
-                            ticketState.toString(),
-                            oldValue.toString(),
-                            EActivityTypes.SYSTEM.toString(),
-                            editor,
-                            ticket
-                    )
-            );
-            ticket.setLastModificationDate();
-        }
-        if(note != null){
-            var oldValue = ticket.getNote();
-            activityRepository.save(
-                    new Activity(
-                            EActivityHandle.TICKET.toString(),
-                            "Note",
-                            note,
-                            oldValue,
-                            EActivityTypes.SYSTEM.toString(),
-                            editor,
-                            ticket
-                    )
-            );
-        }
-        if(files != null && !files.isEmpty()){
-            for (var fileId:
-                    files) {
-                var file = fileService.getFileById(fileId);
-                if(file != null){
-                    file.setObjectId(ticket.getID());
-                    fileService.updateFile(file);
-                    activityRepository.save(new Activity(
-                            EActivityHandle.TICKET.toString(),
-                            "Attachments",
-                            file.getFileName(),
-                            "",
-                            EActivityTypes.SYSTEM.toString(),
-                            editor,
-                            ticket)
-                    );
-                    ticket.setLastModificationDate();
-                }
-
-            }
-        }
-
-        ticket.setNote(note);
-        return repository.save(ticket);
-
+    public Collection<Ticket> getAllUserTickets(UUID userId){
+        var user = userService.get(new UserDTO(userId));
+        return repository.findAllByCreatorOrAssigned(user,user);
     }
 
 }

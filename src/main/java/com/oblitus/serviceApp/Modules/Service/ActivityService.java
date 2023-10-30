@@ -1,43 +1,53 @@
 package com.oblitus.serviceApp.Modules.Service;
 
-import com.oblitus.serviceApp.Modules.Admin.UserService;
+import com.oblitus.serviceApp.Abstracts.IService;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class ActivityService {
+public class ActivityService implements IService<Activity, ActivityDTO> {
     private final ActivityRepository repository;
-    private final UserService userService;
-    private final TicketService ticketService;
 
-    public Activity getActivity(UUID id){
-        var opt = repository.findById(id);
+    @Override
+    public Activity get(ActivityDTO dto) {
+        var opt = repository.findById(dto.id());
         if(opt.isPresent()){
             return opt.get();
         }
         throw new EntityNotFoundException();
     }
 
-    public List<Activity> getAllActivity(){ return repository.findAll();}
+    @Override
+    public Collection<Activity> getAll() {
+        return repository.findAll();
+    }
 
-    public Activity addActivity(ActivityDTO activity){
+    @Override
+    @Deprecated
+    public Activity update(ActivityDTO dto) {
+        return null;
+    }
 
-        return repository.save(new Activity(
-                activity.className(),
-                activity.fieldName(),
-                activity.newValue(),
-                activity.oldValue(),
-                activity.activityType(),
-                userService.getUser(activity.userId()),
-                ticketService.getTicket(activity.ticketID())
-        ));
+    @Override
+    @Deprecated
+    public Activity add(ActivityDTO dto) {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public boolean delete(ActivityDTO dto) {
+        return false;
+    }
+
+    public Collection<Activity> getObjectActivities(UUID object){
+        return repository.findAllByObjectActivity(object);
     }
 
 }

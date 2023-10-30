@@ -1,45 +1,58 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
-import com.oblitus.serviceApp.Modules.EModule;
-import com.oblitus.serviceApp.Modules.Module;
+import com.oblitus.serviceApp.Abstracts.IService;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class RuleService {
+public class RuleService implements IService<Rule, RuleDTO> {
     private final RuleRepository ruleRepository;
 
-    public Rule addRule(String ruleName, List<Module> modules){
-        return ruleRepository.save(
-                new Rule(
-                        ERule.getValue(ruleName),
-                        modules
-                )
-        );
-    }
-    public Rule getRule(UUID id){
-        Optional<Rule> opt = ruleRepository.findById(id);
+    @Override
+    public Rule get(RuleDTO dto) {
+        Optional<Rule> opt = Optional.empty();
+        if(dto.name() != null){
+            opt = ruleRepository.findRuleByName(dto.name());
+        }
+        if(dto.id() != null){
+            opt = ruleRepository.findById(dto.id());
+        }
         if(opt.isPresent()){
             return opt.get();
         }
         throw new EntityNotFoundException();
     }
 
-    public Rule getRule(String name){
-        Optional<Rule> opt = ruleRepository.findAll().stream().filter(r -> Objects.equals(r.getName(), name)).findFirst();
-        return opt.orElse(null);
-    }
-    public List<Rule> getAllRoles(){
+    @Override
+    public Collection<Rule> getAll() {
         return ruleRepository.findAll();
     }
+
+    @Override
+    public Rule update(RuleDTO dto) {
+        return null;
+    }
+
+    @Override
+    public Rule add(RuleDTO dto) {
+        return ruleRepository.save(
+                new Rule(
+                        ERule.getValue(dto.name()),
+                        dto.modules()
+                )
+        );
+    }
+
+    @Override
+    public boolean delete(RuleDTO dto) {
+        return false;
+    }
+
 
 }

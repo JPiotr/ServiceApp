@@ -1,8 +1,13 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
+import com.oblitus.serviceApp.Abstracts.EntityBase;
+import com.oblitus.serviceApp.Abstracts.IActivityCreator;
+import com.oblitus.serviceApp.Abstracts.IService;
 import com.oblitus.serviceApp.Common.File.FileService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
+import com.oblitus.serviceApp.Modules.Service.ActivityFactory;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,96 +21,104 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, IService<User, UserDTO>, IActivityCreator {
     private final UserRepository userRepo;
     private final RuleService ruleService;
-    private final RuleMapper ruleMapper;
-    private final FileService fileService;
-     public User getUser(UUID id) {
-         var opt = userRepo.findById(id);
-         if(opt.isPresent()){
-             return opt.get();
-         }
-        throw new EntityNotFoundException();
-    }
-     public Optional<User> getUser(String name){
-        return Optional.ofNullable(userRepo.findAll().stream().filter(x-> Objects.equals(x.getUsername(), name)).toList().get(0));
-    }
-    public User addUser(String name, String email, Collection<Rule> rules, String password, String username, String surname, UUID fileId){
+    private final FileService fileService; //todo: assign photo to user
+    private final ActivityFactory activityFabric;
 
-        User user = new User(username, name, surname, email, rules, password);
-         if(rules == null || rules.isEmpty()){
-             user = new User(username, name, surname, email, List.of(ruleService.getRule(ERule.USER.toString())), password);
-         }
-        if(fileId != null){
-            var file = fileService.getFileById(fileId);
-            file.setObjectId(user.getID());
+    @Override
+    public User get(UserDTO dto) {
+        var opt = userRepo.findByUuid(dto.id());
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new EntityNotFoundException("Entity with uuid " + dto.id() + " not found!");
+    }
+
+    @Override
+    public Collection<User> getAll() {
+        return userRepo.findAll();
+    }
+
+    @Override
+    public User update(UserDTO dto) {
+        User user = get(dto);
+        if(dto.email() != null){
+            user.setEmail(dto.email());
+            user.setLastModificationDate();
+        }
+        if(dto.name() != null){
+            createActivity("name",dto.name(),user.getName(),null,user);
+            user.setName(dto.name());
+            user.setLastModificationDate();
+        }
+        if(dto.userName() != null){
+            user.setUsername(dto.userName());
+            user.setLastModificationDate();
+        }
+        if(dto.password() != null){
+            user.setPassword(dto.password());
+            user.setLastModificationDate();
+        }
+        if(dto.surname() != null){
+            createActivity("surname",dto.surname(),user.getSurname(),null,user);
+            user.setSurname(dto.surname());
+            user.setLastModificationDate();
+        }
+        if(dto.photoId() != null){
+            createActivity("photoId",dto.photoId().toString()," ",null,user);
+            var file = fileService.getFileById(dto.photoId());
+            file.setObjectId(user.getUuid());
             fileService.updateFile(file);
+        }
+        if(dto.rules() != null && !dto.rules().isEmpty()){
+            createActivity("rules",dto.rules().toString(),user.getRules().toString(),null,user);
+            user.setRules(
+                    dto.rules().stream()
+                            .map(
+                                    ruleService::get)
+                            .collect(Collectors.toList()
+                            )
+            );
+            user.setLastModificationDate();
         }
         return userRepo.save(user);
     }
-    public List<User> getAllUsers(){
-        return userRepo.findAll();
-    }
-    public User updateUser(UUID id, String username, String email, String password, String name, String surname,
-                           UUID fileId, Collection<RuleDTO> rules) {
-         User user = getUser(id);
-         if(email != null){
-             user.setEmail(email);
-             user.setLastModificationDate();
-         }
-         if(username != null){
-             user.setUsername(username);
-             user.setLastModificationDate();
-         }
-         if(password != null){
-             user.setPassword(password);
-             user.setLastModificationDate();
-         }
-         if(name != null){
-            user.setName(name);
-            user.setLastModificationDate();
+
+    @Override
+    public User add(UserDTO dto) {
+        var rules = dto.rules().stream().map(ruleService::get).toList();
+        User user = new User(dto.userName(), dto.name(), dto.surname(), dto.email(), rules, dto.password());
+        if(rules.isEmpty()){
+            user.setRules(List.of(ruleService.get(new RuleDTO(ERule.USER.toString()))));
         }
-         if(surname != null){
-            user.setSurname(surname);
-            user.setLastModificationDate();
-        }
-         if(fileId != null){
-            var file = fileService.getFileById(fileId);
-            file.setObjectId(user.getID());
-            fileService.updateFile(file);
-        }
-         if(rules != null && !rules.isEmpty()){
-             user.setRules(null);
-             user.setRules(
-                     rules.stream()
-                             .map(
-                                     ruleDTO -> ruleService.getRule(ruleDTO.id()))
-                             .collect(Collectors.toList()
-                             )
-             );
-         }
-         return userRepo.save(user);
+        return userRepo.save(user);
     }
-    public boolean deleteUser(UUID id) {
-         User user = getUser(id);
-         userRepo.delete(user);
-         return true;
+
+    @Override
+    public boolean delete(UserDTO dto) {
+        userRepo.delete(this.get(dto));
+        return true;
     }
-    public User addRuleToUser(UUID userID, String name) {
-        var rule = ruleService.getRule(name);
-        return userRepo.save(getUser(userID).addRole(rule));
+
+    @Override
+    public boolean createActivity(String fieldName, String newValue, String oldValue, User creator, EntityBase objectActivity) {
+        activityFabric.prepare(User.class.getName()).create(fieldName,newValue,oldValue,creator,objectActivity);
+        return true;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return getUser(username).orElse(null);
+
+        var opt = userRepo.findByUsername(username);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new UsernameNotFoundException("User " + username + " not found!");
     }
-    public User disconnectRuleFromUser(UUID userID, String name) {
-        var rule = ruleService.getRule(name);
-        return userRepo.save(getUser(userID).deleteRole(rule));
-    }
-    public User changeUserEnabled(UUID userId) {
-         var user = getUser(userId);
+    public User changeUserEnabled(UserDTO dto) {
+         var user = get(dto);
          user.setEnabled(!user.isEnabled());
          return userRepo.save(user);
     }

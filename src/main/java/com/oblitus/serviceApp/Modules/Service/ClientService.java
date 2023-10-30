@@ -1,55 +1,62 @@
 package com.oblitus.serviceApp.Modules.Service;
 
+import com.oblitus.serviceApp.Abstracts.IService;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class ClientService {
+public class ClientService implements IService<Client, ClientDTO> {
     private final ClientRepository repository;
     private final UserService userService;
 
-    public Client getClient(UUID id){
-        var client = repository.findById(id);
+
+    @Override
+    public Client get(ClientDTO dto) {
+        var client = repository.findById(dto.id());
         if(client.isPresent()){
             return client.get();
         }
         throw new EntityNotFoundException();
     }
 
-    public List<Client> getAllClients(){
+    @Override
+    public Collection<Client> getAll() {
         return repository.findAll();
     }
 
-    public Client addClient(String name, UUID creatorID){
-        if(creatorID == null){
-            return repository.save(new Client(name,null));
-        }
-        var user = userService.getUser(creatorID);
-        return repository.save(new Client(name, user));
+    @Override
+    public Client update(ClientDTO dto) {
+        Client client = get(dto);
+        client.setName(dto.name());
+        client.setLastModificationDate();
+        return repository.save(client);
     }
 
-    public boolean deleteClient(UUID id){
-        Optional<Client> opt = repository.findById(id);
+    @Override
+    public Client add(ClientDTO dto) {
+        if(dto.creator() == null){
+            return repository.save(new Client(dto.name(),null));
+        }
+        var user = userService.get(new UserDTO(dto.creator()));
+        return repository.save(new Client(dto.name(), user));
+    }
+
+    @Override
+    public boolean delete(ClientDTO dto) {
+        Optional<Client> opt = repository.findById(dto.id());
         if(opt.isEmpty()){
             return false;
         }
         repository.delete(opt.get());
         return true;
-    }
-
-    public Client updateClient(UUID id, String newName){
-        Client client = getClient(id);
-        client.setName(newName);
-        client.setLastModificationDate();
-        return repository.save(client);
-
     }
 }
