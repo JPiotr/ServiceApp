@@ -24,6 +24,7 @@ public class FileResponseMapper extends BaseResponseMapper<FileResponseBuilder> 
                 .setUUID(file.getUuid())
                 .setCreationDate(file.getCreationDate())
                 .setLastModificationDate(file.getLastModificationDate())
+                .setId(file.getID())
                 .build();
     }
 }

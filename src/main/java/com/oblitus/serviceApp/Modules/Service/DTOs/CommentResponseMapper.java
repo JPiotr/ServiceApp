@@ -24,6 +24,7 @@ public class CommentResponseMapper extends BaseResponseMapper<CommentResponseBui
                 .setUUID(comment.getUuid())
                 .setCreationDate(comment.getCreationDate())
                 .setLastModificationDate(comment.getLastModificationDate())
+                .setId(comment.getID())
                 .build();
     }
 }

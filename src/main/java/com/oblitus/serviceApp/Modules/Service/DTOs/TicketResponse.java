@@ -24,7 +24,6 @@ public class TicketResponse extends BaseResponse {
         private TicketState state;
         private TicketPriority priority;
         private BaseUserResponse creator;
-        private long number;
         private String note;
         private Collection<FileResponse> files;
 }

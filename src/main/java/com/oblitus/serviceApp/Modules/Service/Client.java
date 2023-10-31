@@ -16,6 +16,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "clients")
 public class Client extends EntityBase {
+    private static long num = 0;
     private String name;
 
     public Client(String name, User creator) {
@@ -29,5 +30,7 @@ public class Client extends EntityBase {
         super(uuid);
         this.name = name;
         this.creator = creator;
+        setID(Client.num);
+        Client.num += 1;
     }
 }

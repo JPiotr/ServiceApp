@@ -39,7 +39,8 @@ public class UserResponseMapper extends BaseResponseMapper<UserResponseBuilder> 
                 .setId(user.getID())
                 .setUUID(user.getUuid())
                 .setCreationDate(user.getCreationDate())
-                .setLastModificationDate(user.getLastModificationDate());
+                .setLastModificationDate(user.getLastModificationDate())
+                .setId(user.getID());
 
         if(user.getRules() == null || user.getRules().isEmpty()){
             builder.setRules(List.of());

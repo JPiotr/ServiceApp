@@ -25,6 +25,7 @@ public class BaseUserResponseMapper extends BaseResponseMapper<BaseUserResponseB
                         fileMapper.apply(fileService.getObjectFiles(user.getUuid()).stream().findFirst().orElse(null))
                 )
                 .setUUID(user.getUuid())
+                .setId(user.getID())
                 .build();
     }
 }

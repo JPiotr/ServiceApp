@@ -17,6 +17,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User extends EntityBase implements UserDetails, CredentialsContainer {
+    private static long num = 0;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
@@ -53,6 +54,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         locked = true;
         expired = false;
         email = "srvctrack@gmail.com";
+        setID(User.num);
+        User.num += 1;
     }
     protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
         super();
@@ -63,6 +66,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         this.name = name;
         this.surname = surname;
         this.enabled = true;
+        setID(User.num);
+        User.num += 1;
     }
     protected User addRole(Rule rule){
         rules.add(rule);

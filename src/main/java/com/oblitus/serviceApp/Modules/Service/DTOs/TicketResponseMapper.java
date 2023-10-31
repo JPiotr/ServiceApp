@@ -23,7 +23,6 @@ public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuild
                 .setDescription(ticket.getDescription())
                 .setClient(ticket.getClient().getUuid())
                 .setState(ticket.getState())
-                .setNumber(ticket.getID())
                 .setPriority(ticket.getPriority())
                 .setCreator(
                         baseUserResponseMapper.apply(ticket.getCreator())
@@ -34,7 +33,8 @@ public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuild
                 )
                 .setUUID(ticket.getUuid())
                 .setCreationDate(ticket.getCreationDate())
-                .setLastModificationDate(ticket.getLastModificationDate());
+                .setLastModificationDate(ticket.getLastModificationDate())
+                .setId(ticket.getID());
         if(ticket.getAssigned() != null){
             builder.setAssigned(
                     baseUserResponseMapper.apply(ticket.getAssigned())

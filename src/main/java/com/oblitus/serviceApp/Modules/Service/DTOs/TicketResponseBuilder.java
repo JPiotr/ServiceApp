@@ -43,10 +43,6 @@ public class TicketResponseBuilder extends BaseBuilder<TicketResponse> {
         entity.setCreator(creator);
         return this;
     }
-    public TicketResponseBuilder setNumber(long number){
-        entity.setNumber(number);
-        return this;
-    }
     public TicketResponseBuilder setNote(String note){
         entity.setNote(note);
         return this;

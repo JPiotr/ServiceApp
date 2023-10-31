@@ -15,13 +15,14 @@ import java.util.UUID;
 @Entity
 @Table(name = "files")
 public class File extends EntityBase {
-    UUID ObjectId;
-    String FileName;
-    String FileType;
-    String FileExtension;
-    String Description;
+    private static long num = 0;
+    protected UUID ObjectId;
+    protected String FileName;
+    protected String FileType;
+    protected String FileExtension;
+    protected String Description;
     @Lob
-    byte[] Blob;
+    protected byte[] Blob;
 
     public File(String uuid, UUID objectId, String fileName, String fileExtension, byte[] blob, String description) {
         super(uuid);
@@ -31,6 +32,8 @@ public class File extends EntityBase {
         Blob = blob;
         FileType = fileName.substring(fileName.lastIndexOf('.'));
         Description = description;
+        setID(File.num);
+        File.num += 1;
     }
 
     public File(UUID objectId, String fileName, String fileExtension, byte[] blob, String description) {
@@ -40,5 +43,7 @@ public class File extends EntityBase {
         Blob = blob;
         FileType = fileName.substring(fileName.lastIndexOf('.'));
         Description = description;
+        setID(File.num);
+        File.num += 1;
     }
 }

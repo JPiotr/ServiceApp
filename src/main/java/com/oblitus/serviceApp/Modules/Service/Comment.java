@@ -17,6 +17,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "comments")
 public class Comment extends EntityBase {
+    private static long num = 0;
     private String content;
     @ManyToOne(targetEntity = com.oblitus.serviceApp.Modules.Service.Ticket.class)
     private Ticket ticket;
@@ -26,5 +27,7 @@ public class Comment extends EntityBase {
         this.content = content;
         this.creator = creator;
         this.ticket = ticket;
+        setID(Comment.num);
+        Comment.num += 1;
     }
 }

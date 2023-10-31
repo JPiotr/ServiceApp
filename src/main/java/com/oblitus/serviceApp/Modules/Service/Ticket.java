@@ -15,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tickets")
 public class Ticket extends EntityBase {
+    private static long num = 0;
     private String title;
     private String description;
     @ManyToOne(targetEntity = Client.class)
@@ -34,5 +35,7 @@ public class Ticket extends EntityBase {
         this.priority = priority;
         this.creator = creator;
         this.note = note;
+        setID(Ticket.num);
+        Ticket.num += 1;
     }
 }

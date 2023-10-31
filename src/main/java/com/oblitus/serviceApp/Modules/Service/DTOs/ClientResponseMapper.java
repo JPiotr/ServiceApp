@@ -22,6 +22,7 @@ public class ClientResponseMapper extends BaseResponseMapper<ClientResponseBuild
                 .setUUID(client.getUuid())
                 .setCreationDate(client.getCreationDate())
                 .setLastModificationDate(client.getLastModificationDate())
+                .setId(client.getID())
                 .build();
     }
 }
