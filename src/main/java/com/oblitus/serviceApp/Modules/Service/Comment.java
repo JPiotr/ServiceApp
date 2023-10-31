@@ -20,6 +20,15 @@ public class Comment extends EntityBase {
     private String content;
     @ManyToOne(targetEntity = com.oblitus.serviceApp.Modules.Service.Ticket.class)
     private Ticket ticket;
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User creator;
+
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User lastEditedBy;
 
     public Comment(String content, Ticket ticket, User creator) {
         super();

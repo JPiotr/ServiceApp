@@ -4,6 +4,7 @@ import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -16,6 +17,15 @@ import java.util.UUID;
 @Table(name = "clients")
 public class Client extends EntityBase {
     private String name;
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User creator;
+
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User lastEditedBy;
 
     public Client(String name, User creator) {
         super();

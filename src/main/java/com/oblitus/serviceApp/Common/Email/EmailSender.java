@@ -9,20 +9,15 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.gmail.Gmail;
 import java.io.IOException;
-import java.util.Properties;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 
 @Service
-@RequiredArgsConstructor
 public class EmailSender {
     private static final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     private static final String appName = "Service Track";
@@ -39,8 +34,6 @@ public class EmailSender {
     public void sendEmail(String subject, String message, String toEmailAddress) throws IOException, MessagingException {
 
         // Encode as MIME message
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props);
         MimeMessage email = EmailCreator.createEmail(
                 appEmail, toEmailAddress, subject, message
         );
@@ -52,7 +45,6 @@ public class EmailSender {
         String encodedEmail = Base64.encodeBase64URLSafeString(rawMessageBytes);
         Message message1 = new Message();
         message1.setRaw(encodedEmail);
-
         try {
             // Create send message
             message1 = service.users().messages().send("me", message1).execute();

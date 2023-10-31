@@ -164,7 +164,7 @@ public class ServiceAppApplication {
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment2);
 		modulesWrapper.serviceModule.getServiceDAO().getCommentService().add(comment3);
 
-		emailSender.sendEmail("test","test", "srvctrack@gmail.com");
+//		emailSender.sendEmail("test","test", "srvctrack@gmail.com");
 
 	};}
 

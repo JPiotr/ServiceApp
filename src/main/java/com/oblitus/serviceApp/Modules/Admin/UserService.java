@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserService implements UserDetailsService, IService<User, UserDTO>, IActivityCreator {
+public class UserService implements UserDetailsService , IService<User, UserDTO>, IActivityCreator {
     private final UserRepository userRepo;
     private final RuleService ruleService;
     private final FileService fileService;

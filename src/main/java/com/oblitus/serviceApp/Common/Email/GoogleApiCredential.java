@@ -18,7 +18,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GoogleApiCredential {
     private static final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -34,17 +36,17 @@ public class GoogleApiCredential {
     }
 
     @Value("${application.sec.gapi.client-id}")
-    private static String apiClientId;
+    private static String apiClientId = "792620935482-gscjbv806vo8kh6s4j6prutu3f3iop3m.apps.googleusercontent.com";
     @Value("${application.sec.gapi.client-secret}")
-    private static String apiClientSecret;
+    private static String apiClientSecret = "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";
 
     public static Credential authorize()throws Exception {
         // set up authorization code flow
-
+        var scopes = Collections.singleton(GmailScopes.GMAIL_SEND);
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 netHttpTransport, jsonFactory,
                 apiClientId, apiClientSecret,
-                Collections.singleton(GmailScopes.GMAIL_SEND))
+                scopes)
                 .setDataStoreFactory(
                         dataStoreFactory)
                 .setAccessType("offline").build();
