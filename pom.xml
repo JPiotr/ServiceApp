@@ -16,11 +16,16 @@
 	<properties>
 		<java.version>19</java.version>
 		<sentry.version>6.28.0</sentry.version>
+		<spring-boot-admin.version>3.1.5</spring-boot-admin.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.apis</groupId>
@@ -141,6 +146,13 @@
 				<groupId>io.sentry</groupId>
 				<artifactId>sentry-bom</artifactId>
 				<version>${sentry.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.codecentric</groupId>
+				<artifactId>spring-boot-admin-dependencies</artifactId>
+				<version>${spring-boot-admin.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
