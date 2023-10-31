@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,6 +27,7 @@ public class UserService implements UserDetailsService , IService<User, UserDTO>
     private final RuleService ruleService;
     private final FileService fileService;
     private final ActivityFactory activityFabric;
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public User get(UserDTO dto) {
@@ -88,7 +91,8 @@ public class UserService implements UserDetailsService , IService<User, UserDTO>
     @Override
     public User add(UserDTO dto) {
         var rules = dto.rules().stream().map(ruleService::get).toList();
-        User user = new User(dto.userName(), dto.name(), dto.surname(), dto.email(), rules, dto.password());
+        User user = new User(dto.userName(), dto.name(), dto.surname(), dto.email(), rules,
+                passwordEncoder.encode(dto.password()));
         if(rules.isEmpty()){
             user.setRules(List.of(ruleService.get(new RuleDTO(ERule.USER.toString()))));
         }
@@ -120,5 +124,9 @@ public class UserService implements UserDetailsService , IService<User, UserDTO>
          var user = get(dto);
          user.setEnabled(!user.isEnabled());
          return userRepo.save(user);
+    }
+
+    public User setLastLoginDate(User user){
+        return userRepo.save(user);
     }
 }

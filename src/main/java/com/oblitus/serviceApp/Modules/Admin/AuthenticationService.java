@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -22,28 +23,17 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     public AuthResponse register(RUserDTO userDTO) {
         UserDTO user = new UserDTO(null,
+                userDTO.email(),
+                userDTO.userName(),
                 userDTO.name(),
                 userDTO.surname(),
-                userDTO.email(),
-                passwordEncoder.encode(userDTO.password()),
-                null,
-                null,
+                userDTO.password(),
+                ruleService.getAll().stream().filter(
+                        ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
+                ).map(ruleMapper).collect(Collectors.toList()),
                 null
         );
-        var userDetails = userService.add(
-                new UserDTO(
-                        null,
-                        user.email(),
-                        user.userName(),
-                        user.name(),
-                        user.surname(),
-                        user.password(),
-                        ruleService.getAll().stream().filter(
-                                ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
-                                ).map(ruleMapper).collect(Collectors.toList()),
-                        user.photoId()
-                )
-        );
+        var userDetails = userService.add(user);
         var token = jwtService.generateToken(userService.get(new UserDTO(userDetails.getUuid())));
         return AuthResponse.builder().token(token).build();
     }
@@ -54,8 +44,9 @@ public class AuthenticationService {
                         userDTO.password()
                 )
         );
-        var optUser = userService.loadUserByUsername(userDTO.userName());
-        var token = jwtService.generateToken(optUser);
+        User optUser = (User)userService.loadUserByUsername(userDTO.userName());
+        optUser.setLastLoginDate(LocalDateTime.now());
+        var token = jwtService.generateToken(userService.setLastLoginDate(optUser));
         return AuthResponse.builder().token(token).build();
 
     }

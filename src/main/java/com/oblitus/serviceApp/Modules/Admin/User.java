@@ -4,10 +4,12 @@ import com.oblitus.serviceApp.Abstracts.EntityBase;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -64,8 +66,12 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         this.rules = rules;
         this.password = password;
         this.name = name;
+        this.expired = false;
         this.surname = surname;
+        this.locked = false;
         this.enabled = true;
+        this.accountExpirationDate = LocalDateTime.now().plusMonths(3);
+        this.credentialExpirationDate = LocalDateTime.now().plusMonths(3);
         setID(User.num);
         User.num += 1;
     }
@@ -77,17 +83,28 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         rules.remove(rule);
         return this;
     }
-    public Collection<Rule> getAuthorities() {
+//    @Override
+//    public Collection<Rule> getAuthorities() {
+//        return getRules();
+//    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRules();
     }
+
+    @Override
     public boolean isAccountNonExpired() {
-        return expired;
+        return !expired;
     }
+    @Override
     public boolean isAccountNonLocked() {
         return !locked;
     }
+    @Override
     public boolean isCredentialsNonExpired() {
-        return credentialsExpired;
+        return !credentialsExpired;
     }
 
     @Override

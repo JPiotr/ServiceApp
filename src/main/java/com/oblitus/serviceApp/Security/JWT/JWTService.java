@@ -19,11 +19,11 @@ import java.util.function.Function;
 @Service
 public class JWTService {
     @Value("${application.sec.jwt.secret-key}")
-    private String KEY;
+    private String KEY = "88cd2108b5347d973cf39cdf9053d7dd42704876d8c9a9bd8e2d168259d3ddf7";
     @Value("${application.sec.jwt.expiration}")
-    private long EXPIRATION;
+    private long EXPIRATION = 86400000;
     @Value("${application.sec.jwt.refresh-expiration}")
-    private long REFRESH_EXPIRATION;
+    private long REFRESH_EXPIRATION = 604800000;
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
