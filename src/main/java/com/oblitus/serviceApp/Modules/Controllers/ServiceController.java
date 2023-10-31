@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
+import com.oblitus.serviceApp.Modules.MappersWrapper;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.*;
 import jakarta.annotation.Nonnull;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ServiceController {
     private final ModulesWrapper modulesWrapper;
+    private final MappersWrapper mappersWrapper;
 
     @GetMapping("/clients/{id}")
     public ResponseEntity<Response> getClient(@PathVariable @Validated UUID id){
@@ -29,7 +31,9 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Client with ID = " + id + ".")
-                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientService().get(new ClientDTO(id))))
+                            .data(Map.of("client", mappersWrapper.clientMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getClientService()
+                                            .get(new ClientDTO(id)))))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -55,7 +59,9 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing clients.")
-                        .data(Map.of("clients",modulesWrapper.serviceModule.getServiceDAO().getClientService().getAll()))
+                        .data(Map.of("clients",modulesWrapper.serviceModule.getServiceDAO().getClientService()
+                                .getAll().stream().map(mappersWrapper.clientMapper).toList())
+                        )
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -67,7 +73,10 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New Client added to Database.")
-                        .data(Map.of("client",modulesWrapper.serviceModule.getServiceDAO().getClientService().add(clientDTO)))
+                        .data(Map.of("client", mappersWrapper.clientMapper.apply(
+                                modulesWrapper.serviceModule.getServiceDAO().getClientService().add(clientDTO))
+                                )
+                        )
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -80,7 +89,10 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Client updated.")
-                            .data(Map.of("client", modulesWrapper.serviceModule.getServiceDAO().getClientService().update(clientDTO)))
+                            .data(Map.of("client", mappersWrapper.clientMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getClientService().update(clientDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.ACCEPTED.value())
                             .status(HttpStatus.ACCEPTED)
                             .build()
@@ -91,7 +103,10 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("New Client added to Database.")
-                            .data(Map.of("client",modulesWrapper.serviceModule.getServiceDAO().getClientService().add(clientDTO)))
+                            .data(Map.of("client",mappersWrapper.clientMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getClientService().add(clientDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .devMessage(e.getMessage())
@@ -120,7 +135,11 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Comment with ID = " + id + ".")
-                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentService().get(new CommentDTO(id))))
+                            .data(Map.of("comment", mappersWrapper.commentMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getCommentService()
+                                            .get(new CommentDTO(id)))
+                                    )
+                            )
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -146,7 +165,10 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing comments.")
-                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentService().getAll()))
+                        .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentService()
+                                .getAll().stream().map(mappersWrapper.commentMapper).toList()
+                                )
+                        )
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -159,8 +181,11 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New Comment added to Database.")
-                        .data(Map.of("comment",modulesWrapper.serviceModule.getServiceDAO()
-                                .getCommentService().add(commentDTO)))
+                        .data(Map.of("comment",mappersWrapper.commentMapper.apply(
+                                modulesWrapper.serviceModule.getServiceDAO()
+                                .getCommentService().add(commentDTO))
+                                )
+                        )
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -174,7 +199,10 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Comment updated.")
-                            .data(Map.of("comment", modulesWrapper.serviceModule.getServiceDAO().getCommentService().update(commentDTO)))
+                            .data(Map.of("comment", mappersWrapper.commentMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getCommentService().update(commentDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.ACCEPTED.value())
                             .status(HttpStatus.ACCEPTED)
                             .build()
@@ -185,8 +213,10 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("New Comment added to Database.")
-                            .data(Map.of("comment",modulesWrapper.serviceModule.getServiceDAO()
-                                    .getCommentService().add(commentDTO)))
+                            .data(Map.of("comment",mappersWrapper.commentMapper.apply(modulesWrapper.serviceModule.getServiceDAO()
+                                    .getCommentService().add(commentDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .devMessage(e.getMessage())
@@ -201,13 +231,16 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("Try to drop Comment")
-                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentService().delete(commentDTO)))
+                        .data(Map.of("result", modulesWrapper.serviceModule.getServiceDAO().getCommentService()
+                                .delete(commentDTO))
+                        )
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
 
+    @Deprecated
     @DeleteMapping("/comment/{id}")
     public ResponseEntity<Response> deleteCommentByID(@PathVariable @Validated UUID id){
         return ResponseEntity.ok(
@@ -229,7 +262,7 @@ public class ServiceController {
                         .message("All ticket's comments.")
                         .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentService().getAll().stream().filter(
                                 commentResponse -> ticketId.equals(commentResponse.getTicket().getUuid())
-                        ).collect(Collectors.toList())))
+                        ).map(mappersWrapper.commentMapper).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -243,7 +276,12 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Ticket with ID = " + id + ".")
-                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketService().get(new TicketDTO(id))))
+                            .data(Map.of("ticket", mappersWrapper.ticketMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                            .get(new TicketDTO(id))
+                                            )
+                                    )
+                            )
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -270,7 +308,8 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing tickets.")
-                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketService().getAll()))
+                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                .getAll().stream().map(mappersWrapper.ticketMapper).toList()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -283,8 +322,8 @@ public class ServiceController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New Ticket added to Database.")
-                        .data(Map.of("ticket",modulesWrapper.serviceModule.getServiceDAO()
-                                .getTicketService().add(ticketDTO)))
+                        .data(Map.of("ticket",mappersWrapper.ticketMapper.apply(modulesWrapper.serviceModule.getServiceDAO()
+                                .getTicketService().add(ticketDTO))))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -301,7 +340,7 @@ public class ServiceController {
                                 .getAll().stream().filter(
                                 ticket -> userId.equals(ticket.getAssigned().getUuid())
                                         || userId.equals(ticket.getCreator().getUuid())
-                        )
+                        ).map(mappersWrapper.ticketMapper)
                                 .collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -316,7 +355,10 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Ticket updated.")
-                            .data(Map.of("ticket", modulesWrapper.serviceModule.getServiceDAO().getTicketService().update(ticketDTO)))
+                            .data(Map.of("ticket",mappersWrapper.ticketMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO().getTicketService().update(ticketDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -327,8 +369,10 @@ public class ServiceController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("New Ticket added to Database.")
-                            .data(Map.of("ticket",modulesWrapper.serviceModule.getServiceDAO()
-                                    .getTicketService().add(ticketDTO)))
+                            .data(Map.of("ticket",mappersWrapper.ticketMapper.apply(modulesWrapper.serviceModule.getServiceDAO()
+                                    .getTicketService().add(ticketDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -350,6 +394,7 @@ public class ServiceController {
         );
     }
 
+    @Deprecated
     @DeleteMapping("/ticket/{id}")
     public ResponseEntity<Response> deleteTicketById(@PathVariable @Validated UUID id){
         return ResponseEntity.ok(
@@ -370,8 +415,11 @@ public class ServiceController {
             return ResponseEntity.ok(
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Activity with ID = " + id + ".")
-                            .data(Map.of("activity", modulesWrapper.serviceModule.getServiceDAO()
-                                    .getActivityService().get(new ActivityDTO(id))))
+                            .data(Map.of("activity", mappersWrapper.activityMapper.apply(
+                                    modulesWrapper.serviceModule.getServiceDAO()
+                                    .getActivityService().get(new ActivityDTO(id)))
+                                    )
+                            )
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -398,7 +446,8 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All existing activities.")
                         .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO()
-                                .getActivityService().getAll()))
+                                .getActivityService().getAll().stream().map(mappersWrapper.activityMapper)
+                                .toList()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -414,7 +463,7 @@ public class ServiceController {
                         .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO()
                                 .getActivityService().getAll().stream().filter(
                                 activity -> objectId.equals(activity.getObjectActivity())
-                        ).collect(Collectors.toList())))
+                        ).map(mappersWrapper.activityMapper).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()

@@ -1,9 +1,11 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
-import com.oblitus.serviceApp.Common.File.DTOs.FileResponseMapper;
-import com.oblitus.serviceApp.Common.File.File;
-import com.oblitus.serviceApp.Common.File.FileService;
+import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponseMapper;
+import com.oblitus.serviceApp.Modules.BaseModule.File;
+import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Common.Response;
+import com.oblitus.serviceApp.Modules.MappersWrapper;
+import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +24,13 @@ import java.util.UUID;
 @RequestMapping("/files")
 @RequiredArgsConstructor
 public class IOController {
-    private final FileService fileService;
-    private final FileResponseMapper fileResponseMapper;
+    private final ModulesWrapper modulesWrapper;
+    private final MappersWrapper mappersWrapper;
     @GetMapping("/{objectId}/{fileName}")
     public ResponseEntity<byte[]> getFile(@PathVariable @Validated String fileName,
                                           @PathVariable @Validated UUID objectId,
                                           @RequestParam @Validated @Nullable Boolean download) {
-        File file = fileService.getFile(objectId,fileName);
+        File file = modulesWrapper.baseModule.getBaseDAO().getFileService().getFile(objectId,fileName);
         if(download != null && download){
             return ResponseEntity.ok().header(
                             "attachment; filename=\""+file.getFileName() + "\"")
@@ -50,8 +52,9 @@ public class IOController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("File uploaded.")
-                        .data(Map.of("file", fileResponseMapper.apply(
-                                fileService.addFile(objectId,file,description)
+                        .data(Map.of("file", mappersWrapper.fileMapper.apply(
+                                modulesWrapper.baseModule.getBaseDAO().getFileService()
+                                        .addFile(objectId,file,description)
                         )))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
@@ -81,8 +84,9 @@ public class IOController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("File uploaded.")
-                            .data(Map.of("file", fileResponseMapper.apply(
-                                    fileService.addFileWithoutObj(file,description)
+                            .data(Map.of("file", mappersWrapper.fileMapper.apply(
+                                    modulesWrapper.baseModule.getBaseDAO().getFileService()
+                                            .addFileWithoutObj(file,description)
                             )))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
@@ -113,8 +117,8 @@ public class IOController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Files uploaded.")
-                            .data(Map.of("file",
-                                    fileService.addFiles(objectId,map)
+                            .data(Map.of("result",
+                                    modulesWrapper.baseModule.getBaseDAO().getFileService().addFiles(objectId,map)
                             ))
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
@@ -143,7 +147,8 @@ public class IOController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Try to drop File")
-                            .data(Map.of("result", fileService.deleteFile(fileId)))
+                            .data(Map.of("result", modulesWrapper.baseModule.getBaseDAO().getFileService()
+                                    .deleteFile(fileId)))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -154,7 +159,7 @@ public class IOController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("File " + fileId + " not found.")
-                            .data(Map.of("user", null))
+                            .data(Map.of("file", " "))
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .status(HttpStatus.NOT_FOUND)
                             .reason("There is no Entity with this ID!")

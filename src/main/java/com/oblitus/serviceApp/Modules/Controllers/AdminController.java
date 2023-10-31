@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
+import com.oblitus.serviceApp.Modules.MappersWrapper;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,14 +25,15 @@ import java.util.UUID;
 @RequestMapping("/adminModule")
 @RequiredArgsConstructor
 public class AdminController {
-    private final UserResponseMapper userResponseMapper;
+    private final MappersWrapper mappersWrapper;
     private final ModulesWrapper modulesWrapper;
 
     @GetMapping("/user/{id}")
     public ResponseEntity<Response> getUser(@PathVariable @Validated UUID id){
         try{
-            UserResponse user = userResponseMapper.apply(
-                    modulesWrapper.adminModule.getAdminDAO().getUserService().get(new UserDTO(id)));
+            UserResponse user = mappersWrapper.userMapper.apply(
+                    modulesWrapper.adminModule.getAdminDAO().getUserService().get(new UserDTO(id))
+            );
             return ResponseEntity.ok(
                     Response.builder()
                     .timestamp(LocalDateTime.now())
@@ -62,8 +64,12 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Changed user enabled")
-                            .data(Map.of("user", userResponseMapper.apply(
-                                    modulesWrapper.adminModule.getAdminDAO().getUserService().changeUserEnabled(new UserDTO(id)))))
+                            .data(Map.of("user", mappersWrapper.userMapper.apply(
+                                    modulesWrapper.adminModule.getAdminDAO().getUserService()
+                                            .changeUserEnabled(new UserDTO(id))
+                                            )
+                                    )
+                            )
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -91,8 +97,10 @@ public class AdminController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New User added to Database.")
-                        .data(Map.of("user", userResponseMapper.apply(
-                                modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))))
+                        .data(Map.of("user", mappersWrapper.userMapper.apply(
+                                modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))
+                                )
+                        )
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()
@@ -107,8 +115,10 @@ public class AdminController {
                             .timestamp(LocalDateTime.now())
                             .message("All users with rule "+ruleName)
                             .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()
-                                    .stream().filter(userResponse -> userResponse.getRules().stream()
-                                            .anyMatch(ruleDTO -> Objects.equals(ruleDTO.getName(), ruleName)))))
+                                    .stream().map(mappersWrapper.userMapper)
+                                    .filter(userResponse -> userResponse.getRules().stream()
+                                            .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))
+                                    .toList()))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
@@ -118,7 +128,8 @@ public class AdminController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing users.")
-                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()))
+                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()
+                                .stream().map(mappersWrapper.userMapper).toList()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -132,7 +143,10 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("User updated.")
-                            .data(Map.of("user", modulesWrapper.adminModule.getAdminDAO().getUserService().update(userDTO)))
+                            .data(Map.of("user", mappersWrapper.userMapper.apply(
+                                    modulesWrapper.adminModule.getAdminDAO().getUserService().update(userDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.ACCEPTED.value())
                             .status(HttpStatus.ACCEPTED)
                             .build()
@@ -144,8 +158,10 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("New User added to Database.")
-                            .data(Map.of("user", userResponseMapper.apply(
-                                    modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))))
+                            .data(Map.of("user", mappersWrapper.userMapper.apply(
+                                    modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))
+                                    )
+                            )
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
                             .build()
@@ -160,7 +176,10 @@ public class AdminController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("Try to drop User")
-                            .data(Map.of("result", modulesWrapper.adminModule.getAdminDAO().getUserService().delete(userDTO)))
+                            .data(Map.of("result", modulesWrapper.adminModule.getAdminDAO().getUserService()
+                                    .delete(userDTO)
+                                    )
+                            )
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
