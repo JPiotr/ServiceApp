@@ -31,22 +31,11 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthResponse register(RUserDTO userDTO) {
-        UserDTO user = new UserDTO(null,
-                userDTO.email(),
-                userDTO.userName(),
-                userDTO.name(),
-                userDTO.surname(),
-                passwordEncoder.encode(userDTO.password()),
-                ruleService.getAll().stream().filter(
-                        ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
-                ).map(ruleMapper).collect(Collectors.toList()),
-                null
-        );
-        User usr = new User(user.userName(),user.name(),user.surname(),user.email(),
+        User usr = new User(userDTO.userName(),userDTO.name(),userDTO.surname(),userDTO.email(),
                 ruleService.getAll().stream().filter(
                         ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
                 ).collect(Collectors.toList())
-                ,user.password());
+                ,userDTO.password());
 
         var userDetails = userRepository.save(usr);
         var token = jwtService.generateToken(usr);
