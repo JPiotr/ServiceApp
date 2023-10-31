@@ -24,15 +24,6 @@ public class Ticket extends EntityBase {
     private TicketState state;
     private TicketPriority priority;
     private String note;
-    @Getter
-    @Setter
-    @ManyToOne(targetEntity = User.class)
-    protected User creator;
-
-    @Getter
-    @Setter
-    @ManyToOne(targetEntity = User.class)
-    protected User lastEditedBy;
     public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User assigned, TicketPriority priority, User creator, String note){
         super();
         this.title = title;

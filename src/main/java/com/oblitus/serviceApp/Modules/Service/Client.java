@@ -17,15 +17,6 @@ import java.util.UUID;
 @Table(name = "clients")
 public class Client extends EntityBase {
     private String name;
-    @Getter
-    @Setter
-    @ManyToOne(targetEntity = User.class)
-    protected User creator;
-
-    @Getter
-    @Setter
-    @ManyToOne(targetEntity = User.class)
-    protected User lastEditedBy;
 
     public Client(String name, User creator) {
         super();
