@@ -3,7 +3,7 @@ package com.oblitus.serviceApp.Modules.Service;
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Abstracts.IActivityCreator;
 import com.oblitus.serviceApp.Abstracts.IService;
-import com.oblitus.serviceApp.Common.File.FileService;
+import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
