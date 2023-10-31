@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
-import com.oblitus.serviceApp.Common.File.DTOs.FileResponse;
+import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
 
 
 public class BaseUserResponseBuilder extends BaseBuilder<BaseUserResponse> {

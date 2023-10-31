@@ -2,7 +2,7 @@ package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oblitus.serviceApp.Abstracts.BaseResponse;
-import com.oblitus.serviceApp.Common.File.DTOs.FileResponse;
+import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
