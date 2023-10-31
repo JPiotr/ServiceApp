@@ -1,6 +1,8 @@
 package com.oblitus.serviceApp.Security.JWT;
 
+import com.oblitus.serviceApp.Modules.Admin.UserRepository;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
+import com.oblitus.serviceApp.Security.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +23,8 @@ import java.io.IOException;
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final TokenRepository repository;
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -44,8 +47,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         username = jwtService.extractUserName(jwt);
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetails userDetails = userService.loadUserByUsername(username);
-            if(jwtService.isTokenValid(jwt, userDetails)) {
+                UserDetails userDetails = userRepository.findByUsername(username).orElseThrow();
+                var isTokenValid = repository.findByToken(jwt)
+                        .map(token -> !token.isExpired() && !token.isRevoked())
+                        .orElse(false);
+            if(jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

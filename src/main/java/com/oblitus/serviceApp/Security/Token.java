@@ -3,6 +3,7 @@ package com.oblitus.serviceApp.Security;
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tokens")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Token extends EntityBase {
     @Column(unique = true)
     private String token;

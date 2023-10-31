@@ -41,6 +41,9 @@ public class JWTService {
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails){
         return buildToken(extraClaims, userDetails, REFRESH_EXPIRATION);
     }
+    public String generateRefreshToken(UserDetails userDetails){
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
     public boolean isTokenValid(String token, UserDetails userDetails){
         final String userName = extractUserName(token);
         return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserService implements UserDetailsService , IService<User, UserDTO>, IActivityCreator {
+public class UserService implements IService<User, UserDTO>, IActivityCreator {
     private final UserRepository userRepo;
     private final RuleService ruleService;
     private final FileService fileService;
@@ -111,15 +111,6 @@ public class UserService implements UserDetailsService , IService<User, UserDTO>
         return true;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        var opt = userRepo.findByUsername(username);
-        if(opt.isPresent()){
-            return opt.get();
-        }
-        throw new UsernameNotFoundException("User " + username + " not found!");
-    }
     public User changeUserEnabled(UserDTO dto) {
          var user = get(dto);
          user.setEnabled(!user.isEnabled());

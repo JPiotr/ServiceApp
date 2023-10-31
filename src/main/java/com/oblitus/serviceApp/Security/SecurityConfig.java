@@ -1,7 +1,6 @@
 package com.oblitus.serviceApp.Security;
 
 import com.oblitus.serviceApp.Modules.Admin.ERule;
-import com.oblitus.serviceApp.Modules.Admin.UserService;
 import com.oblitus.serviceApp.Security.JWT.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +11,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -23,10 +22,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final AuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final LogoutHandler logoutHandler;
     private static final String[] WHITE_LIST = {
 //            "/**",
             "/auth/login",
-            "/auth/**",
             "/auth/register",
             "/swagger-ui/**",
             "/swagger-ui.html",
@@ -72,7 +71,11 @@ public class SecurityConfig {
                         httpSecuritySessionManagementConfigurer
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).logout(logout ->
+                        logout.logoutUrl("/auth/logout")
+                                .addLogoutHandler(logoutHandler)
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                );
 
 
         return http.build();

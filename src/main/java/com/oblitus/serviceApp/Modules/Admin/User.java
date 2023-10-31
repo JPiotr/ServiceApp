@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
+import com.oblitus.serviceApp.Security.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
@@ -30,6 +31,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     private LocalDateTime lastLoginDate;
     private LocalDateTime credentialExpirationDate;
     private LocalDateTime accountExpirationDate;
+    @OneToMany(targetEntity = Token.class)
+    private Collection<Token> tokens;
 
     @Setter
     @Getter
@@ -43,6 +46,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
 
     @Getter
     @Setter
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
@@ -119,4 +123,5 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     public String toString() {
         return getName()+ " " + getSurname();
     }
+
 }
