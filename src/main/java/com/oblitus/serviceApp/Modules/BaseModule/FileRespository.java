@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Common.File;
+package com.oblitus.serviceApp.Modules.BaseModule;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

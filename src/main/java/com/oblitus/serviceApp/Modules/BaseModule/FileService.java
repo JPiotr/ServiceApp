@@ -1,6 +1,5 @@
-package com.oblitus.serviceApp.Common.File;
+package com.oblitus.serviceApp.Modules.BaseModule;
 
-import com.oblitus.serviceApp.Modules.Service.Ticket;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
