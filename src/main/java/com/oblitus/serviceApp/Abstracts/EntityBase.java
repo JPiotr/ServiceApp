@@ -41,6 +41,15 @@ public abstract class EntityBase{ //implements Serializable {
 
     public Boolean readOnly;
     protected Boolean locked;
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User creator;
+
+    @Getter
+    @Setter
+    @ManyToOne(targetEntity = User.class)
+    protected User lastEditedBy;
 
 
 
