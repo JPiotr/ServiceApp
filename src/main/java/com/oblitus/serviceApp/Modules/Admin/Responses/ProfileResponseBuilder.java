@@ -3,7 +3,7 @@ package com.oblitus.serviceApp.Modules.Admin.Responses;
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
 import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
 
-public class ProfileResponseBuilder extends BaseBuilder<ProfileResponse> {
+class ProfileResponseBuilder extends BaseBuilder<ProfileResponse> {
     @Override
     public void setEntity() {
         entity = new ProfileResponse();

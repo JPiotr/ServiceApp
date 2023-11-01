@@ -5,7 +5,7 @@ import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
 
 import java.time.LocalDateTime;
 
-public class MyProfileResponseBuilder extends BaseBuilder<MyProfileResponse> {
+class MyProfileResponseBuilder extends BaseBuilder<MyProfileResponse> {
     @Override
     public void setEntity() {
         entity = new MyProfileResponse();

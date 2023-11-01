@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class RuleMapper implements Function<Rule, RuleDTO> {
+public class RuleMapper implements Function<Rule, RuleDTO> { //todo: refactor this
     @Override
     public RuleDTO apply(Rule rule) {
         return new RuleDTO(

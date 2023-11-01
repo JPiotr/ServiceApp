@@ -7,7 +7,7 @@ import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public class UserResponseBuilder extends BaseBuilder<UserResponse> {
+class UserResponseBuilder extends BaseBuilder<UserResponse> {
     @Override
     public void setEntity() {
         entity = new UserResponse();
