@@ -2,6 +2,7 @@ package com.oblitus.serviceApp.Modules.Service;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.Admin.User;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 

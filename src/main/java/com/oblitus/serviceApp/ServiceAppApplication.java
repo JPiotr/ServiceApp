@@ -57,7 +57,8 @@ public class ServiceAppApplication {
 		StaticInfo.SuperUser.setPassword(encoder.encode(StaticInfo.SuperUserPasswd));
 		userRepository.save(StaticInfo.SuperUser);
 		modulesWrapper.adminModule.getAdminDAO().getUserService().update(
-				new UserDTO(StaticInfo.SuperUser.getUuid()
+				new UserDTO(
+						StaticInfo.SuperUser.getUuid()
 						,null
 						,null
 						,null

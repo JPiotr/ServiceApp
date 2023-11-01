@@ -2,6 +2,8 @@ package com.oblitus.serviceApp.Modules.Service;
 
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Modules.Admin.User;
+import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,25 +27,28 @@ public class ActivityFactory {
     }
     public Activity create(String fieldName, String newValue, String oldValue, User creator, EntityBase objectActivity){
         return switch (className) {
-            case "Ticket" -> activityRepository.save(new TicketActivity(fieldName, newValue, oldValue, creator, (Ticket) objectActivity));
-            case "User" -> activityRepository.save(new UserActivity(fieldName, newValue, oldValue, creator, (User) objectActivity));
-            case "Comment" -> activityRepository.save(new CommentActivity(fieldName, newValue, oldValue, creator, (Comment) objectActivity));
+            case "com.oblitus.serviceApp.Modules.Service.Ticket" -> activityRepository.save(((Activity) new TicketActivity(fieldName, newValue, oldValue, creator, (Ticket) objectActivity)));
+            case "com.oblitus.serviceApp.Modules.Admin.User" -> activityRepository.save(((Activity) new UserActivity(fieldName, newValue, oldValue, creator, (User) objectActivity)));
+            case "com.oblitus.serviceApp.Modules.Service.Comment" -> activityRepository.save(((Activity) new CommentActivity(fieldName, newValue, oldValue, creator, (Comment) objectActivity)));
             default -> null;
         };
     }
-
+    @Entity
+    @NoArgsConstructor
     private static class TicketActivity extends Activity{
         public TicketActivity(String fieldName, String newValue, String oldValue, User creator, Ticket objectActivity) {
             super(objectActivity.getClass().getName(), fieldName, newValue, oldValue, EActivityTypes.SYSTEM.toString(), creator, objectActivity.getUuid());
         }
     }
-
+    @Entity
+    @NoArgsConstructor
     private static class UserActivity extends Activity{
         public UserActivity(String fieldName, String newValue, String oldValue, User creator, User objectActivity) {
             super(objectActivity.getClass().getName(), fieldName, newValue, oldValue, EActivityTypes.SYSTEM.toString(), creator, objectActivity.getUuid());
         }
     }
-
+    @Entity
+    @NoArgsConstructor
     private static class CommentActivity extends Activity{
         public CommentActivity(String fieldName, String newValue, String oldValue, User creator, Comment objectActivity) {
             super(objectActivity.getClass().getName(), fieldName, newValue, oldValue, EActivityTypes.USER.toString(), creator, objectActivity.getUuid());

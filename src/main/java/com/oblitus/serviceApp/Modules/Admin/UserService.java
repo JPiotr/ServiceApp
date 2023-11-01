@@ -11,6 +11,7 @@ import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Service.ActivityFactory;
+import com.oblitus.serviceApp.Utils.StaticInfo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -56,7 +57,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.name() != null){
-            createActivity("name",dto.name(),user.getName(),null,user);
+            createActivity("name",dto.name(),user.getName(),StaticInfo.SuperUser,user);
             user.setName(dto.name());
             user.setLastModificationDate();
         }
@@ -69,12 +70,12 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.surname() != null){
-            createActivity("surname",dto.surname(),user.getSurname(),null,user);
+            createActivity("surname",dto.surname(),user.getSurname(),StaticInfo.SuperUser,user);
             user.setSurname(dto.surname());
             user.setLastModificationDate();
         }
         if(dto.photoId() != null){
-            createActivity("photoId",dto.photoId().toString()," ",null,user);
+            createActivity("photoId",dto.photoId().toString()," ",StaticInfo.SuperUser,user);
             var file = fileService.getFileById(dto.photoId());
             file.setObjectId(user.getUuid());
             fileService.updateFile(file);
@@ -82,7 +83,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.rules() != null && !dto.rules().isEmpty()){
-            createActivity("rules",dto.rules().toString(),user.getRules().toString(),null,user);
+            createActivity("rules",dto.rules().toString(),user.getRules().toString(),StaticInfo.SuperUser,user);
             user.setRules(
                     dto.rules().stream()
                             .map(
@@ -142,7 +143,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
 
     public User changeUserPassword(String username, PasswordChangeDTO dto) throws PasswordNotMatchException, NewPasswordMismatchException {
         var user = getUserByUserName(username);
-        if(Objects.equals(passwordEncoder.encode(dto.password()), user.getPassword())){
+        if(passwordEncoder.matches(dto.password(), user.getPassword())){
             if(Objects.equals(dto.newPassword(), dto.newPasswordConfirmation())){
                 user.setPassword(passwordEncoder.encode(dto.newPassword()));
                 user.setLastModificationDate();
@@ -160,17 +161,17 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.name() != null){
-            createActivity("name",dto.name(),user.getName(),null,user);
+            createActivity("name",dto.name(),user.getName(), StaticInfo.SuperUser,user);
             user.setName(dto.name());
             user.setLastModificationDate();
         }
         if(dto.surname() != null){
-            createActivity("surname",dto.surname(),user.getSurname(),null,user);
+            createActivity("surname",dto.surname(),user.getSurname(),StaticInfo.SuperUser,user);
             user.setSurname(dto.surname());
             user.setLastModificationDate();
         }
         if(dto.avatar() != null){
-            createActivity("photoId",dto.avatar().toString()," ",null,user);
+            createActivity("photoId",dto.avatar().toString()," ",StaticInfo.SuperUser,user);
             var file = fileService.getFileById(dto.avatar());
             file.setObjectId(user.getUuid());
             fileService.updateFile(file);
