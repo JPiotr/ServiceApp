@@ -2,6 +2,8 @@ package com.oblitus.serviceApp.Modules.Admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
+import com.oblitus.serviceApp.Modules.Admin.Exceptions.AccountAlreadyExistException;
+import com.oblitus.serviceApp.Modules.Admin.Responses.AuthResponse;
 import com.oblitus.serviceApp.Modules.Admin.Responses.RuleMapper;
 import com.oblitus.serviceApp.Security.JWT.JWTService;
 import com.oblitus.serviceApp.Security.Token;
@@ -31,12 +33,17 @@ public class AuthenticationService {
     private final RuleMapper ruleMapper;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
-    public AuthResponse register(RUserDTO userDTO) {
+    public AuthResponse register(RUserDTO userDTO) throws AccountAlreadyExistException {
         User usr = new User(userDTO.userName(),userDTO.name(),userDTO.surname(),userDTO.email(),
                 ruleService.getAll().stream().filter(
                         ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
                 ).collect(Collectors.toList())
                 ,passwordEncoder.encode(userDTO.password()));
+
+        var check = userRepository.findByUsername(usr.getUsername());
+        if(check.isPresent()){
+            throw new AccountAlreadyExistException("Account with that Username already Exist!");
+        }
 
         var userDetails = userRepository.save(usr);
         var token = jwtService.generateToken(usr);
