@@ -3,6 +3,10 @@ package com.oblitus.serviceApp.Modules.Admin;
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Abstracts.IActivityCreator;
 import com.oblitus.serviceApp.Abstracts.IService;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ChangeProfileDetailsDTO;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.PasswordChangeDTO;
+import com.oblitus.serviceApp.Modules.Admin.Exceptions.NewPasswordMismatchException;
+import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordNotMatchException;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
@@ -17,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,7 +65,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.password() != null){
-            user.setPassword(dto.password());
+            user.setPassword(passwordEncoder.encode(dto.password()));
             user.setLastModificationDate();
         }
         if(dto.surname() != null){
@@ -73,6 +78,8 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             var file = fileService.getFileById(dto.photoId());
             file.setObjectId(user.getUuid());
             fileService.updateFile(file);
+            file.setLastModificationDate();
+            user.setLastModificationDate();
         }
         if(dto.rules() != null && !dto.rules().isEmpty()){
             createActivity("rules",dto.rules().toString(),user.getRules().toString(),null,user);
@@ -83,6 +90,10 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
                             .collect(Collectors.toList()
                             )
             );
+            user.setLastModificationDate();
+        }
+        if(dto.changeVisibility()){
+            user.setPublicProfile(!user.isPublicProfile());
             user.setLastModificationDate();
         }
         return userRepo.save(user);
@@ -128,4 +139,49 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
         }
         throw new EntityNotFoundException();
     }
+
+    public User changeUserPassword(String username, PasswordChangeDTO dto) throws PasswordNotMatchException, NewPasswordMismatchException {
+        var user = getUserByUserName(username);
+        if(Objects.equals(passwordEncoder.encode(dto.password()), user.getPassword())){
+            if(Objects.equals(dto.newPassword(), dto.newPasswordConfirmation())){
+                user.setPassword(passwordEncoder.encode(dto.newPassword()));
+                user.setLastModificationDate();
+                return userRepo.save(user);
+            }
+            throw new NewPasswordMismatchException("Passwords not match!");
+        }
+        throw new PasswordNotMatchException("Password not match with current password!");
+    }
+
+    public User changeProfileDetails(String username, ChangeProfileDetailsDTO dto){
+        var user = getUserByUserName(username);
+        if(dto.email() != null){
+            user.setEmail(dto.email());
+            user.setLastModificationDate();
+        }
+        if(dto.name() != null){
+            createActivity("name",dto.name(),user.getName(),null,user);
+            user.setName(dto.name());
+            user.setLastModificationDate();
+        }
+        if(dto.surname() != null){
+            createActivity("surname",dto.surname(),user.getSurname(),null,user);
+            user.setSurname(dto.surname());
+            user.setLastModificationDate();
+        }
+        if(dto.avatar() != null){
+            createActivity("photoId",dto.avatar().toString()," ",null,user);
+            var file = fileService.getFileById(dto.avatar());
+            file.setObjectId(user.getUuid());
+            fileService.updateFile(file);
+            file.setLastModificationDate();
+            user.setLastModificationDate();
+        }
+        if(dto.changeVisibility()){
+            user.setPublicProfile(!user.isPublicProfile());
+            user.setLastModificationDate();
+        }
+        return userRepo.save(user);
+    }
 }
+
