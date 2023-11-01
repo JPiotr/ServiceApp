@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin.DTOs;
 
-public record LUserDTO(
-        String userName,
-        String password
-) {
+
+import com.oblitus.serviceApp.Abstracts.IModelDTO;
+
+public record LUserDTO(String userName, String password) implements IModelDTO {
 }
