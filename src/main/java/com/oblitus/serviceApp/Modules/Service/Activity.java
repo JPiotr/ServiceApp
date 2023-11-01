@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class Activity extends EntityBase {
     private String newValue;
     private String oldValue;
     private String activityType;
+    @RestResource(rel = "creator")
     @ManyToOne(targetEntity = User.class)
     private User creator;
     private UUID objectActivity;

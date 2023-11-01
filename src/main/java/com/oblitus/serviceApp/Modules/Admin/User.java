@@ -4,6 +4,7 @@ import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Security.Token;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "users")
+@RestResource(rel = "user")
 public class User extends EntityBase implements UserDetails, CredentialsContainer {
     private static long num = 0;
     @Column(nullable = false)
