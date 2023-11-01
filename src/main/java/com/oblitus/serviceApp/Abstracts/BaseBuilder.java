@@ -6,6 +6,8 @@ import java.util.UUID;
 public abstract class BaseBuilder<T extends BaseResponse> implements IBuilder{
     protected T entity;
 
+    @Override
+    public abstract void setEntity();
     /**
      * Build T class object with properties
      * @return T extends BaseResponse
@@ -14,8 +16,6 @@ public abstract class BaseBuilder<T extends BaseResponse> implements IBuilder{
     public T build(){
         return entity;
     }
-    @Override
-    public abstract void setEntity();
 
     public BaseBuilder<T> setUUID(UUID uuid){
         entity.setUuid(uuid);
