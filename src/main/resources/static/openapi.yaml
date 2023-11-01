@@ -1,0 +1,1111 @@
+openapi: "3.0.3"
+info:
+  title: "ServiceApp API"
+  description: "ServiceApp API"
+  version: "1.0.0"
+servers:
+  - url: "https://ServiceApp"
+paths:
+  /serviceModule/client:
+    put:
+      summary: "PUT serviceModule/client"
+      operationId: "updateOrAddClient"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    delete:
+      summary: "DELETE serviceModule/client"
+      operationId: "deleteClient"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/comment:
+    put:
+      summary: "PUT serviceModule/comment"
+      operationId: "updateOrAddComment"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    delete:
+      summary: "DELETE serviceModule/comment"
+      operationId: "deleteComment"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/ticket:
+    put:
+      summary: "PUT serviceModule/ticket"
+      operationId: "updateOrAddTicket"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    delete:
+      summary: "DELETE serviceModule/ticket"
+      operationId: "deleteTicket"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/clients:
+    post:
+      summary: "POST serviceModule/clients"
+      operationId: "addClient"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    get:
+      summary: "GET serviceModule/clients"
+      operationId: "getClients"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/comments:
+    post:
+      summary: "POST serviceModule/comments"
+      operationId: "addComment"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    get:
+      summary: "GET serviceModule/comments"
+      operationId: "getComments"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/tickets:
+    post:
+      summary: "POST serviceModule/tickets"
+      operationId: "addTicket"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    get:
+      summary: "GET serviceModule/tickets"
+      operationId: "getTickets"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/comment/{id}:
+    delete:
+      summary: "DELETE serviceModule/comment/{id}"
+      deprecated: true
+      operationId: "deleteCommentByID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/ticket/{id}:
+    delete:
+      summary: "DELETE serviceModule/ticket/{id}"
+      deprecated: true
+      operationId: "deleteTicketById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    get:
+      summary: "GET serviceModule/ticket/{id}"
+      operationId: "getTicket"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/clients/{id}:
+    get:
+      summary: "GET serviceModule/clients/{id}"
+      operationId: "getClient"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/comments/{id}:
+    get:
+      summary: "GET serviceModule/comments/{id}"
+      operationId: "getComment"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/comments/:
+    get:
+      summary: "GET serviceModule/comments/"
+      operationId: "getTicketsComments"
+      parameters:
+        - name: "ticketId"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/tickets/{userId}:
+    get:
+      summary: "GET serviceModule/tickets/{userId}"
+      operationId: "getUserTickets"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/activity/{id}:
+    get:
+      summary: "GET serviceModule/activity/{id}"
+      operationId: "getActivity"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/activities:
+    get:
+      summary: "GET serviceModule/activities"
+      operationId: "getActivities"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /serviceModule/activities/{objectId}:
+    get:
+      summary: "GET serviceModule/activities/{objectId}"
+      operationId: "getObjectActivities"
+      parameters:
+        - name: "objectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /auth/register:
+    post:
+      summary: "POST auth/register"
+      operationId: "registerUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RUserDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /auth/login:
+    post:
+      summary: "POST auth/login"
+      operationId: "login"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LUserDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /auth/refresh-token:
+    post:
+      summary: "POST auth/refresh-token"
+      operationId: "refreshToken"
+      responses:
+        "200":
+          description: "OK"
+  /adminModule/user:
+    put:
+      summary: "PUT adminModule/user"
+      operationId: "updateOrCreateUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    delete:
+      summary: "DELETE adminModule/user"
+      operationId: "deleteUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /adminModule/user/state/{id}:
+    patch:
+      summary: "PATCH adminModule/user/state/{id}"
+      operationId: "changeEnabled"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /adminModule/users:
+    post:
+      summary: "POST adminModule/users"
+      operationId: "addUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+    get:
+      summary: "GET adminModule/users"
+      operationId: "getUsers"
+      parameters:
+        - name: "ruleName"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /adminModule/user/{id}:
+    get:
+      summary: "GET adminModule/user/{id}"
+      operationId: "getUser"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /files/{objectId}/upload:
+    post:
+      summary: "POST files/{objectId}/upload"
+      operationId: "uploadFileForObject"
+      parameters:
+        - name: "objectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+        - name: "file"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "binary"
+        - name: "description"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /files/upload:
+    post:
+      summary: "POST files/upload"
+      operationId: "uploadFileForObject"
+      parameters:
+        - name: "file"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "binary"
+        - name: "description"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /files/{objectId}/uploadMultiple:
+    post:
+      summary: "POST files/{objectId}/uploadMultiple"
+      deprecated: true
+      operationId: "uploadFilesForObject"
+      parameters:
+        - name: "objectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+        - name: "map"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /files/{fileId}:
+    post:
+      summary: "POST files/{fileId}"
+      operationId: "updateFile"
+      parameters:
+        - name: "fileId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+    delete:
+      summary: "DELETE files/{fileId}"
+      operationId: "deleteFile"
+      parameters:
+        - name: "fileId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /files/{objectId}/{fileName}:
+    get:
+      summary: "GET files/{objectId}/{fileName}"
+      operationId: "getFile"
+      parameters:
+        - name: "objectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+        - name: "fileName"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "download"
+          in: "query"
+          required: true
+          schema:
+            type: "boolean"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+                  format: "byte"
+  /profile/change-password:
+    post:
+      summary: "POST profile/change-password"
+      operationId: "changePassword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordChangeDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /profile/change-details:
+    post:
+      summary: "POST profile/change-details"
+      operationId: "changeProfileDetails"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeProfileDetailsDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /profile:
+    get:
+      summary: "GET profile"
+      operationId: "getMyProfile"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+  /profile/{userName}:
+    get:
+      summary: "GET profile/{userName}"
+      operationId: "getProfile"
+      parameters:
+        - name: "userName"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Response"
+components:
+  schemas:
+    ClientDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+        creator:
+          type: "string"
+          format: "uuid"
+    Response:
+      type: "object"
+      properties:
+        timestamp:
+          type: "string"
+          format: "date-time"
+        statusCode:
+          type: "integer"
+          format: "int32"
+        status:
+          type: "string"
+          enum:
+            - "CONTINUE"
+            - "SWITCHING_PROTOCOLS"
+            - "PROCESSING"
+            - "EARLY_HINTS"
+            - "CHECKPOINT"
+            - "OK"
+            - "CREATED"
+            - "ACCEPTED"
+            - "NON_AUTHORITATIVE_INFORMATION"
+            - "NO_CONTENT"
+            - "RESET_CONTENT"
+            - "PARTIAL_CONTENT"
+            - "MULTI_STATUS"
+            - "ALREADY_REPORTED"
+            - "IM_USED"
+            - "MULTIPLE_CHOICES"
+            - "MOVED_PERMANENTLY"
+            - "FOUND"
+            - "MOVED_TEMPORARILY"
+            - "SEE_OTHER"
+            - "NOT_MODIFIED"
+            - "USE_PROXY"
+            - "TEMPORARY_REDIRECT"
+            - "PERMANENT_REDIRECT"
+            - "BAD_REQUEST"
+            - "UNAUTHORIZED"
+            - "PAYMENT_REQUIRED"
+            - "FORBIDDEN"
+            - "NOT_FOUND"
+            - "METHOD_NOT_ALLOWED"
+            - "NOT_ACCEPTABLE"
+            - "PROXY_AUTHENTICATION_REQUIRED"
+            - "REQUEST_TIMEOUT"
+            - "CONFLICT"
+            - "GONE"
+            - "LENGTH_REQUIRED"
+            - "PRECONDITION_FAILED"
+            - "PAYLOAD_TOO_LARGE"
+            - "REQUEST_ENTITY_TOO_LARGE"
+            - "URI_TOO_LONG"
+            - "REQUEST_URI_TOO_LONG"
+            - "UNSUPPORTED_MEDIA_TYPE"
+            - "REQUESTED_RANGE_NOT_SATISFIABLE"
+            - "EXPECTATION_FAILED"
+            - "I_AM_A_TEAPOT"
+            - "INSUFFICIENT_SPACE_ON_RESOURCE"
+            - "METHOD_FAILURE"
+            - "DESTINATION_LOCKED"
+            - "UNPROCESSABLE_ENTITY"
+            - "LOCKED"
+            - "FAILED_DEPENDENCY"
+            - "TOO_EARLY"
+            - "UPGRADE_REQUIRED"
+            - "PRECONDITION_REQUIRED"
+            - "TOO_MANY_REQUESTS"
+            - "REQUEST_HEADER_FIELDS_TOO_LARGE"
+            - "UNAVAILABLE_FOR_LEGAL_REASONS"
+            - "INTERNAL_SERVER_ERROR"
+            - "NOT_IMPLEMENTED"
+            - "BAD_GATEWAY"
+            - "SERVICE_UNAVAILABLE"
+            - "GATEWAY_TIMEOUT"
+            - "HTTP_VERSION_NOT_SUPPORTED"
+            - "VARIANT_ALSO_NEGOTIATES"
+            - "INSUFFICIENT_STORAGE"
+            - "LOOP_DETECTED"
+            - "BANDWIDTH_LIMIT_EXCEEDED"
+            - "NOT_EXTENDED"
+            - "NETWORK_AUTHENTICATION_REQUIRED"
+        reason:
+          type: "string"
+        message:
+          type: "string"
+        devMessage:
+          type: "string"
+        data:
+          type: "string"
+    CommentDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        content:
+          type: "string"
+        subject:
+          type: "string"
+          format: "uuid"
+        creator:
+          type: "string"
+          format: "uuid"
+    TicketDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        title:
+          type: "string"
+        description:
+          type: "string"
+        client:
+          type: "string"
+          format: "uuid"
+        assigned:
+          type: "string"
+          format: "uuid"
+        state:
+          type: "string"
+          enum:
+            - "NEW"
+            - "DONE"
+            - "OPEN"
+            - "PAUSED"
+            - "REOPENED"
+            - "CLOSE"
+            - "ARCHIVED"
+        priority:
+          type: "string"
+          enum:
+            - "HIGH"
+            - "LOW"
+            - "MEDIUM"
+        creator:
+          type: "string"
+          format: "uuid"
+        note:
+          type: "string"
+        editing:
+          type: "string"
+          format: "uuid"
+        files:
+          type: "array"
+          items:
+            type: "string"
+            format: "uuid"
+    RUserDTO:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        surname:
+          type: "string"
+        email:
+          type: "string"
+        userName:
+          type: "string"
+        password:
+          type: "string"
+    LUserDTO:
+      type: "object"
+      properties:
+        userName:
+          type: "string"
+        password:
+          type: "string"
+    Token:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        tokenType:
+          type: "string"
+          enum:
+            - "BEARER"
+        revoked:
+          type: "boolean"
+        expired:
+          type: "boolean"
+        user:
+          $ref: "#/components/schemas/User"
+        uuid:
+          type: "string"
+          format: "uuid"
+        ID:
+          type: "integer"
+          format: "int64"
+        creationDate:
+          type: "string"
+          format: "date-time"
+        lastModificationDate:
+          type: "string"
+          format: "date-time"
+        readOnly:
+          type: "boolean"
+        locked:
+          type: "boolean"
+        creator:
+          $ref: "#/components/schemas/User"
+        lastEditedBy:
+          $ref: "#/components/schemas/User"
+    Rule:
+      type: "object"
+      properties:
+        modules:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Module"
+        name:
+          type: "string"
+        ruleType:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+            - "SERVICE"
+            - "CLIENT"
+        uuid:
+          type: "string"
+          format: "uuid"
+        ID:
+          type: "integer"
+          format: "int64"
+        creationDate:
+          type: "string"
+          format: "date-time"
+        lastModificationDate:
+          type: "string"
+          format: "date-time"
+        readOnly:
+          type: "boolean"
+        locked:
+          type: "boolean"
+        creator:
+          $ref: "#/components/schemas/User"
+        lastEditedBy:
+          $ref: "#/components/schemas/User"
+    User:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        username:
+          type: "string"
+        name:
+          type: "string"
+        surname:
+          type: "string"
+        lastLoginDate:
+          type: "string"
+          format: "date-time"
+        credentialExpirationDate:
+          type: "string"
+          format: "date-time"
+        accountExpirationDate:
+          type: "string"
+          format: "date-time"
+        tokens:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Token"
+        publicProfile:
+          type: "boolean"
+        enabled:
+          type: "boolean"
+        expired:
+          type: "boolean"
+        credentialsExpired:
+          type: "boolean"
+        password:
+          type: "string"
+        rules:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Rule"
+        uuid:
+          type: "string"
+          format: "uuid"
+        ID:
+          type: "integer"
+          format: "int64"
+        creationDate:
+          type: "string"
+          format: "date-time"
+        lastModificationDate:
+          type: "string"
+          format: "date-time"
+        readOnly:
+          type: "boolean"
+        locked:
+          type: "boolean"
+        creator:
+          $ref: "#/components/schemas/User"
+        lastEditedBy:
+          $ref: "#/components/schemas/User"
+    Module:
+      type: "object"
+      properties:
+        Name:
+          type: "string"
+        Enabled:
+          type: "boolean"
+        Type:
+          type: "string"
+          enum:
+            - "ADMIN_MODULE"
+            - "CRM_MODULE"
+            - "CASH_MODULE"
+            - "FINANCE_MODULE"
+            - "PROJECTS_MODULE"
+            - "SERVICE_MODULE"
+            - "BASE_MODULE"
+        uuid:
+          type: "string"
+          format: "uuid"
+        ID:
+          type: "integer"
+          format: "int64"
+        creationDate:
+          type: "string"
+          format: "date-time"
+        lastModificationDate:
+          type: "string"
+          format: "date-time"
+        readOnly:
+          type: "boolean"
+        locked:
+          type: "boolean"
+        creator:
+          $ref: "#/components/schemas/User"
+        lastEditedBy:
+          $ref: "#/components/schemas/User"
+    RuleDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+        modules:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Module"
+    UserDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        email:
+          type: "string"
+        userName:
+          type: "string"
+        name:
+          type: "string"
+        surname:
+          type: "string"
+        password:
+          type: "string"
+        rules:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RuleDTO"
+        photoId:
+          type: "string"
+          format: "uuid"
+        changeVisibility:
+          type: "boolean"
+    PasswordChangeDTO:
+      type: "object"
+      properties:
+        password:
+          type: "string"
+        newPassword:
+          type: "string"
+        newPasswordConfirmation:
+          type: "string"
+    ChangeProfileDetailsDTO:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        name:
+          type: "string"
+        surname:
+          type: "string"
+        avatar:
+          type: "string"
+          format: "uuid"
+        changeVisibility:
+          type: "boolean"
