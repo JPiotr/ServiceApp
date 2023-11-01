@@ -57,10 +57,4 @@ public class AuthController {
         authenticationService.refreshToken(request, response);
     }
 
-    //todo:Do this by Profile controller, and apply to Administrator controller changing password
-//    @PostMapping("/change-password")
-//    public ResponseEntity<Response> changePassword(){
-//
-//    }
-
 }
