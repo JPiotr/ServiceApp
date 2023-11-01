@@ -6,19 +6,8 @@ import com.oblitus.serviceApp.Modules.Service.TicketState;
 import java.util.Collection;
 import java.util.UUID;
 
-public record TicketDTO(
-        UUID id,
-        String title,
-        String description,
-        UUID client,
-        UUID assigned,
-        TicketState state,
-        TicketPriority priority,
-        UUID creator,
-        String note,
-        UUID editing,
-        Collection<UUID> files
-) {
+public record TicketDTO(UUID id, String title, String description, UUID client, UUID assigned, TicketState state,
+                        TicketPriority priority, UUID creator, String note, UUID editing, Collection<UUID> files) {
     public TicketDTO(UUID id) {
         this(id, null, null, null, null, null, null, null, null, null, null);
     }

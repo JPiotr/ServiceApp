@@ -4,10 +4,10 @@ import com.oblitus.serviceApp.Modules.Admin.Responses.MyProfileResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponseMapper;
-import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityResponseMapper;
-import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponseMapper;
-import com.oblitus.serviceApp.Modules.Service.DTOs.CommentResponseMapper;
-import com.oblitus.serviceApp.Modules.Service.DTOs.TicketResponseMapper;
+import com.oblitus.serviceApp.Modules.Service.Responses.ActivityResponseMapper;
+import com.oblitus.serviceApp.Modules.Service.Responses.ClientResponseMapper;
+import com.oblitus.serviceApp.Modules.Service.Responses.CommentResponseMapper;
+import com.oblitus.serviceApp.Modules.Service.Responses.TicketResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

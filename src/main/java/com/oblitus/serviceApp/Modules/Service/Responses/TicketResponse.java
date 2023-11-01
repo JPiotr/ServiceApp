@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Modules.Service.DTOs;
+package com.oblitus.serviceApp.Modules.Service.Responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oblitus.serviceApp.Abstracts.BaseResponse;

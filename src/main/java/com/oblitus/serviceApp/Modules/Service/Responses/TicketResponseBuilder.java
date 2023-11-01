@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Modules.Service.DTOs;
+package com.oblitus.serviceApp.Modules.Service.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
 import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponse;
