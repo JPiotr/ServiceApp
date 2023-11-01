@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

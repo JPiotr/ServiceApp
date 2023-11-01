@@ -2,10 +2,10 @@ package com.oblitus.serviceApp;
 
 import com.oblitus.serviceApp.Common.Email.EmailSender;
 import com.oblitus.serviceApp.Modules.Admin.*;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleMapper;
+import com.oblitus.serviceApp.Modules.Admin.Responses.RuleMapper;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponse;
+import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponseMapper;
 import com.oblitus.serviceApp.Modules.ModuleRepository;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import com.oblitus.serviceApp.Modules.Service.ClientRepository;

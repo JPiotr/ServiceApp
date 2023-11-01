@@ -1,5 +1,6 @@
-package com.oblitus.serviceApp.Modules.Admin.DTOs;
+package com.oblitus.serviceApp.Modules.Admin.Responses;
 
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.Admin.Rule;
 import org.springframework.stereotype.Service;
 

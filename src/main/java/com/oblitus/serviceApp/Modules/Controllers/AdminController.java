@@ -2,8 +2,7 @@ package com.oblitus.serviceApp.Modules.Controllers;
 
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponse;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
 import com.oblitus.serviceApp.Modules.MappersWrapper;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;

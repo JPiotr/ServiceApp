@@ -1,4 +1,4 @@
-package com.oblitus.serviceApp.Modules.Admin.DTOs;
+package com.oblitus.serviceApp.Modules.Admin.Responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

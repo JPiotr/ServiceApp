@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules;
 
 import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponseMapper;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.ClientResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.DTOs.CommentResponseMapper;

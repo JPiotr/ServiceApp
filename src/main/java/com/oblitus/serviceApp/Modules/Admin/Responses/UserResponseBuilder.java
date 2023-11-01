@@ -1,6 +1,7 @@
-package com.oblitus.serviceApp.Modules.Admin.DTOs;
+package com.oblitus.serviceApp.Modules.Admin.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
 import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
 
 import java.time.LocalDateTime;
