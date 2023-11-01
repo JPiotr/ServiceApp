@@ -64,7 +64,8 @@ public class ServiceAppApplication {
 						,null
 						,null
 						,List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(0)))
-						,null)
+						,null
+						,false)
 		);
 		clientRepository.save(StaticInfo.Internal);
 
@@ -83,7 +84,7 @@ public class ServiceAppApplication {
 										Stream.of(
 												StaticInfo.PredefinedRules.get(1)
 												,StaticInfo.PredefinedRules.get(0)).map(ruleMapper).toList(),
-										null
+										null,false
 								)),
 						modulesWrapper.adminModule.getAdminDAO().getUserService()
 								//John Necessary
@@ -96,7 +97,7 @@ public class ServiceAppApplication {
 										"simplePass",
 										Stream.of(StaticInfo.PredefinedRules.get(1)
 												 ,StaticInfo.PredefinedRules.get(2)).map(ruleMapper).toList(),
-										null
+										null,true
 								)),
 						modulesWrapper.adminModule.getAdminDAO().getUserService()
 								//Grzegorz Brzęczyszczykiewicz
@@ -109,7 +110,7 @@ public class ServiceAppApplication {
 										"jakrozpetalemdrugawojneswiatowa",
 										Stream.of(StaticInfo.PredefinedRules.get(1)
 												,StaticInfo.PredefinedRules.get(3)).map(ruleMapper).toList(),
-										null
+										null,true
 								))
 				).map(userMapper).toList();
 
