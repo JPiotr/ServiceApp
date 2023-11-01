@@ -33,6 +33,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     private LocalDateTime accountExpirationDate;
     @OneToMany(targetEntity = Token.class)
     private Collection<Token> tokens;
+    @Getter
+    private boolean publicProfile;
 
     @Setter
     @Getter
@@ -59,6 +61,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         this.enabled = true;
         locked = true;
         expired = false;
+        publicProfile = false;
         email = "srvctrack@gmail.com";
         setID(User.num);
         User.num += 1;
@@ -87,10 +90,11 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         rules.remove(rule);
         return this;
     }
-//    @Override
-//    public Collection<Rule> getAuthorities() {
-//        return getRules();
-//    }
+
+    protected User setProfilePublic(boolean profilePublic){
+        publicProfile = profilePublic;
+        return this;
+    }
 
 
     @Override
