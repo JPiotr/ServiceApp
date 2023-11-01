@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
     private static final String[] WHITE_LIST = {
-//            "/**",
+            "/**",
             "/auth/login",
             "/auth/register",
             "/swagger-ui/**",
