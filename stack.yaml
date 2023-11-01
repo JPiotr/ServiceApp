@@ -1,13 +1,15 @@
 version: '3.8'
 services:
+  adminServer:
+    image: serviceapp-admin-server:0.0.1
+    restart: on-failure
+    ports:
+      - '8081:8081'
   serviceApp:
     image: serviceapp-server:1.3.2
     restart: always
     ports:
       - '8080:8080'
-#    networks:
-#      - redis
-#      - postgres
     depends_on:
       - postgres
   postgres:
@@ -17,17 +19,8 @@ services:
       POSTGRES_USER: service_app
       POSTGRES_PASSWORD: serviceapp14
       POSTGRES_ROOT_PASSWORD: serviceapp14
-#    ports:
-#      - '5123:5432'
     volumes:
       - postgres:/var/lib/postgresql/data
-#    networks:
-#      - postgres
 volumes:
   postgres:
     driver: local
-#networks:
-#  postgres:
-#    name: postgres-driver
-#  redis:
-#    name: redis-driver
