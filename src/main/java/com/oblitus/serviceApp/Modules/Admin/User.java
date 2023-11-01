@@ -77,6 +77,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         this.surname = surname;
         this.locked = false;
         this.enabled = true;
+        this.publicProfile = false;
         this.accountExpirationDate = LocalDateTime.now().plusMonths(3);
         this.credentialExpirationDate = LocalDateTime.now().plusMonths(3);
         setID(User.num);
