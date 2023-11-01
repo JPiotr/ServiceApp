@@ -1,9 +1,9 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponseMapper;
 import com.oblitus.serviceApp.Modules.Service.Ticket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,10 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuilder> implements Function<Ticket, TicketResponse> {
-    private final BaseUserResponseMapper baseUserResponseMapper;
+    private final ProfileResponseMapper profileResponseMapper;
     private final FileResponseMapper fileMapper;
     private final FileService fileService;
+
     @Override
     public TicketResponse apply(Ticket ticket) {
         this.useBuilder(new TicketResponseBuilder())
@@ -25,7 +26,7 @@ public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuild
                 .setState(ticket.getState())
                 .setPriority(ticket.getPriority())
                 .setCreator(
-                        baseUserResponseMapper.apply(ticket.getCreator())
+                        profileResponseMapper.apply(ticket.getCreator())
                 )
                 .setNote(ticket.getNote())
                 .setFiles(
@@ -35,9 +36,9 @@ public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuild
                 .setCreationDate(ticket.getCreationDate())
                 .setLastModificationDate(ticket.getLastModificationDate())
                 .setId(ticket.getID());
-        if(ticket.getAssigned() != null){
+        if (ticket.getAssigned() != null) {
             builder.setAssigned(
-                    baseUserResponseMapper.apply(ticket.getAssigned())
+                    profileResponseMapper.apply(ticket.getAssigned())
             );
         }
         return builder.build();

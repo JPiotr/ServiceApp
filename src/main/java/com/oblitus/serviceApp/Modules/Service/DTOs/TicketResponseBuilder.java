@@ -1,8 +1,8 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponse;
 import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
 import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
 
@@ -15,39 +15,47 @@ public class TicketResponseBuilder extends BaseBuilder<TicketResponse> {
         entity = new TicketResponse();
     }
 
-    public TicketResponseBuilder setTitle(String title){
+    public TicketResponseBuilder setTitle(String title) {
         entity.setTitle(title);
         return this;
     }
-    public TicketResponseBuilder setDescription(String description){
+
+    public TicketResponseBuilder setDescription(String description) {
         entity.setDescription(description);
         return this;
     }
-    public TicketResponseBuilder setClient(UUID client){
+
+    public TicketResponseBuilder setClient(UUID client) {
         entity.setClient(client);
         return this;
     }
-    public TicketResponseBuilder setAssigned(BaseUserResponse assigned){
+
+    public TicketResponseBuilder setAssigned(ProfileResponse assigned) {
         entity.setAssigned(assigned);
         return this;
     }
-    public TicketResponseBuilder setState(TicketState state){
+
+    public TicketResponseBuilder setState(TicketState state) {
         entity.setState(state);
         return this;
     }
-    public TicketResponseBuilder setPriority(TicketPriority priority){
+
+    public TicketResponseBuilder setPriority(TicketPriority priority) {
         entity.setPriority(priority);
         return this;
     }
-    public TicketResponseBuilder setCreator(BaseUserResponse creator){
+
+    public TicketResponseBuilder setCreator(ProfileResponse creator) {
         entity.setCreator(creator);
         return this;
     }
-    public TicketResponseBuilder setNote(String note){
+
+    public TicketResponseBuilder setNote(String note) {
         entity.setNote(note);
         return this;
     }
-    public TicketResponseBuilder setFiles(Collection<FileResponse> files){
+
+    public TicketResponseBuilder setFiles(Collection<FileResponse> files) {
         entity.setFiles(files);
         return this;
     }

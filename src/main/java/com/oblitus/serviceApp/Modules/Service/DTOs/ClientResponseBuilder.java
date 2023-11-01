@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponse;
 
 public class ClientResponseBuilder extends BaseBuilder<ClientResponse> {
     @Override
@@ -9,12 +9,12 @@ public class ClientResponseBuilder extends BaseBuilder<ClientResponse> {
         entity = new ClientResponse();
     }
 
-    public ClientResponseBuilder setName(String name){
+    public ClientResponseBuilder setName(String name) {
         entity.setName(name);
         return this;
     }
 
-    public ClientResponseBuilder setCreator(BaseUserResponse creator){
+    public ClientResponseBuilder setCreator(ProfileResponse creator) {
         entity.setCreator(creator);
         return this;
     }

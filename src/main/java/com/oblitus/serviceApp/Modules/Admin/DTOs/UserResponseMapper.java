@@ -33,7 +33,7 @@ public class UserResponseMapper extends BaseResponseMapper<UserResponseBuilder> 
                 .setIsEnabled(user.isEnabled())
                 .setIsExpired(user.isExpired())
                 .setIsCredentialExpired(user.isCredentialsExpired())
-                .setFile(
+                .setAvatar(
                     fileMapper.apply(fileService.getObjectFiles(user.getUuid()).stream().findFirst().orElse(null))
                 )
                 .setId(user.getID())

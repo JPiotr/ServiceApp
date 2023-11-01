@@ -2,11 +2,10 @@ package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oblitus.serviceApp.Abstracts.BaseResponse;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -14,7 +13,7 @@ import java.util.UUID;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponse extends BaseResponse {
-        private String content;
-        private UUID subject;
-        private BaseUserResponse creator;
+    private String content;
+    private UUID subject;
+    private ProfileResponse creator;
 }

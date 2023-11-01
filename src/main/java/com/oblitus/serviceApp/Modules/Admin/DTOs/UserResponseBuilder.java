@@ -23,14 +23,16 @@ public class UserResponseBuilder extends BaseBuilder<UserResponse> {
     public UserResponseBuilder setEmail(String email){
         super.entity.setEmail(email);
         return this;
-    }public UserResponseBuilder setSurname(String surname){
+    }
+    public UserResponseBuilder setSurname(String surname){
         super.entity.setSurname(surname);
         return this;
     }
     public UserResponseBuilder setRules(Collection<RuleDTO> rules){
         super.entity.setRules(rules);
         return this;
-    }public UserResponseBuilder setLastLoginDate(LocalDateTime lastLoginDate){
+    }
+    public UserResponseBuilder setLastLoginDate(LocalDateTime lastLoginDate){
         super.entity.setLastLoginDate(lastLoginDate);
         return this;
     }
@@ -54,8 +56,8 @@ public class UserResponseBuilder extends BaseBuilder<UserResponse> {
         super.entity.setCredentialsExpired(isCredentialsExpired);
         return this;
     }
-    public UserResponseBuilder setFile(FileResponse file){
-        super.entity.setFile(file);
+    public UserResponseBuilder setAvatar(FileResponse file){
+        super.entity.setAvatar(file);
         return this;
     }
 }

@@ -13,19 +13,13 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse extends BaseResponse {
-    private String userName;
-    private String email;
-    private String name;
-    private String surname;
+public class UserResponse extends MyProfileResponse {
     private Collection<RuleDTO> rules;
-    private LocalDateTime lastLoginDate;
-    private LocalDateTime credentialExpirationDate;
-    private LocalDateTime accountExpirationDate;
     private boolean isEnabled;
     private boolean isExpired;
     private boolean isCredentialsExpired;
-    private FileResponse file;
+
+
 }
 
 

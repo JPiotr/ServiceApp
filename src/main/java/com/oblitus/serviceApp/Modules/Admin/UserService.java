@@ -120,4 +120,12 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
     public User setLastLoginDate(User user){
         return userRepo.save(user);
     }
+
+    public User getUserByUserName(String username){
+        var opt = userRepo.findByUsername(username);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new EntityNotFoundException();
+    }
 }

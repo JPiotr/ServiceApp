@@ -35,7 +35,7 @@ public class AuthenticationService {
                 ruleService.getAll().stream().filter(
                         ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
                 ).collect(Collectors.toList())
-                ,userDTO.password());
+                ,passwordEncoder.encode(userDTO.password()));
 
         var userDetails = userRepository.save(usr);
         var token = jwtService.generateToken(usr);

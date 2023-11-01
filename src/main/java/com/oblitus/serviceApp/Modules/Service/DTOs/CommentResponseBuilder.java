@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponse;
 
 import java.util.UUID;
 
@@ -11,17 +11,17 @@ public class CommentResponseBuilder extends BaseBuilder<CommentResponse> {
         entity = new CommentResponse();
     }
 
-    public CommentResponseBuilder setContent(String content){
+    public CommentResponseBuilder setContent(String content) {
         entity.setContent(content);
         return this;
     }
 
-    public CommentResponseBuilder setSubject(UUID subject){
+    public CommentResponseBuilder setSubject(UUID subject) {
         entity.setSubject(subject);
         return this;
     }
 
-    public CommentResponseBuilder setCreator(BaseUserResponse creator){
+    public CommentResponseBuilder setCreator(ProfileResponse creator) {
         entity.setCreator(creator);
         return this;
     }

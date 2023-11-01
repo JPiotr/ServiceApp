@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Service.DTOs;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.BaseUserResponse;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.ProfileResponse;
 
 import java.util.UUID;
 
@@ -11,31 +11,37 @@ public class ActivityResponseBuilder extends BaseBuilder<ActivityResponse> {
         entity = new ActivityResponse();
     }
 
-    public ActivityResponseBuilder setClassName(String className){
+    public ActivityResponseBuilder setClassName(String className) {
         this.entity.setClassName(className);
         return this;
     }
-    public ActivityResponseBuilder setFieldName(String fieldName){
+
+    public ActivityResponseBuilder setFieldName(String fieldName) {
         this.entity.setFieldName(fieldName);
         return this;
     }
-    public ActivityResponseBuilder setNewValue(String newValue){
+
+    public ActivityResponseBuilder setNewValue(String newValue) {
         this.entity.setNewValue(newValue);
         return this;
     }
-    public ActivityResponseBuilder setOldValue(String oldValue){
+
+    public ActivityResponseBuilder setOldValue(String oldValue) {
         this.entity.setOldValue(oldValue);
         return this;
     }
-    public ActivityResponseBuilder setActivityType(String activityType){
+
+    public ActivityResponseBuilder setActivityType(String activityType) {
         this.entity.setActivityType(activityType);
         return this;
     }
-    public ActivityResponseBuilder setCreator(BaseUserResponse creator){
+
+    public ActivityResponseBuilder setCreator(ProfileResponse creator) {
         this.entity.setCreator(creator);
         return this;
     }
-    public ActivityResponseBuilder setObjectUuid(UUID objectUuid){
+
+    public ActivityResponseBuilder setObjectUuid(UUID objectUuid) {
         this.entity.setUuid(objectUuid);
         return this;
     }
