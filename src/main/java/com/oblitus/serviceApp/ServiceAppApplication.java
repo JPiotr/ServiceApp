@@ -45,8 +45,8 @@ public class ServiceAppApplication {
 		RuleMapper ruleMapper,
 		UserResponseMapper userMapper,
 		ModulesWrapper modulesWrapper,
-		PasswordEncoder encoder,
-		EmailSender emailSender
+		PasswordEncoder encoder//,
+//		EmailSender emailSender
 		){return args -> {
 		if(!modulesWrapper.adminModule.getAdminDAO().getUserService().getAll().isEmpty()){
 			return;

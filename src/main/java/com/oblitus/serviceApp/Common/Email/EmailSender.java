@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 
-@Service
+//@Service
 public class EmailSender {
     private static final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     private static final String appName = "Service Track";
