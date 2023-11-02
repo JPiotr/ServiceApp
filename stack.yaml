@@ -6,12 +6,13 @@ services:
     ports:
       - '8081:8081'
   serviceApp:
-    image: serviceapp-server:1.3.2
+    image: serviceapp-server:1.4.0
     restart: always
     ports:
       - '8080:8080'
     depends_on:
       - postgres
+      - adminServer
   postgres:
     image: postgres
     restart: always
