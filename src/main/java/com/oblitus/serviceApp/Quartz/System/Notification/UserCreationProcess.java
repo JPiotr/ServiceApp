@@ -42,7 +42,7 @@ public class UserCreationProcess extends EmailNotification implements Job {
 
         emailService.sendHtmlEmail(profileInfo.getEmail(), SystemNotificationTypes.USER_CREATION.getValue(), Map.of(
                 "name","Hello, " + profileInfo.getName(),
-                "environmentURL","http:localhost:3000/profile/set-password/" + uuid,
+                "environmentURL","http//:localhost:3000/set-password/" + uuid,
                 "environmentName","Set Your password"
                 ),
                 SystemNotificationTypes.USER_CREATION.getTemplate());
