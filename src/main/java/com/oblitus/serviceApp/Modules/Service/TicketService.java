@@ -59,8 +59,10 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
         User usr = null;
         if(dto.assigned() != null){
             usr = userService.get(new UserDTO(dto.assigned()));
+            createActivity("Assigned"
+                    , usr.getName() +" "+usr.getSurname()
+                    ,ticket.getAssigned().getName() +" "+ticket.getAssigned().getSurname(),editor,ticket);
             ticket.setAssigned(usr);
-            createActivity("Assigned",dto.assigned().toString(),ticket.getAssigned().getUuid().toString(),editor,ticket);
             ticket.setLastModificationDate();
         }
         if(dto.title() != null){
