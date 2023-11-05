@@ -100,6 +100,14 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
         var rules = dto.rules().stream().map(ruleService::get).toList();
         User user = new User(dto.userName(), dto.name(), dto.surname(), dto.email(), rules,
                 passwordEncoder.encode(dto.password()));
+
+        if(dto.photoId()!=null){
+            var file = fileService.getFileById(dto.photoId());
+            file.setObjectId(user.getUuid());
+            fileService.updateFile(file);
+            file.setLastModificationDate();
+        }
+
         if(rules.isEmpty()){
             user.setRules(List.of(ruleService.get(new RuleDTO(ERule.USER.toString()))));
         }
