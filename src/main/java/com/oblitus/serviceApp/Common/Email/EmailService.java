@@ -27,7 +27,7 @@ public class EmailService { //todo: Interface?
     public void sendEmail(String to, String subject, String content){
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("srvctrack@gmail.com");
+            message.setFrom(from);
             message.setTo(to);
             message.setSubject(subject);
             message.setText(content);
@@ -47,7 +47,7 @@ public class EmailService { //todo: Interface?
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-            helper.setFrom("srvctrack@gmail.com");
+            helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
 
@@ -56,10 +56,6 @@ public class EmailService { //todo: Interface?
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(htmlPart);
             mimeMessage.setContent(multipart);
-
-
-//            helper.setText(content);
-
             mailSender.send(mimeMessage);
 
         } catch (MessagingException e) {
