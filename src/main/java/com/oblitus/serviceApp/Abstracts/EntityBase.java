@@ -53,6 +53,7 @@ public abstract class EntityBase{ //implements Serializable {
     @Getter
     @Setter
     @ManyToOne(targetEntity = User.class)
+    @RestResource(rel = "entityEditor")
     protected User lastEditedBy;
 
 
