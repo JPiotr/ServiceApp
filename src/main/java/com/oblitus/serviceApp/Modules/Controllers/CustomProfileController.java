@@ -70,6 +70,7 @@ public class CustomProfileController {
                         .build());
     }
 
+    @Deprecated
     @GetMapping("/{userName}")
     public ResponseEntity<Response> getProfile(@PathVariable @Validated String userName, Principal principal) {
         try {
