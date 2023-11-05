@@ -14,6 +14,7 @@ import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
 import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
+import com.oblitus.serviceApp.Quartz.System.Notification.SystemNotificationTypes;
 import com.oblitus.serviceApp.Utils.StaticInfo;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -77,7 +78,7 @@ public class ServiceAppApplication {
 								//John Doe
 								.add(new UserDTO(
 										null,
-										"jdoe@domain.srvtrack",
+										"srvctrack@gmail.com",
 										"JohnDoeRoot",
 										"John",
 										"Doe",
@@ -91,7 +92,7 @@ public class ServiceAppApplication {
 								//John Necessary
 								.add(new UserDTO(
 										null,
-										"jnecessary@domain.srvtrack",
+										"srvctrack@gmail.com",
 										"JohnNecessaryClient",
 										"John",
 										"Necessary",
@@ -104,7 +105,7 @@ public class ServiceAppApplication {
 								//Grzegorz Brzęczyszczykiewicz
 								.add(new UserDTO(
 										null,
-										"gbrzeczyszczykiewicz@domain.srvtrack",
+										"srvctrack@gmail.com",
 										"Grzegorz",
 										"Grzegorz",
 										"Brzęczyszczykiewicz",
@@ -168,7 +169,16 @@ public class ServiceAppApplication {
 
 		//todo:enable this on deploy
 //		emailService.sendEmail("srvctrack@gmail.com","Application Start","Application started successfully!");
-
+//		emailService.sendHtmlEmail("srvctrack@gmail.com", SystemNotificationTypes.USER_CREATION.getValue(), Map.of(
+//				"name","System",
+//				"environmentURL","https://www.google.com/",
+//				"environmentName","Set your password"
+//		), "new-account.html");
+//		emailService.sendHtmlEmail("pawelkeska00@gmail.com", SystemNotificationTypes.USER_CREATION.getValue(), Map.of(
+//				"name","Paweł Kęska",
+//				"environmentURL","https://www.google.com/",
+//				"environmentName","Set your password"
+//		), "new-account.html");
 	};}
 
 	@Bean
