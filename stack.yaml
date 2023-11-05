@@ -6,7 +6,7 @@ services:
     ports:
       - '8081:8081'
   serviceApp:
-    image: serviceapp-server:1.4.1
+    image: serviceapp-server:1.4.2
     restart: always
     ports:
       - '8080:8080'
