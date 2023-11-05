@@ -4,8 +4,12 @@ import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponse;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
+import com.oblitus.serviceApp.Modules.Admin.User;
 import com.oblitus.serviceApp.Modules.MappersWrapper;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
+import com.oblitus.serviceApp.Quartz.System.Notification.UserCreationProcess;
+import com.oblitus.serviceApp.Quartz.System.SessionLockProccess;
+import com.oblitus.serviceApp.Quartz.System.SystemSchedulerService;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ import java.util.UUID;
 public class AdminController {
     private final MappersWrapper mappersWrapper;
     private final ModulesWrapper modulesWrapper;
+    private final SystemSchedulerService scheduler;
 
     @GetMapping("/user/{id}")
     public ResponseEntity<Response> getUser(@PathVariable @Validated UUID id){
@@ -92,14 +97,15 @@ public class AdminController {
 
     @PostMapping("/users")
     public ResponseEntity<Response> addUser(@RequestBody @Validated UserDTO userDTO){
+        var user = modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO);
+        scheduler.scheduleJob(UserCreationProcess.class,Map.of(User.class.getSimpleName(),(Object)user));
+        scheduler.scheduleJob(SessionLockProccess.class,Map.of(User.class.getSimpleName(),(Object)user), 15L);
+
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("New User added to Database.")
-                        .data(Map.of("user", mappersWrapper.userMapper.apply(
-                                modulesWrapper.adminModule.getAdminDAO().getUserService().add(userDTO))
-                                )
-                        )
+                        .data(Map.of("user", mappersWrapper.userMapper.apply(user)))
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.CREATED)
                         .build()

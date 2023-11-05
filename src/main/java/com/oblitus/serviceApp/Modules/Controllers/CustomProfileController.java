@@ -3,8 +3,10 @@ package com.oblitus.serviceApp.Modules.Controllers;
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.ChangeProfileDetailsDTO;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.PasswordChangeDTO;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.SetPasswordDTO;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.NewPasswordMismatchException;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordNotMatchException;
+import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordSettingSessionExpiredException;
 import com.oblitus.serviceApp.Modules.MappersWrapper;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -208,6 +211,43 @@ public class CustomProfileController {
                         .status(HttpStatus.UNAUTHORIZED)
                         .reason("You must log in to get Your profile details")
                         .build());
+    }
+
+    @PostMapping("/set-password/{randomUuid}")
+    public ResponseEntity<Response> changePassword(@RequestBody @Validated SetPasswordDTO setPasswordDTO, @PathVariable @Validated UUID randomUuid) {
+        var usrservice = modulesWrapper.adminModule.getAdminDAO().getUserService();
+        try {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Password set.")
+                            .data(Map.of("message", usrservice.setUserPassword(randomUuid,setPasswordDTO))
+                            )
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        } catch (NewPasswordMismatchException e) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("New password mismatch")
+                            .data(Map.of("myProfile", " "))
+                            .statusCode(HttpStatus.NOT_ACCEPTABLE.value())
+                            .status(HttpStatus.NOT_ACCEPTABLE)
+                            .reason("New password confirmation not match new password!")
+                            .build());
+        } catch (PasswordSettingSessionExpiredException e) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Session Expired!")
+                            .data(Map.of("message", " "))
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .status(HttpStatus.NOT_FOUND)
+                            .reason("Time for set password expired!")
+                            .build());
+        }
     }
 
     private boolean checkPrincipal(Principal principal) {
