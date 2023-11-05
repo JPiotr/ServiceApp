@@ -122,9 +122,6 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     public void eraseCredentials() {
         password = null;
     }
-    public EntityBase getBase(){
-        return (EntityBase) this;
-    }
 
     @Override
     public String toString() {

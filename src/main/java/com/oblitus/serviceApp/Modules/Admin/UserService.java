@@ -3,26 +3,20 @@ package com.oblitus.serviceApp.Modules.Admin;
 import com.oblitus.serviceApp.Abstracts.EntityBase;
 import com.oblitus.serviceApp.Abstracts.IActivityCreator;
 import com.oblitus.serviceApp.Abstracts.IService;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.ChangeProfileDetailsDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.PasswordChangeDTO;
+import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.NewPasswordMismatchException;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordNotMatchException;
+import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordSettingSessionExpiredException;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
-import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Service.ActivityFactory;
 import com.oblitus.serviceApp.Utils.StaticInfo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements IService<User, UserDTO>, IActivityCreator {
     private final UserRepository userRepo;
+    private final UserSetPasswordIdRepository setPasswordIdRepository;
     private final RuleService ruleService;
     private final FileService fileService;
     private final ActivityFactory activityFabric;
@@ -183,6 +178,39 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         return userRepo.save(user);
+    }
+
+    public void saveUserSetPasswordSession(UUID uuid, User user){
+        UserSetPasswordId usr = new UserSetPasswordId(uuid);
+        usr.setCreator(user);
+
+        setPasswordIdRepository.save(usr);
+    }
+
+    public boolean checkLinkExpired(UUID setPasswordID){
+        var usrPass = setPasswordIdRepository.findByPasswordIDChange(setPasswordID);
+        return usrPass.isPresent();
+    }
+
+    public void deleteUserSetPasswordId(User user){
+        var pass = setPasswordIdRepository.findByCreator(user);
+        pass.ifPresent(setPasswordIdRepository::delete);
+    }
+
+    public String setUserPassword(UUID randomUuid, SetPasswordDTO dto) throws NewPasswordMismatchException, PasswordSettingSessionExpiredException {
+        var user = setPasswordIdRepository.findByPasswordIDChange(randomUuid);
+        if(user.isPresent()){
+            var usr = get(new UserDTO(user.get().getCreator().getUuid()));
+            if(Objects.equals(dto.newPassword(), dto.newPasswordConfirmation())){
+                usr.setPassword(passwordEncoder.encode(dto.newPassword()));
+                usr.setLastModificationDate();
+                userRepo.save(usr);
+                setPasswordIdRepository.delete(user.get());
+                return "Your password has been created!";
+            }
+            throw new NewPasswordMismatchException("Passwords not match!");
+        }
+        throw new PasswordSettingSessionExpiredException("Password setting session expired!");
     }
 }
 
