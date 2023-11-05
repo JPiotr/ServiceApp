@@ -1,7 +1,11 @@
 package com.oblitus.serviceApp.Common.Email;
 
+import jakarta.mail.BodyPart;
 import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -46,7 +50,15 @@ public class EmailService { //todo: Interface?
             helper.setFrom("srvctrack@gmail.com");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(content);
+
+            BodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(content, "text/html; charset=utf-8");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(htmlPart);
+            mimeMessage.setContent(multipart);
+
+
+//            helper.setText(content);
 
             mailSender.send(mimeMessage);
 
