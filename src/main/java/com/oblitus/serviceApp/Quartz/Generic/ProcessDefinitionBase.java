@@ -1,10 +1,26 @@
 package com.oblitus.serviceApp.Quartz.Generic;
 
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import java.util.HashSet;
 import java.util.UUID;
 
-public abstract class ProcessDefinitionBase<TWorkflowProcess extends IWorkflowProcess> implements IWorkflowProcessDefinition {
+public abstract class ProcessDefinitionBase<TWorkflowProcess extends IWorkflowProcess> implements IWorkflowProcessDefinition, Job {
+    UUID uuid;
 
+    /**
+     * @param jobExecutionContext
+     * @throws JobExecutionException
+     */
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
+    }
+}
+
+abstract class InformProcessDefinitionBase<TWorkflowProcess extends IWorkflowProcess> extends ProcessDefinitionBase<TWorkflowProcess>{
 
 }
 //process obserwujący

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 
-abstract class WorkFlowDefinitionBase<TWorkflow extends IWorkflow> implements IWorkflowDefinition{
+public abstract class WorkFlowDefinitionBase<TWorkflow extends IWorkflow> implements IWorkflowDefinition{
     public String name;
     public UUID uuid;
     protected HashSet<IWorkflowProcess> processCollection;
