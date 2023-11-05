@@ -64,7 +64,6 @@ public class ServiceAppApplication {
 						,null
 						,null
 						,null
-						,null
 						,List.of(ruleMapper.apply(StaticInfo.PredefinedRules.get(0)))
 						,null
 						,false)
@@ -78,8 +77,7 @@ public class ServiceAppApplication {
 								//John Doe
 								.add(new UserDTO(
 										null,
-										"srvctrack@gmail.com",
-										"JohnDoeRoot",
+										"srvctrack+3@gmail.com",
 										"John",
 										"Doe",
 										"simplePass",
@@ -92,8 +90,7 @@ public class ServiceAppApplication {
 								//John Necessary
 								.add(new UserDTO(
 										null,
-										"srvctrack@gmail.com",
-										"JohnNecessaryClient",
+										"srvctrack+2@gmail.com",
 										"John",
 										"Necessary",
 										"simplePass",
@@ -105,8 +102,7 @@ public class ServiceAppApplication {
 								//Grzegorz Brzęczyszczykiewicz
 								.add(new UserDTO(
 										null,
-										"srvctrack@gmail.com",
-										"Grzegorz",
+										"srvctrack+1@gmail.com",
 										"Grzegorz",
 										"Brzęczyszczykiewicz",
 										"jakrozpetalemdrugawojneswiatowa",

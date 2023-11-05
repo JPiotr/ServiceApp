@@ -1,5 +1,6 @@
 package com.oblitus.serviceApp.Security.JWT;
 
+import com.oblitus.serviceApp.Modules.Admin.User;
 import com.oblitus.serviceApp.Modules.Admin.UserRepository;
 import com.oblitus.serviceApp.Modules.Admin.UserService;
 import com.oblitus.serviceApp.Security.TokenRepository;
@@ -47,7 +48,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         username = jwtService.extractUserName(jwt);
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetails userDetails = userRepository.findByUsername(username).orElseThrow();
+                User userDetails = userRepository.findUserByEmail(username).orElseThrow();
                 var isTokenValid = repository.findByToken(jwt)
                         .map(token -> !token.isExpired() && !token.isRevoked())
                         .orElse(false);

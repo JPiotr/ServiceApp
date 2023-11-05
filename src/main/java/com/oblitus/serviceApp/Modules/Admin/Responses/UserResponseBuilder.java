@@ -13,10 +13,6 @@ class UserResponseBuilder extends BaseBuilder<UserResponse> {
         entity = new UserResponse();
     }
 
-    public UserResponseBuilder setUserName(String userName){
-        super.entity.setUserName(userName);
-        return this;
-    }
     public UserResponseBuilder setName(String name){
         super.entity.setName(name);
         return this;

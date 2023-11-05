@@ -31,11 +31,6 @@ class MyProfileResponseBuilder extends BaseBuilder<MyProfileResponse> {
         return this;
     }
 
-    public MyProfileResponseBuilder setUserName(String userName) {
-        super.entity.setUserName(userName);
-        return this;
-    }
-
     public MyProfileResponseBuilder setName(String name) {
         super.entity.setName(name);
         return this;

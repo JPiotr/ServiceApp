@@ -25,8 +25,6 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     private static long num = 0;
     @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
-    private String username;
 
     private String name;
     private String surname;
@@ -56,9 +54,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
     @ManyToMany(targetEntity = Rule.class, fetch = FetchType.EAGER)
     private Collection<Rule> rules;
 
-    public User(String uuid, String username, String password){
+    public User(String uuid, String password){
         super(uuid);
-        this.username = username;
         this.password = password;
         this.enabled = true;
         locked = true;
@@ -68,9 +65,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         setID(User.num);
         User.num += 1;
     }
-    protected User(String username, String name, String surname, String email, Collection<Rule> rules, String password){
+    protected User(String name, String surname, String email, Collection<Rule> rules, String password){
         super();
-        this.username = username;
         this.email = email;
         this.rules = rules;
         this.password = password;
@@ -128,4 +124,8 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         return getName()+ " " + getSurname();
     }
 
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
 }

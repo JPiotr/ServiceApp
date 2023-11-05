@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProfileResponse extends BaseResponse {
-    private String userName;
     private String name;
     private String surname;
     private FileResponse avatar;

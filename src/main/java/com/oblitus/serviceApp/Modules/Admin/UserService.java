@@ -56,10 +56,6 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setName(dto.name());
             user.setLastModificationDate();
         }
-        if(dto.userName() != null){
-            user.setUsername(dto.userName());
-            user.setLastModificationDate();
-        }
         if(dto.password() != null){
             user.setPassword(passwordEncoder.encode(dto.password()));
             user.setLastModificationDate();
@@ -98,7 +94,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
     @Override
     public User add(UserDTO dto) {
         var rules = dto.rules().stream().map(ruleService::get).toList();
-        User user = new User(dto.userName(), dto.name(), dto.surname(), dto.email(), rules,
+        User user = new User(dto.name(), dto.surname(), dto.email(), rules,
                 passwordEncoder.encode(dto.password()));
 
         if(dto.photoId()!=null){
@@ -137,7 +133,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
     }
 
     public User getUserByUserName(String username){
-        var opt = userRepo.findByUsername(username);
+        var opt = userRepo.findUserByEmail(username);
         if(opt.isPresent()){
             return opt.get();
         }

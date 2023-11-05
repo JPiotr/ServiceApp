@@ -34,13 +34,13 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthResponse register(RUserDTO userDTO) throws AccountAlreadyExistException {
-        User usr = new User(userDTO.userName(),userDTO.name(),userDTO.surname(),userDTO.email(),
+        User usr = new User(userDTO.name(),userDTO.surname(),userDTO.email(),
                 ruleService.getAll().stream().filter(
                         ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
                 ).collect(Collectors.toList())
                 ,passwordEncoder.encode(userDTO.password()));
 
-        var check = userRepository.findByUsername(usr.getUsername());
+        var check = userRepository.findUserByEmail(usr.getUsername());
         if(check.isPresent()){
             throw new AccountAlreadyExistException("Account with that Username already Exist!");
         }
@@ -57,11 +57,11 @@ public class AuthenticationService {
     public AuthResponse login(LUserDTO userDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        userDTO.userName(),
+                        userDTO.email(),
                         userDTO.password()
                 )
         );
-        User optUser = userRepository.findByUsername(userDTO.userName()).orElseThrow();
+        User optUser = userRepository.findUserByEmail(userDTO.email()).orElseThrow();
         optUser.setLastLoginDate(LocalDateTime.now());
         optUser.setPassword(passwordEncoder.encode(userDTO.password()));
         var token = jwtService.generateToken(userRepository.save(optUser));
@@ -104,7 +104,7 @@ public class AuthenticationService {
         refreshToken = authHeader.substring(7);
         userName = jwtService.extractUserName(refreshToken);
         if (userName != null) {
-            User user = userRepository.findByUsername(userName).orElseThrow();
+            User user = userRepository.findUserByEmail(userName).orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);

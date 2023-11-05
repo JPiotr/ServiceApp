@@ -23,7 +23,6 @@ public class UserResponseMapper extends BaseResponseMapper<UserResponseBuilder> 
             return null;
 
         this.useBuilder(new UserResponseBuilder())
-                .setUserName(user.getUsername())
                 .setEmail(user.getEmail())
                 .setName(user.getName())
                 .setSurname(user.getSurname())

@@ -53,7 +53,6 @@ public final class StaticInfo {
     public static String SuperUserPasswd = "root";
     public static User SuperUser = new User(
             "00000000-0000-0000-0003-000000000001",
-            "System",
             "");
 
     public static Client Internal = new Client(

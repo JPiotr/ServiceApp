@@ -1,6 +1,7 @@
 package com.oblitus.serviceApp.Security.JWT;
 
 
+import com.oblitus.serviceApp.Modules.Admin.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,21 +33,21 @@ public class JWTService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(User userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
+    public String generateToken(Map<String, Object> extraClaims, User userDetails){
        return buildToken(extraClaims, userDetails, EXPIRATION);
     }
-    public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails){
+    public String generateRefreshToken(Map<String, Object> extraClaims, User userDetails){
         return buildToken(extraClaims, userDetails, REFRESH_EXPIRATION);
     }
-    public String generateRefreshToken(UserDetails userDetails){
+    public String generateRefreshToken(User userDetails){
         return generateRefreshToken(new HashMap<>(), userDetails);
     }
-    public boolean isTokenValid(String token, UserDetails userDetails){
+    public boolean isTokenValid(String token, User userDetails){
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (userName.equals(userDetails.getEmail())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -70,10 +71,10 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String buildToken(Map<String, Object> claims, UserDetails user, long expiration){
+    private String buildToken(Map<String, Object> claims, User user, long expiration){
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)

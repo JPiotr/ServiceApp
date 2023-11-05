@@ -9,11 +9,6 @@ class ProfileResponseBuilder extends BaseBuilder<ProfileResponse> {
         entity = new ProfileResponse();
     }
 
-    public ProfileResponseBuilder setUserName(String userName) {
-        super.entity.setUserName(userName);
-        return this;
-    }
-
     public ProfileResponseBuilder setName(String name) {
         super.entity.setName(name);
         return this;

@@ -18,7 +18,6 @@ public class ProfileResponseMapper extends BaseResponseMapper<ProfileResponseBui
     @Override
     public ProfileResponse apply(User user) {
         return this.useBuilder(new ProfileResponseBuilder())
-                .setUserName(user.getUsername())
                 .setName(user.getName())
                 .setSurname(user.getSurname())
                 .setAvatar(

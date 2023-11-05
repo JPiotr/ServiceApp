@@ -21,7 +21,6 @@ public class MyProfileResponseMapper
         return this.useBuilder(new MyProfileResponseBuilder())
                 .setName(user.getName())
                 .setSurname(user.getSurname())
-                .setUserName(user.getUsername())
                 .setEmail(user.getEmail())
                 .setLastLoginDate(user.getLastLoginDate())
                 .setAccountExpirationDate(user.getAccountExpirationDate())
