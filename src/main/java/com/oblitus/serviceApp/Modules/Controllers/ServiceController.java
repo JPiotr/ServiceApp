@@ -459,7 +459,7 @@ public class ServiceController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("All ticket activity.")
+                        .message("All object activity.")
                         .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO()
                                 .getActivityService().getAll().stream().filter(
                                 activity -> objectId.equals(activity.getObjectActivity())
