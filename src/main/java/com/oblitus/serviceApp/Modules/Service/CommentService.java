@@ -56,6 +56,8 @@ public class CommentService implements IService<Comment, CommentDTO>, IActivityC
                         ticketService.get(new TicketDTO(dto.subject()))
                         ,userService.get(new UserDTO(dto.creator()))));
         createActivity("Content", comment.getContent(), " ", user,comment);
+        ticketService.createActivity("Comments", comment.getContent(), " ", user,
+                ticketService.get(new TicketDTO(dto.subject())));
         return comment;
     }
 
