@@ -232,7 +232,7 @@ public class CustomProfileController {
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("New password mismatch")
-                            .data(Map.of("myProfile", " "))
+                            .data(Map.of("message", " "))
                             .statusCode(HttpStatus.NOT_ACCEPTABLE.value())
                             .status(HttpStatus.NOT_ACCEPTABLE)
                             .reason("New password confirmation not match new password!")
