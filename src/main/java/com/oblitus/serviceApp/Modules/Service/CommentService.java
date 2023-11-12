@@ -11,6 +11,9 @@ import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -36,6 +39,13 @@ public class CommentService implements IService<Comment, CommentDTO>, IActivityC
     @Override
     public Collection<Comment> getAll() {
         return repository.findAll();
+    }
+
+    public Collection<Comment> getAll(Sort sort) {
+        return repository.findAll(sort);
+    }
+    public Page<Comment> getAll(Pageable pageable){
+        return repository.findAll(pageable);
     }
 
     @Override

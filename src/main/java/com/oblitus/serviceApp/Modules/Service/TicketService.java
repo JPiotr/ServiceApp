@@ -12,6 +12,9 @@ import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -47,6 +50,14 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
     @Override
     public Collection<Ticket> getAll() {
         return repository.findAll();
+    }
+
+    public Page<Ticket> getAll(Pageable pageable){
+        return repository.findAll(pageable);
+    }
+
+    public Collection<Ticket> getAll(Sort sort) {
+        return repository.findAll(sort);
     }
 
     @Override

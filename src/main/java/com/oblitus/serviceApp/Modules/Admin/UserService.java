@@ -13,6 +13,9 @@ import com.oblitus.serviceApp.Utils.StaticInfo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +47,13 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
         return userRepo.findAll();
     }
 
+    public Collection<User> getAll(Sort sort) {
+        return userRepo.findAll(sort);
+    }
+
+    public Page<User> getAll(Pageable pageable) {
+        return userRepo.findAll(pageable);
+    }
     @Override
     public User update(UserDTO dto) {
         User user = get(dto);
