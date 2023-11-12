@@ -1,5 +1,7 @@
 package com.oblitus.serviceApp.Modules.Controllers;
 
+import com.oblitus.serviceApp.Common.PageInfo;
+import com.oblitus.serviceApp.Common.PageSortUtil;
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.UserDTO;
 import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponse;
@@ -113,13 +115,50 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Response> getUsers(@RequestParam @Nullable @Validated String ruleName){
+    public ResponseEntity<Response> getUsers(@RequestParam @Nullable @Validated String ruleName,
+                                             @Nullable @RequestParam @Validated String sortField,
+                                             @Nullable @RequestParam @Validated Boolean desc,
+                                             @Nullable @RequestParam @Validated Integer page,
+                                             @Nullable @RequestParam @Validated Integer size){
+
+        PageSortUtil.preparePaginationAndSorting(sortField,desc,page,size);
+        if(PageSortUtil.pageable.isPaged()){
+            var userPage = modulesWrapper.adminModule.getAdminDAO().getUserService()
+                    .getAll(PageSortUtil.pageable);
+
+            if(ruleName != null && Arrays.stream(ERule.values()).anyMatch(x-> Objects.equals(x.toString(), ruleName))){
+                return ResponseEntity.ok(
+                        Response.builder()
+                                .timestamp(LocalDateTime.now())
+                                .message("All users with rule "+ruleName)
+                                .data(Map.of("users",userPage.stream().map(mappersWrapper.userMapper)
+                                        .filter(userResponse -> userResponse.getRules().stream()
+                                                .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))
+                                        .toList()))
+                                .meta(Map.of("pageInfo",new PageInfo(userPage)))
+                                .statusCode(HttpStatus.OK.value())
+                                .status(HttpStatus.OK)
+                                .build()
+                );
+            }
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("All existing users.")
+                            .data(Map.of("users",userPage.stream().map(mappersWrapper.userMapper).toList()))
+                            .meta(Map.of("pageInfo",new PageInfo(userPage)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
         if(ruleName != null && Arrays.stream(ERule.values()).anyMatch(x-> Objects.equals(x.toString(), ruleName))){
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("All users with rule "+ruleName)
-                            .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()
+                            .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService()
+                                    .getAll(PageSortUtil.sort)
                                     .stream().map(mappersWrapper.userMapper)
                                     .filter(userResponse -> userResponse.getRules().stream()
                                             .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))
@@ -133,7 +172,8 @@ public class AdminController {
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All existing users.")
-                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService().getAll()
+                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService()
+                                .getAll(PageSortUtil.sort)
                                 .stream().map(mappersWrapper.userMapper).toList()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)

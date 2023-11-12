@@ -19,5 +19,6 @@ public class Response {
     protected String message;
     protected String devMessage;
     protected Map<String,?> data;
+    protected Map<String,PageInfo> meta;
 
 }
