@@ -279,7 +279,7 @@ public class ServiceController {
                                                        @Nullable @RequestParam @Validated Boolean desc,
                                                        @Nullable @RequestParam @Validated Integer page,
                                                        @Nullable @RequestParam @Validated Integer size){
-        PageSortUtil.preparePaginationAndSorting(sortField,desc,page,size);
+        PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
         if(PageSortUtil.pageable.isPaged()) {
             var commentPage = modulesWrapper.serviceModule.getServiceDAO().getCommentService()
                     .getAll(PageSortUtil.pageable);

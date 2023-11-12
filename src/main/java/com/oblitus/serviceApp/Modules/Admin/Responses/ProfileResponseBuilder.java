@@ -23,4 +23,9 @@ class ProfileResponseBuilder extends BaseBuilder<ProfileResponse> {
         super.entity.setAvatar(avatar);
         return this;
     }
+
+    public ProfileResponseBuilder setIsCredentialExpired(boolean isCredentialExpired) {
+        super.entity.setCredentialsExpired(isCredentialExpired);
+        return this;
+    }
 }

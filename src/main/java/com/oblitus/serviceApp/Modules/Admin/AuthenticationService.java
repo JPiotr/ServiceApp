@@ -33,7 +33,7 @@ public class AuthenticationService {
     private final RuleMapper ruleMapper;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
-    public AuthResponse register(RUserDTO userDTO) throws AccountAlreadyExistException {
+    public boolean register(RUserDTO userDTO) throws AccountAlreadyExistException {
         User usr = new User(userDTO.name(),userDTO.surname(),userDTO.email(),
                 ruleService.getAll().stream().filter(
                         ruleDTO -> Objects.equals(ruleDTO.getName(), ERule.USER.toString())
@@ -47,12 +47,8 @@ public class AuthenticationService {
 
         var userDetails = userRepository.save(usr);
         var token = jwtService.generateToken(usr);
-        var refToken = jwtService.generateRefreshToken(usr);
         saveToken(userDetails,token);
-        return AuthResponse.builder()
-                .accessToken(token)
-                .refreshToken(refToken)
-                .build();
+        return true;
     }
     public AuthResponse login(LUserDTO userDTO){
         authenticationManager.authenticate(

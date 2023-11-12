@@ -13,4 +13,5 @@ public class ProfileResponse extends BaseResponse {
     private String name;
     private String surname;
     private FileResponse avatar;
+    private boolean isCredentialsExpired;
 }

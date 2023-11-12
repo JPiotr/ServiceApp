@@ -121,7 +121,7 @@ public class AdminController {
                                              @Nullable @RequestParam @Validated Integer page,
                                              @Nullable @RequestParam @Validated Integer size){
 
-        PageSortUtil.preparePaginationAndSorting(sortField,desc,page,size);
+        PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
         if(PageSortUtil.pageable.isPaged()){
             var userPage = modulesWrapper.adminModule.getAdminDAO().getUserService()
                     .getAll(PageSortUtil.pageable);

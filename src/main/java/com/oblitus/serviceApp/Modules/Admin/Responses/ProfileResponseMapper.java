@@ -20,6 +20,7 @@ public class ProfileResponseMapper extends BaseResponseMapper<ProfileResponseBui
         return this.useBuilder(new ProfileResponseBuilder())
                 .setName(user.getName())
                 .setSurname(user.getSurname())
+                .setIsCredentialExpired(user.isCredentialsExpired())
                 .setAvatar(
                         fileMapper.apply(fileService.getObjectFiles(user.getUuid()).stream().findFirst().orElse(null))
                 )
