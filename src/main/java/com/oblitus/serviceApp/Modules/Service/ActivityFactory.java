@@ -37,21 +37,29 @@ public class ActivityFactory {
     @NoArgsConstructor
     private static class TicketActivity extends Activity{
         public TicketActivity(String fieldName, String newValue, String oldValue, User creator, Ticket objectActivity) {
-            super(objectActivity.getClass().getSimpleName(), fieldName, newValue, oldValue, EActivityTypes.SYSTEM.toString(), creator, objectActivity.getUuid());
+            super(
+                    objectActivity.getClass().getSimpleName(),
+                    fieldName, newValue, oldValue,
+                    creator == null ? EActivityTypes.SYSTEM.toString():EActivityTypes.USER.toString(),
+                    creator, objectActivity.getUuid());
         }
     }
     @Entity
     @NoArgsConstructor
     private static class UserActivity extends Activity{
         public UserActivity(String fieldName, String newValue, String oldValue, User creator, User objectActivity) {
-            super(objectActivity.getClass().getSimpleName(), fieldName, newValue, oldValue, EActivityTypes.SYSTEM.toString(), creator, objectActivity.getUuid());
+            super(objectActivity.getClass().getSimpleName(), fieldName, newValue, oldValue,
+                    creator == null ? EActivityTypes.SYSTEM.toString():EActivityTypes.USER.toString(),
+                    creator, objectActivity.getUuid());
         }
     }
     @Entity
     @NoArgsConstructor
     private static class CommentActivity extends Activity{
         public CommentActivity(String fieldName, String newValue, String oldValue, User creator, Comment objectActivity) {
-            super(objectActivity.getClass().getSimpleName(), fieldName, newValue, oldValue, EActivityTypes.USER.toString(), creator, objectActivity.getUuid());
+            super(objectActivity.getClass().getSimpleName(), fieldName, newValue, oldValue,
+                    creator == null ? EActivityTypes.SYSTEM.toString():EActivityTypes.USER.toString(),
+                    creator, objectActivity.getUuid());
         }
     }
 

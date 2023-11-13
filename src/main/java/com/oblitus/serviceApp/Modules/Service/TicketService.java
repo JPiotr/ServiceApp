@@ -136,12 +136,13 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
                 if(file != null){
                     file.setObjectId(ticket.getUuid());
                     fileService.updateFile(file);
-                    createActivity("Attachments",file.getFileName(),"",null,ticket);
+                    createActivity("Attachments",file.getFileName(),"",ticket.getCreator(),ticket);
                     ticket.setLastModificationDate();
                 }
 
             }
         }
+        createActivity("All",ticket.toString(),"",ticket.getCreator(),ticket);
         return repository.save(ticket);
     }
 
