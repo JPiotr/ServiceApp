@@ -1,5 +1,8 @@
 package com.oblitus.serviceApp.Modules.Analytics;
 
+import lombok.Getter;
+
+@Getter
 public enum AnalyticsType {
     CREATOR("Creator"),
     OBJECT("Object")
@@ -9,7 +12,4 @@ public enum AnalyticsType {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }

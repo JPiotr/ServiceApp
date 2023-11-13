@@ -142,7 +142,7 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
 
             }
         }
-        createActivity("All",ticket.toString(),"",ticket.getCreator(),ticket);
+        createActivity("New Ticket","","",ticket.getCreator(),ticket);
         return repository.save(ticket);
     }
 
