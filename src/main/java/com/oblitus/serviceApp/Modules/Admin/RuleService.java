@@ -2,6 +2,8 @@ package com.oblitus.serviceApp.Modules.Admin;
 
 import com.oblitus.serviceApp.Abstracts.IService;
 import com.oblitus.serviceApp.Modules.Admin.DTOs.RuleDTO;
+import com.oblitus.serviceApp.Modules.Module;
+import com.oblitus.serviceApp.Utils.StaticInfo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -40,13 +42,18 @@ public class RuleService implements IService<Rule, RuleDTO> {
     }
 
     @Override
+    @Deprecated
     public Rule add(RuleDTO dto) {
         return ruleRepository.save(
                 new Rule(
                         ERule.getValue(dto.name()),
-                        dto.modules()
+                        StaticInfo.Modules
                 )
         );
+    }
+
+    public Rule add(RuleDTO dto, List<Module> modules){
+        return ruleRepository.save(new Rule(ERule.valueOf(dto.name()),modules));
     }
 
     @Override
