@@ -156,9 +156,14 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
         return true;
     }
 
-    public Collection<Ticket> getAllUserTickets(UUID userId){
+    public Collection<Ticket> getAllUserTickets(UUID userId, Sort sort){
         var user = userService.get(new UserDTO(userId));
-        return repository.findAllByCreatorOrAssigned(user,user);
+        return sort != null ?  repository.findAllByCreatorOrAssigned(user,user,sort) :
+                repository.findAllByCreatorOrAssigned(user,user);
+    }
+    public Page<Ticket> getAllUserTickets(UUID userID, Pageable pageable){
+        var user = userService.get(new UserDTO(userID));
+        return repository.findAllByCreatorOrAssigned(user,user, pageable);
     }
 
 }

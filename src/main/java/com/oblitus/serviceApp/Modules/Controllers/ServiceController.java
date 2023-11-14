@@ -5,27 +5,20 @@ import com.oblitus.serviceApp.Common.PageSortUtil;
 import com.oblitus.serviceApp.Common.Response;
 import com.oblitus.serviceApp.Modules.MappersWrapper;
 import com.oblitus.serviceApp.Modules.ModulesWrapper;
-import com.oblitus.serviceApp.Modules.Service.DTOs.*;
-import com.oblitus.serviceApp.Modules.Service.Responses.TicketResponse;
-import com.oblitus.serviceApp.Modules.Service.Ticket;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ActivityDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.ClientDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.CommentDTO;
+import com.oblitus.serviceApp.Modules.Service.DTOs.TicketDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.apache.bcel.classfile.Field;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -318,8 +311,8 @@ public class ServiceController {
                     Response.builder().timestamp(LocalDateTime.now())
                             .message("Ticket with ID = " + id + ".")
                             .data(Map.of("ticket", mappersWrapper.ticketMapper.apply(
-                                    modulesWrapper.serviceModule.getServiceDAO().getTicketService()
-                                            .get(new TicketDTO(id))
+                                            modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                                    .get(new TicketDTO(id))
                                             )
                                     )
                             )
@@ -351,12 +344,11 @@ public class ServiceController {
         if(PageSortUtil.pageable.isPaged()){
             var ticketsPage = modulesWrapper.serviceModule.getServiceDAO().getTicketService()
                     .getAll(PageSortUtil.pageable);
-            var ticketList = ticketsPage.stream().map(mappersWrapper.ticketMapper).toList();
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("All existing tickets.")
-                            .data(Map.of("tickets", ticketList))
+                            .data(Map.of("tickets", ticketsPage.stream().map(mappersWrapper.ticketMapper).toList()))
                             .meta(Map.of("pageInfo", new PageInfo(ticketsPage)))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
@@ -398,22 +390,18 @@ public class ServiceController {
                                                    @Nullable @RequestParam @Validated Integer page,
                                                    @Nullable @RequestParam @Validated Integer size){
         PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
-        //todo: filtrowanie -> paginacja
-        //  System user do wyjebania z response
+        //todo: System user do wyjebania z response
         //  Wyjebać modules z rules Response -> stworzyć RuleResponse
         //  poprawic zortowanie po id
         //
         if(PageSortUtil.pageable.isPaged()){
             var ticketsPage = modulesWrapper.serviceModule.getServiceDAO().getTicketService()
-                    .getAll(PageSortUtil.pageable);
+                    .getAllUserTickets(userId,PageSortUtil.pageable);
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("All user tickets.")
-                            .data(Map.of("tickets", ticketsPage.stream().filter(
-                                    ticket -> userId.equals(ticket.getAssigned().getUuid())
-                                            || userId.equals(ticket.getCreator().getUuid())
-                            ).map(mappersWrapper.ticketMapper).toList()))
+                            .data(Map.of("tickets", ticketsPage.stream().map(mappersWrapper.ticketMapper).toList()))
                             .meta(Map.of("pageInfo", new PageInfo(ticketsPage)))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
@@ -425,10 +413,7 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All user tickets.")
                         .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketService()
-                                .getAll(PageSortUtil.sort).stream().filter(
-                                ticket -> userId.equals(ticket.getAssigned().getUuid())
-                                        || userId.equals(ticket.getCreator().getUuid())
-                        ).map(mappersWrapper.ticketMapper)
+                                .getAllUserTickets(userId,PageSortUtil.sort).stream().map(mappersWrapper.ticketMapper)
                                 .toList()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -528,15 +513,32 @@ public class ServiceController {
     }
 
     @GetMapping("/activities/{objectId}")
-    public ResponseEntity<Response> getObjectActivities(@PathVariable @Validated UUID objectId){
+    public ResponseEntity<Response> getObjectActivities(@PathVariable @Validated UUID objectId,
+                                                        @Nullable @RequestParam @Validated String sortField,
+                                                        @Nullable @RequestParam @Validated Boolean desc,
+                                                        @Nullable @RequestParam @Validated Integer page,
+                                                        @Nullable @RequestParam @Validated Integer size){
+        PageSortUtil.preparePaginationAndSorting(sortField,desc,page,size);
+        if(PageSortUtil.pageable.isPaged()){
+            var activities = modulesWrapper.serviceModule.getServiceDAO().getActivityService().getObjectActivities(objectId,PageSortUtil.pageable);
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("All object activity.")
+                            .data(Map.of("activities",activities.stream().map(mappersWrapper.activityMapper).collect(Collectors.toList())))
+                            .meta(Map.of("pageInfo", new PageInfo(activities)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
                         .message("All object activity.")
                         .data(Map.of("activities",modulesWrapper.serviceModule.getServiceDAO()
-                                .getActivityService().getAll().stream().filter(
-                                activity -> objectId.equals(activity.getObjectActivity())
-                        ).map(mappersWrapper.activityMapper).collect(Collectors.toList())))
+                                .getActivityService().getObjectActivities(objectId,PageSortUtil.sort).stream()
+                                .map(mappersWrapper.activityMapper).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
