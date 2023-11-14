@@ -88,9 +88,14 @@ public class CommentService implements IService<Comment, CommentDTO>, IActivityC
         return true;
     }
 
-    public Collection<Comment> getAllTicketComments(UUID ticketId){
+    public Collection<Comment> getAllTicketComments(UUID ticketId, Sort sort){
         var ticket = ticketService.get(new TicketDTO(ticketId));
-        return repository.findAllByTicket(ticket);
+        return sort != null ? repository.findAllByTicket(ticket,sort) : repository.findAllByTicket(ticket);
+    }
+
+    public Page<Comment> getAllTicketComments(UUID ticketId, Pageable pageable){
+        var ticket = ticketService.get(new TicketDTO(ticketId));
+        return repository.findAllByTicket(ticket,pageable);
     }
 
 }

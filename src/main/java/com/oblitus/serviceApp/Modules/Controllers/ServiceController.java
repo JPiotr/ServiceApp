@@ -275,14 +275,13 @@ public class ServiceController {
         PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
         if(PageSortUtil.pageable.isPaged()) {
             var commentPage = modulesWrapper.serviceModule.getServiceDAO().getCommentService()
-                    .getAll(PageSortUtil.pageable);
+                    .getAllTicketComments(ticketId,PageSortUtil.pageable);
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
                             .message("All ticket's comments.")
-                            .data(Map.of("comments",commentPage.stream().filter(
-                                    commentResponse -> ticketId.equals(commentResponse.getTicket().getUuid())
-                            ).map(mappersWrapper.commentMapper).collect(Collectors.toList())))
+                            .data(Map.of("comments",commentPage.stream()
+                                    .map(mappersWrapper.commentMapper).collect(Collectors.toList())))
                             .meta(Map.of("pageInfo",new PageInfo(commentPage)))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
@@ -294,9 +293,8 @@ public class ServiceController {
                         .timestamp(LocalDateTime.now())
                         .message("All ticket's comments.")
                         .data(Map.of("comments",modulesWrapper.serviceModule.getServiceDAO().getCommentService()
-                                .getAll(PageSortUtil.sort).stream().filter(
-                                commentResponse -> ticketId.equals(commentResponse.getTicket().getUuid())
-                        ).map(mappersWrapper.commentMapper).collect(Collectors.toList())))
+                                .getAllTicketComments(ticketId,PageSortUtil.sort)
+                                .stream().map(mappersWrapper.commentMapper).collect(Collectors.toList())))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
