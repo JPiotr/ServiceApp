@@ -13,8 +13,7 @@ public class RuleMapper implements Function<Rule, RuleDTO> { //todo: refactor th
     public RuleDTO apply(Rule rule) {
         return new RuleDTO(
                 rule.getUuid(),
-                rule.getName(),
-                rule.getModules()
+                rule.getName()
         );
     }
 }

@@ -388,10 +388,6 @@ public class ServiceController {
                                                    @Nullable @RequestParam @Validated Integer page,
                                                    @Nullable @RequestParam @Validated Integer size){
         PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
-        //todo: System user do wyjebania z response
-        //  Wyjebać modules z rules Response -> stworzyć RuleResponse
-        //  poprawic zortowanie po id
-        //
         if(PageSortUtil.pageable.isPaged()){
             var ticketsPage = modulesWrapper.serviceModule.getServiceDAO().getTicketService()
                     .getAllUserTickets(userId,PageSortUtil.pageable);
