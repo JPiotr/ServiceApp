@@ -44,15 +44,15 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
 
     @Override
     public Collection<User> getAll() {
-        return userRepo.findAll();
+        return userRepo.findAllByUuidNot(StaticInfo.SuperUser.getUuid());
     }
 
     public Collection<User> getAll(Sort sort) {
-        return userRepo.findAll(sort);
+        return userRepo.findAllByUuidNot(StaticInfo.SuperUser.getUuid(),sort);
     }
 
     public Page<User> getAll(Pageable pageable) {
-        return userRepo.findAll(pageable);
+        return userRepo.findAllByUuidNot(StaticInfo.SuperUser.getUuid(),pageable);
     }
     @Override
     public User update(UserDTO dto) {
@@ -225,6 +225,17 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             throw new NewPasswordMismatchException("Passwords not match!");
         }
         throw new PasswordSettingSessionExpiredException("Password setting session expired!");
+    }
+
+    public Collection<User> getUserWithRule(String ruleName, Sort sort){
+        var rule = ruleService.get(new RuleDTO(ruleName));
+        return sort != null ? userRepo.findAllByRulesContainsAndUuidNot(rule,StaticInfo.Internal.getUuid(),sort) :
+                userRepo.findAllByRulesContainsAndUuidNot(rule, StaticInfo.SuperUser.getUuid());
+    }
+
+    public Page<User> getUserWithRule(String ruleName, Pageable pageable){
+        var rule = ruleService.get(new RuleDTO(ruleName));
+        return userRepo.findAllByRulesContainsAndUuidNot(rule,StaticInfo.SuperUser.getUuid(),pageable);
     }
 }
 

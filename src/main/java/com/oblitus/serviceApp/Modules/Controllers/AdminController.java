@@ -123,58 +123,29 @@ public class AdminController {
 
         PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
         if(PageSortUtil.pageable.isPaged()){
-            var userPage = modulesWrapper.adminModule.getAdminDAO().getUserService()
-                    .getAll(PageSortUtil.pageable);
-
-            if(ruleName != null && Arrays.stream(ERule.values()).anyMatch(x-> Objects.equals(x.toString(), ruleName))){
-                return ResponseEntity.ok(
-                        Response.builder()
-                                .timestamp(LocalDateTime.now())
-                                .message("All users with rule "+ruleName)
-                                .data(Map.of("users",userPage.stream().map(mappersWrapper.userMapper)
-                                        .filter(userResponse -> userResponse.getRules().stream()
-                                                .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))
-                                        .toList()))
-                                .meta(Map.of("pageInfo",new PageInfo(userPage)))
-                                .statusCode(HttpStatus.OK.value())
-                                .status(HttpStatus.OK)
-                                .build()
-                );
-            }
+            var userPage = checkRuleName(ruleName) ?
+                    modulesWrapper.adminModule.getAdminDAO().getUserService()
+                            .getUserWithRule(ruleName,PageSortUtil.pageable) :
+                    modulesWrapper.adminModule.getAdminDAO().getUserService().getAll(PageSortUtil.pageable);
             return ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .message("All existing users.")
+                            .message("All users with rule "+ruleName)
                             .data(Map.of("users",userPage.stream().map(mappersWrapper.userMapper).toList()))
                             .meta(Map.of("pageInfo",new PageInfo(userPage)))
                             .statusCode(HttpStatus.OK.value())
                             .status(HttpStatus.OK)
                             .build()
-            );
+                );
         }
-        if(ruleName != null && Arrays.stream(ERule.values()).anyMatch(x-> Objects.equals(x.toString(), ruleName))){
-            return ResponseEntity.ok(
-                    Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message("All users with rule "+ruleName)
-                            .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService()
-                                    .getAll(PageSortUtil.sort)
-                                    .stream().map(mappersWrapper.userMapper)
-                                    .filter(userResponse -> userResponse.getRules().stream()
-                                            .anyMatch(ruleDTO -> Objects.equals(ruleDTO.name(), ruleName)))
-                                    .toList()))
-                            .statusCode(HttpStatus.OK.value())
-                            .status(HttpStatus.OK)
-                            .build()
-            );
-        }
+        var users = checkRuleName(ruleName) ?
+                    modulesWrapper.adminModule.getAdminDAO().getUserService().getUserWithRule(ruleName,PageSortUtil.sort) :
+                    modulesWrapper.adminModule.getAdminDAO().getUserService().getAll(PageSortUtil.sort);
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("All existing users.")
-                        .data(Map.of("users",modulesWrapper.adminModule.getAdminDAO().getUserService()
-                                .getAll(PageSortUtil.sort)
-                                .stream().map(mappersWrapper.userMapper).toList()))
+                        .message("All users with rule "+ruleName)
+                        .data(Map.of("users",users.stream().map(mappersWrapper.userMapper).toList()))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
@@ -243,5 +214,9 @@ public class AdminController {
             );
         }
 
+    }
+
+    private boolean checkRuleName(String ruleName) {
+        return ruleName != null && Arrays.stream(ERule.values()).anyMatch(x -> Objects.equals(x.toString(), ruleName));
     }
 }
