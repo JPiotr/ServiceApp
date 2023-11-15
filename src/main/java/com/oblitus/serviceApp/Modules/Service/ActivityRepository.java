@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -23,9 +24,17 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
     double countActivitiesByCreatorAndCreationDateBetween(User creator, LocalDateTime creationDate, LocalDateTime creationDate2);
     double countByCreationDateIsBetween(LocalDateTime creationDate, LocalDateTime creationDate2);
     double countByCreationDate(LocalDateTime creationDate);
+    double countAllByCreationDate_Date(LocalDate creationDate);
+
+    double countAllByCreatorAndClassNameAndCreationDateBetween(User creator, String className, LocalDateTime creationDate, LocalDateTime creationDate2);
+    double countAllByCreatorAndClassNameAndCreationDate_Date(User creator, String className, LocalDate creationDate_date);
+    double countAllByCreatorAndClassName(User creator, String className);
+    double countAllByClassName(String className);
     double countAllByCreatorAndCreationDate_Date(User creator, LocalDate creationDate);
     double countAll();
     double countActivitiesByCreator(User creator);
     double countActivitiesByObjectActivity(UUID objectActivity);
+
+    double countAllByCreatorAndCreationDate_TimeBetween(User creator, LocalTime creationDate_time, LocalTime creationDate_time2);
 
 }
