@@ -22,25 +22,25 @@ public class AnaliseActivityService {
     public double getAllTimeRateByCreator(User user){
         double allDataRate = activityRepository.findAll().size();
         double rate = activityRepository.countActivitiesByCreator(user);
-        return rate == 0D ? 0D : allDataRate/rate;
+        return rate == 0D && allDataRate == 0D ? 0D : rate/allDataRate;
     }
 
     public double getAllTimeRateOnObject(UUID objectUuid){
         double allDataRate = activityRepository.countAll();
         double rate = activityRepository.countActivitiesByObjectActivity(objectUuid);
-        return rate == 0D ? 0D : allDataRate/rate;
+        return rate == 0D && allDataRate == 0D ? 0D : rate/allDataRate;
     }
 
     public double getRateOnAllActivitiesByClassNameAndCreator(String className, User creator){
         double allDataRate = activityRepository.countAllByClassName(className);
         double rate = activityRepository.countAllByCreatorAndClassName(creator, className);
-        return rate == 0D ? 0D : allDataRate/rate;
+        return rate == 0D && allDataRate == 0D ? 0D : rate/allDataRate;
     }
 
     public Collection<Double> getCollectionOfRatesByClassNameAndCreatorInPeriod(String className, User creator, LocalDate startDate, LocalDate endDate){
         List<Double> collection = new ArrayList<>();
         var dates = startDate.datesUntil(endDate);
-        dates.forEach(date -> collection.add(activityRepository.countAllByCreatorAndClassNameAndCreationDate_Date(creator,className,date)));
+        dates.forEach(date -> collection.add(activityRepository.countAllByCreatorAndClassNameAndDate(creator,className,date)));
         return collection;
     }
 
@@ -82,15 +82,15 @@ public class AnaliseActivityService {
     public Collection<Double> getCollectionOfRatesByCreatorInPeriod(User user, LocalDate startDate, LocalDate endDate){
         List<Double> collection = new ArrayList<>();
         var dates = startDate.datesUntil(endDate);
-        dates.forEach(date -> collection.add(activityRepository.countAllByCreatorAndCreationDate_Date(user, date)));
+        dates.forEach(date -> collection.add(activityRepository.countAllByCreatorAndDate(user, date)));
         return collection;
     }
 
     public Collection<Double> getCollectionOfCountsByCreatorInTimePeriod(User user, int minutes){
         List<Double> collection = new ArrayList<>();
         List<LocalTime> times = getHeaders(minutes).stream().toList();
-        for(int i = 0; i < times.size(); i++){
-            collection.add(activityRepository.countAllByCreatorAndCreationDate_TimeBetween(user,times.get(i), times.get(i+1)));
+        for(int i = 0; i < times.size()-1; i++){
+            collection.add(activityRepository.countAllByCreatorAndTimeBetween(user,times.get(i), times.get(i+1)));
         }
         return collection;
     }
