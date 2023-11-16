@@ -216,6 +216,20 @@ public class AdminController {
 
     }
 
+    @GetMapping("/rules")
+    public ResponseEntity<Response> getAllRules(){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("All rules")
+                        .data(Map.of("rules",modulesWrapper.adminModule.getAdminDAO().getRuleService().getAll()
+                                .stream().map(mappersWrapper.ruleMapper).toList()))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
     private boolean checkRuleName(String ruleName) {
         return ruleName != null && Arrays.stream(ERule.values()).anyMatch(x -> Objects.equals(x.toString(), ruleName));
     }

@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
-import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
+import com.oblitus.serviceApp.Modules.BaseModule.Responses.FileResponse;
 
 class ProfileResponseBuilder extends BaseBuilder<ProfileResponse> {
     @Override

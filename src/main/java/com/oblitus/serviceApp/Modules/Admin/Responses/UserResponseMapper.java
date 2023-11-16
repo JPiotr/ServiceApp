@@ -1,7 +1,7 @@
 package com.oblitus.serviceApp.Modules.Admin.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
-import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponseMapper;
+import com.oblitus.serviceApp.Modules.BaseModule.Responses.FileResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Modules.Admin.User;
 import lombok.RequiredArgsConstructor;

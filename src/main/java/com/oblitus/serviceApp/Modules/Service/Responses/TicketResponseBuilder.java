@@ -2,7 +2,7 @@ package com.oblitus.serviceApp.Modules.Service.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseBuilder;
 import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponse;
-import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponse;
+import com.oblitus.serviceApp.Modules.BaseModule.Responses.FileResponse;
 import com.oblitus.serviceApp.Modules.Service.TicketPriority;
 import com.oblitus.serviceApp.Modules.Service.TicketState;
 

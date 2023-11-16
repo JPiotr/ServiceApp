@@ -2,7 +2,7 @@ package com.oblitus.serviceApp.Modules.Service.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponseMapper;
-import com.oblitus.serviceApp.Modules.BaseModule.DTOs.FileResponseMapper;
+import com.oblitus.serviceApp.Modules.BaseModule.Responses.FileResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Modules.Service.Ticket;
 import lombok.RequiredArgsConstructor;
