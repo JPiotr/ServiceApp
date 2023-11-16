@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
@@ -24,17 +25,18 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
     double countActivitiesByCreatorAndCreationDateBetween(User creator, LocalDateTime creationDate, LocalDateTime creationDate2);
     double countByCreationDateIsBetween(LocalDateTime creationDate, LocalDateTime creationDate2);
     double countByCreationDate(LocalDateTime creationDate);
-    double countAllByCreationDate_Date(LocalDate creationDate);
+    double countAllByDate(LocalDate creationDate);
 
     double countAllByCreatorAndClassNameAndCreationDateBetween(User creator, String className, LocalDateTime creationDate, LocalDateTime creationDate2);
-    double countAllByCreatorAndClassNameAndCreationDate_Date(User creator, String className, LocalDate creationDate_date);
+    double countAllByCreatorAndClassNameAndDate(User creator, String className, LocalDate creationDate_date);
     double countAllByCreatorAndClassName(User creator, String className);
     double countAllByClassName(String className);
-    double countAllByCreatorAndCreationDate_Date(User creator, LocalDate creationDate);
+    double countAllByCreatorAndDate(User creator, LocalDate creationDate);
+    @Query("select count(a) from Activity a")
     double countAll();
     double countActivitiesByCreator(User creator);
     double countActivitiesByObjectActivity(UUID objectActivity);
 
-    double countAllByCreatorAndCreationDate_TimeBetween(User creator, LocalTime creationDate_time, LocalTime creationDate_time2);
+    double countAllByCreatorAndTimeBetween(User creator, LocalTime creationDate_time, LocalTime creationDate_time2);
 
 }

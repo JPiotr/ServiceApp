@@ -5,12 +5,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 /**
@@ -37,6 +40,10 @@ public abstract class EntityBase{ //implements Serializable {
     @Getter
     @CreatedDate
     protected LocalDateTime creationDate;
+
+    protected LocalDate date;
+    protected LocalTime time;
+
 
     @Getter
     @LastModifiedDate
@@ -73,6 +80,8 @@ public abstract class EntityBase{ //implements Serializable {
 //        this.creator = null;
         this.readOnly = false;
         this.locked = false;
+        this.date = lastModificationDate.toLocalDate();
+        this.time = lastModificationDate.toLocalTime();
     }
     /**
      * Constructor witch set properties:
