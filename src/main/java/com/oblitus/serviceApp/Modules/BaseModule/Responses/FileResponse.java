@@ -1,12 +1,10 @@
-package com.oblitus.serviceApp.Modules.BaseModule.DTOs;
+package com.oblitus.serviceApp.Modules.BaseModule.Responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oblitus.serviceApp.Abstracts.BaseResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.core.io.Resource;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
