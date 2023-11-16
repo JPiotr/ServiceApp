@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
+
+import static org.springframework.security.core.context.SecurityContextHolder.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -50,6 +54,33 @@ public class AuthController {
                             .build()
             );
         }
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Response> logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = getContext().getAuthentication();
+        if (auth != null) {
+            getContext().setAuthentication(null);
+            request.getSession().invalidate();
+            return  ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Logout successful")
+                            .data(Map.of("result", true))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        return  ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("User not logged in")
+                        .data(Map.of("result", false))
+                        .statusCode(HttpStatus.FORBIDDEN.value())
+                        .status(HttpStatus.FORBIDDEN)
+                        .build()
+        );
     }
 
     @PostMapping("/login")
