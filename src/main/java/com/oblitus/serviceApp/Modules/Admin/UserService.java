@@ -7,7 +7,10 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.NewPasswordMismatchException;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordNotMatchException;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.PasswordSettingSessionExpiredException;
+import com.oblitus.serviceApp.Modules.Analytics.AnaliseActivityService;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
+import com.oblitus.serviceApp.Modules.BaseModule.Notification;
+import com.oblitus.serviceApp.Modules.BaseModule.NotificationRepository;
 import com.oblitus.serviceApp.Modules.Service.ActivityFactory;
 import com.oblitus.serviceApp.Utils.StaticInfo;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,6 +33,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
     private final UserSetPasswordIdRepository setPasswordIdRepository;
     private final RuleService ruleService;
     private final FileService fileService;
+    private final NotificationRepository notificationRepository;
     private final ActivityFactory activityFabric;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     //todo: Zmiana z SuperUser na faktycznego kreatora
@@ -118,6 +122,9 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setRules(List.of(ruleService.get(new RuleDTO(ERule.USER.toString()))));
         }
         createActivity("New User","","", StaticInfo.SuperUser,user);
+
+        StaticInfo.NotificationsOptions.forEach(x-> notificationRepository.save(new Notification(user,false,false,x)));
+
         return userRepo.save(user);
     }
 

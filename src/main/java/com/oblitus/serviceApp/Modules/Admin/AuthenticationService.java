@@ -5,10 +5,14 @@ import com.oblitus.serviceApp.Modules.Admin.DTOs.*;
 import com.oblitus.serviceApp.Modules.Admin.Exceptions.AccountAlreadyExistException;
 import com.oblitus.serviceApp.Modules.Admin.Responses.AuthResponse;
 import com.oblitus.serviceApp.Modules.Admin.Responses.RuleMapper;
+import com.oblitus.serviceApp.Modules.Analytics.AnaliseActivityService;
+import com.oblitus.serviceApp.Modules.BaseModule.Notification;
+import com.oblitus.serviceApp.Modules.BaseModule.NotificationRepository;
 import com.oblitus.serviceApp.Security.JWT.JWTService;
 import com.oblitus.serviceApp.Security.Token;
 import com.oblitus.serviceApp.Security.TokenRepository;
 import com.oblitus.serviceApp.Security.TokenType;
+import com.oblitus.serviceApp.Utils.StaticInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -32,6 +38,7 @@ public class AuthenticationService {
     private final RuleService ruleService;
     private final RuleMapper ruleMapper;
     private final JWTService jwtService;
+    private final NotificationRepository notificationRepository;
     private final AuthenticationManager authenticationManager;
     public boolean register(RUserDTO userDTO) throws AccountAlreadyExistException {
         User usr = new User(userDTO.name(),userDTO.surname(),userDTO.email(),
@@ -48,6 +55,7 @@ public class AuthenticationService {
         var userDetails = userRepository.save(usr);
         var token = jwtService.generateToken(usr);
         saveToken(userDetails,token);
+        StaticInfo.NotificationsOptions.forEach(x-> notificationRepository.save(new Notification(userDetails,false,false,x)));
         return true;
     }
     public AuthResponse login(LUserDTO userDTO){

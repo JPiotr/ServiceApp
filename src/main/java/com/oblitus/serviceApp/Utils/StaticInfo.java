@@ -3,12 +3,14 @@ package com.oblitus.serviceApp.Utils;
 import com.oblitus.serviceApp.Modules.Admin.ERule;
 import com.oblitus.serviceApp.Modules.Admin.Rule;
 import com.oblitus.serviceApp.Modules.Admin.User;
+import com.oblitus.serviceApp.Modules.Analytics.AnaliseActivityService;
 import com.oblitus.serviceApp.Modules.EModule;
 import com.oblitus.serviceApp.Modules.Module;
 import com.oblitus.serviceApp.Modules.Service.Client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.Collection;
 import java.util.List;
 
 public final class StaticInfo {
@@ -59,6 +61,17 @@ public final class StaticInfo {
             "00000000-0000-0000-0004-000000000001",
             "Internal",
             SuperUser
+    );
+
+    public static Collection<String> NotificationsOptions = List.of(
+            AnaliseActivityService.TicketCUEventsFieldsNames.NOTE.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.TITLE.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.STATE.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.ATTACHMENTS.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.ASSIGNED.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.DESCRIPTION.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.ADD_COMMENT.getValue(),
+            AnaliseActivityService.TicketCUEventsFieldsNames.PRIORITY.getValue()
     );
 
 }
