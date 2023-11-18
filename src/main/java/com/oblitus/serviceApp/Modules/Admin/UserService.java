@@ -122,10 +122,10 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setRules(List.of(ruleService.get(new RuleDTO(ERule.USER.toString()))));
         }
         createActivity("New User","","", StaticInfo.SuperUser,user);
+        var usr = userRepo.save(user);
+        StaticInfo.NotificationsOptions.forEach(x-> notificationRepository.save(new Notification(usr,false,false,x)));
 
-        StaticInfo.NotificationsOptions.forEach(x-> notificationRepository.save(new Notification(user,false,false,x)));
-
-        return userRepo.save(user);
+        return usr;
     }
 
     @Override

@@ -52,8 +52,9 @@ public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuild
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             var user = userRepository.findUserByEmail(userDetails.getUsername());
             user.ifPresent(value -> builder.setCurrentUserSubscribed(ticket.getSubscribers().contains(value)));
+        }else{
+            builder.setCurrentUserSubscribed(false);
         }
-        builder.setCurrentUserSubscribed(false);
 
         return builder.build();
     }
