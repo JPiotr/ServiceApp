@@ -77,11 +77,15 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
             ticket.setLastModificationDate();
         }
         if(dto.title() != null){
+            var oldValue = ticket.getTitle();
             ticket.setTitle(dto.title());
+            createActivity("Title", dto.title(), oldValue, editor, ticket);
             ticket.setLastModificationDate();
         }
         if(dto.description() != null){
+            var oldValue = ticket.getDescription();
             ticket.setDescription(dto.description());
+            createActivity("Description", dto.description(), oldValue, editor, ticket);
             ticket.setLastModificationDate();
         }
         if(dto.priority() != null){

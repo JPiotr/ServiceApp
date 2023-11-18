@@ -65,8 +65,8 @@ public class CommentService implements IService<Comment, CommentDTO>, IActivityC
                         dto.content(),
                         ticketService.get(new TicketDTO(dto.subject()))
                         ,userService.get(new UserDTO(dto.creator()))));
-        createActivity("Content", comment.getContent(), " ", user,comment);
-        ticketService.createActivity("Comments", comment.getContent(), " ", user,
+        createActivity("New Comment", comment.getContent(), " ", user,comment);
+        ticketService.createActivity("Add Comment", comment.getContent(), " ", user,
                 ticketService.get(new TicketDTO(dto.subject())));
         return comment;
     }

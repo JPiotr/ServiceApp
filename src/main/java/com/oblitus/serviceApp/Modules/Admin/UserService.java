@@ -32,7 +32,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
     private final FileService fileService;
     private final ActivityFactory activityFabric;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
+    //todo: Zmiana z SuperUser na faktycznego kreatora
     @Override
     public User get(UserDTO dto) {
         var opt = userRepo.findById(dto.id());
@@ -62,7 +62,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.name() != null){
-            createActivity("name",dto.name(),user.getName(),StaticInfo.SuperUser,user);
+            createActivity("Name",dto.name(),user.getName(),StaticInfo.SuperUser,user);
             user.setName(dto.name());
             user.setLastModificationDate();
         }
@@ -71,12 +71,12 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.surname() != null){
-            createActivity("surname",dto.surname(),user.getSurname(),StaticInfo.SuperUser,user);
+            createActivity("Surname",dto.surname(),user.getSurname(),StaticInfo.SuperUser,user);
             user.setSurname(dto.surname());
             user.setLastModificationDate();
         }
         if(dto.photoId() != null){
-            createActivity("photoId",dto.photoId().toString()," ",StaticInfo.SuperUser,user);
+            createActivity("Avatar",dto.photoId().toString()," ",StaticInfo.SuperUser,user);
             var file = fileService.getFileById(dto.photoId());
             file.setObjectId(user.getUuid());
             fileService.updateFile(file);
@@ -84,7 +84,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             user.setLastModificationDate();
         }
         if(dto.rules() != null && !dto.rules().isEmpty()){
-            createActivity("rules",dto.rules().toString(),user.getRules().toString(),StaticInfo.SuperUser,user);
+            createActivity("Rules",dto.rules().toString(),user.getRules().toString(),StaticInfo.SuperUser,user);
             user.setRules(
                     dto.rules().stream()
                             .map(
@@ -117,6 +117,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
         if(rules.isEmpty()){
             user.setRules(List.of(ruleService.get(new RuleDTO(ERule.USER.toString()))));
         }
+        createActivity("New User","","", StaticInfo.SuperUser,user);
         return userRepo.save(user);
     }
 
@@ -156,6 +157,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
             if(Objects.equals(dto.newPassword(), dto.newPasswordConfirmation())){
                 user.setPassword(passwordEncoder.encode(dto.newPassword()));
                 user.setLastModificationDate();
+                createActivity("Change Password","","",user,user);
                 return userRepo.save(user);
             }
             throw new NewPasswordMismatchException("Passwords not match!");
@@ -166,21 +168,22 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
     public User changeProfileDetails(String username, ChangeProfileDetailsDTO dto){
         var user = getUserByUserName(username);
         if(dto.email() != null){
+            createActivity("Email",dto.email(),user.getEmail(), user,user);
             user.setEmail(dto.email());
             user.setLastModificationDate();
         }
         if(dto.name() != null){
-            createActivity("name",dto.name(),user.getName(), StaticInfo.SuperUser,user);
+            createActivity("Name",dto.name(),user.getName(), StaticInfo.SuperUser,user);
             user.setName(dto.name());
             user.setLastModificationDate();
         }
         if(dto.surname() != null){
-            createActivity("surname",dto.surname(),user.getSurname(),StaticInfo.SuperUser,user);
+            createActivity("Surname",dto.surname(),user.getSurname(),StaticInfo.SuperUser,user);
             user.setSurname(dto.surname());
             user.setLastModificationDate();
         }
         if(dto.avatar() != null){
-            createActivity("photoId",dto.avatar().toString()," ",StaticInfo.SuperUser,user);
+            createActivity("Avatar",dto.avatar().toString()," ",StaticInfo.SuperUser,user);
             var file = fileService.getFileById(dto.avatar());
             file.setObjectId(user.getUuid());
             fileService.updateFile(file);
@@ -220,6 +223,7 @@ public class UserService implements IService<User, UserDTO>, IActivityCreator {
                 usr.setLastModificationDate();
                 userRepo.save(usr);
                 setPasswordIdRepository.delete(user.get());
+                createActivity("Set Password","","", usr,usr);
                 return "Your password has been created!";
             }
             throw new NewPasswordMismatchException("Passwords not match!");
