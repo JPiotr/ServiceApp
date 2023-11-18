@@ -75,8 +75,8 @@ public class AnaliseController {
         );
     }
 
-    @GetMapping("/chart/{startDate}/{endDate}/user/{userUuid}")
-    public ResponseEntity<Response> getChartOfRatesInPeriod(
+    @GetMapping("/multiChart/{startDate}/{endDate}/user/{userUuid}")
+    public ResponseEntity<Response> getMultiChartOfRatesInPeriod(
             @NonNull @Validated @PathVariable LocalDate endDate,
             @NonNull @Validated @PathVariable LocalDate startDate,
             @NonNull @Validated @PathVariable UUID userUuid){
@@ -84,7 +84,7 @@ public class AnaliseController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("User activity chart in period")
+                        .message("User activity multiChart in period")
                         .data(Map.of("multiChart", activityService.multiSetChartOfRatesByCreatorInPeriod(user,startDate,endDate)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -123,7 +123,7 @@ public class AnaliseController {
     }
 
     @GetMapping("/chart/{startDate}/{endDate}/user/{userUuid}/{className}")
-    public ResponseEntity<Response> getChartOfCountsClassNameInPeriod(
+    public ResponseEntity<Response> getChartOfRatesByClassNameInPeriod(
             @NonNull @Validated @PathVariable LocalDate endDate,
             @NonNull @Validated @PathVariable LocalDate startDate,
             @NonNull @Validated @PathVariable String className,
@@ -149,7 +149,7 @@ public class AnaliseController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("User activity chart by class in period")
+                        .message("User activity chart in period")
                         .data(Map.of("chart", activityService.chartOfCountsByCreatorInPeriod(user,startDate,endDate)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -157,7 +157,7 @@ public class AnaliseController {
         );
     }
     @GetMapping("/chart/{startDate}/{endDate}/user/{userUuid}/{className}/event/{event}")
-    public ResponseEntity<Response> getChartOfCountsClassNameInPeriod(
+    public ResponseEntity<Response> getChartOfCountsOnClassEventInPeriod(
             @NonNull @Validated @PathVariable LocalDate endDate,
             @NonNull @Validated @PathVariable LocalDate startDate,
             @NonNull @Validated @PathVariable String event,
@@ -168,7 +168,7 @@ public class AnaliseController {
             case COMMENT -> ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .message("User activity chart by class in period")
+                            .message("User activity chart by class event in period")
                             .data(Map.of("chart", activityService
                                     .chartOfCountsByCreatorAndClassNameAndEventInPeriod(user,
                                             ActivityTypes.valueOf(className),
@@ -206,7 +206,7 @@ public class AnaliseController {
     }
 
     @GetMapping("/chart/{date}/user/{userUuid}/{className}/event/{event}/{minutes}")
-    public ResponseEntity<Response> getChartOfCountsClassNameInPeriod(
+    public ResponseEntity<Response> getChartOfCountsOnClassEventInTimePeriod(
             @NonNull @Validated @PathVariable Integer minutes,
             @NonNull @Validated @PathVariable LocalDate date,
             @NonNull @Validated @PathVariable String event,
@@ -217,7 +217,7 @@ public class AnaliseController {
             case COMMENT -> ResponseEntity.ok(
                     Response.builder()
                             .timestamp(LocalDateTime.now())
-                            .message("User activity chart by class in period")
+                            .message("User activity chart by class event in time period")
                             .data(Map.of("chart", activityService
                                     .chartOfCountsByCreatorAndClassNameAndEventInTimePeriod(user,
                                             ActivityTypes.valueOf(className),
@@ -263,7 +263,7 @@ public class AnaliseController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("User activity chart by class in time period")
+                        .message("User activity in time period")
                         .data(Map.of("chart", activityService.chartOfCountsByCreatorInTimePeriod(user,minutes)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
@@ -271,7 +271,7 @@ public class AnaliseController {
         );
     }
     @GetMapping("/chart/{date}/user/{userUuid}/{className}/{minutes}")
-    public ResponseEntity<Response> getChartOfCountsInTime(
+    public ResponseEntity<Response> getChartOfCountsOnClassInTimePeriod(
             @NonNull @Validated @PathVariable LocalDate date,
             @NonNull @Validated @PathVariable Integer minutes,
             @NonNull @Validated @PathVariable String className,
@@ -288,7 +288,7 @@ public class AnaliseController {
         );
     }
     @GetMapping("/chart/{date}/user/{userUuid}/class/{minutes}")
-    public ResponseEntity<Response> getChartOfCountsInTimeMulti(
+    public ResponseEntity<Response> getChartOfCountOnClasses(
             @NonNull @Validated @PathVariable LocalDate date,
             @NonNull @Validated @PathVariable Integer minutes,
             @NonNull @Validated @PathVariable UUID userUuid){
@@ -296,14 +296,14 @@ public class AnaliseController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("User activity chart by class in time period")
-                        .data(Map.of("chart", activityService.multiSetChartOfRatesByClassNameAndCreatorInTimePeriod(user,minutes)))
+                        .message("User activity multiChart by class in time period")
+                        .data(Map.of("multiChart", activityService.multiSetChartOfRatesByClassNameAndCreatorInTimePeriod(user,minutes)))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .build()
         );
     }
-    @GetMapping("/chart/user/{userUuid}/detailed/{className}")
+    @GetMapping("/chart/all/user/{userUuid}/detailed/{className}")
     public ResponseEntity<Response> getChartOfCountsDetailed(
             @NonNull @Validated @PathVariable String className,
             @NonNull @Validated @PathVariable UUID userUuid){
@@ -311,7 +311,7 @@ public class AnaliseController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timestamp(LocalDateTime.now())
-                        .message("User activity chart by class in time period")
+                        .message("Detailed User activity on object class")
                         .data(Map.of("chart", activityService.chartOfCountsByCreatorAndClassNameDetailed(user,ActivityTypes.valueOf(className))))
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
