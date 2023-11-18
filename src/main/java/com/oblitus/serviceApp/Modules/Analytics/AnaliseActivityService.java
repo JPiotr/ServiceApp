@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,7 +22,8 @@ public class AnaliseActivityService {
     @Getter
     private enum AnaliseType{
         ALL_TIME("All time"),
-        PERIOD("Period")
+        PERIOD_TIME("Period time"),
+        PERIOD_DATES("Period dates")
         ;
         private final String value;
 
@@ -32,14 +32,18 @@ public class AnaliseActivityService {
         }
     }
     @Getter
-    private enum RateType{
-        RATE("Rate"),
-        COUNT("Count")
+    public enum RateType{
+        RATE("Rate restricted", "divided by restricted scope of activities recorded in system"),
+        RATE_ALL("Rate all", "divided by all activities recorded in system"),
+        COUNT("Count restricted", ""),
+        COUNT_ALL("Count all", "")
         ;
         private final String value;
+        private final String desc;
 
-        RateType(String value) {
+        RateType(String value, String desc) {
             this.value = value;
+            this.desc = desc;
         }
     }
 
@@ -89,32 +93,90 @@ public class AnaliseActivityService {
         }
     }
 
+    //todo: fix
+    private RateResponse rateUserActivity(User user, RateType rateType){
+        return switch (rateType){
+            case RATE, COUNT -> null;
+            case RATE_ALL -> {
+                double act = activityRepository.countAll();
+                double cnt = activityRepository.countActivitiesByCreator(user);
+                yield new RateResponse("User activity rate",
+                        RateType.RATE_ALL.getValue(),
+                        act == 0D && cnt == 0D ? 0D : cnt/act,
+                        "User activity rate witch shows user activity " + RateType.RATE_ALL.getDesc(),
+                        AnaliseType.ALL_TIME.getValue());
+            }
+            case COUNT_ALL -> new RateResponse("User activity rate",
+                    RateType.COUNT_ALL.getValue(),
+                    activityRepository.countActivitiesByCreator(user),
+                    "User activity count witch shows user activity recorded in system",
+                    AnaliseType.ALL_TIME.getValue());
+        };
+    }
+    private RateResponse rateUserActivity(User user, RateType rateType, LocalDate start, LocalDate  end){
+        return switch (rateType){
+            case RATE_ALL, COUNT_ALL -> rateUserActivity(user,rateType);
+            case RATE -> {
+                double act = activityRepository.countActivitiesByDateBetween(start,end);
+                double cnt = activityRepository.countActivitiesByCreatorAndDateBetween(user,start,end);
+                yield new RateResponse("User activity rate",
+                        RateType.RATE.getValue(),
+                        act == 0D && cnt == 0D ? 0D : cnt/act,
+                        "User activity rate witch shows user activity " + RateType.RATE.getDesc(),
+                        AnaliseType.PERIOD_DATES.getValue());
+            }
+            case COUNT -> new RateResponse("User activity rate",
+                    RateType.COUNT.getValue(),
+                    activityRepository.countActivitiesByCreatorAndDateBetween(user,start,end),
+                    "User activity rate witch shows user activity " + RateType.COUNT.getDesc(),
+                    AnaliseType.PERIOD_DATES.getValue());
+        };
+    }
+    private RateResponse rateUserActivity(User user, RateType rateType, LocalTime start, LocalTime end){
+        return switch (rateType){
+            case RATE_ALL, COUNT_ALL -> rateUserActivity(user,rateType);
+            case RATE -> {
+                double act = activityRepository.countActivitiesByTimeBetween(start,end);
+                double cnt = activityRepository.countActivitiesByCreatorAndTimeBetween(user,start,end);
+                yield new RateResponse("User activity rate",
+                        RateType.RATE.getValue(),
+                        act == 0D && cnt == 0D ? 0D : cnt/act,
+                        "User activity rate witch shows user activity " + RateType.RATE.getDesc(),
+                        AnaliseType.PERIOD_DATES.getValue());
+            }
+            case COUNT -> new RateResponse("User activity rate",
+                    RateType.COUNT.getValue(),
+                    activityRepository.countActivitiesByCreatorAndTimeBetween(user,start,end),
+                    "User activity rate witch shows user activity " + RateType.COUNT.getDesc(),
+                    AnaliseType.PERIOD_DATES.getValue());
+        };
+    }
+
+
     public RateResponse rateAllUserActivity(User user){
         double allActivities = activityRepository.countAll();
         double count = activityRepository.countActivitiesByCreator(user);
         return new RateResponse("User activity rate",
                 RateType.RATE.getValue(),
-                allActivities == 0D && count == 0D ? 0D : count/allActivities,
+                allActivities == 0D && count == 0D ? 0D : count/allActivities * 100,
                 "User activity rate witch shows user activity divided by all activities recorded in system",
                 AnaliseType.ALL_TIME.getValue());
     }
-
     public RateResponse rateObjectActivity(UUID object){
         double allActivities = activityRepository.countAll();
         double count = activityRepository.countActivitiesByObjectActivity(object);
         return new RateResponse("Object activity rate",
                 RateType.RATE.getValue(),
-                allActivities == 0D && count == 0D ? 0D : count/allActivities,
+                allActivities == 0D && count == 0D ? 0D : count/allActivities * 100,
                 "Object activity rate shows activities on object by Type divided by all activities recorded in system",
                 AnaliseType.ALL_TIME.getValue());
     }
-
     public RateResponse rateUserActivitiesOnObjectType(User creator, ActivityTypes type){
         double allActivities = activityRepository.countAll();
         double count = getSpecificTypeCount(type,creator);
         return new RateResponse("User activity rate on object Type",
                 RateType.RATE.getValue(),
-                allActivities == 0D && count == 0D ? 0D : count/allActivities,
+                allActivities == 0D && count == 0D ? 0D : count/allActivities * 100,
                 "User activity rate that shows user activity on specific object type divided by all activities recorded in system",
                 AnaliseType.ALL_TIME.getValue());
     }
@@ -127,19 +189,19 @@ public class AnaliseActivityService {
             double allActivities = activityRepository.countAll();
             dates.forEach(date -> {
                 double count = getSpecificTypeCount(a, creator, date);
-                collection.add(allActivities == 0D && count == 0D ? 0D : count/allActivities);
+                collection.add(allActivities == 0D && count == 0D ? 0D : count/allActivities * 100);
             });
             chartResponses.add(new ChartResponse("Chart of User activities rates in period (" + a.getValue() + ")",
                     getHeaders(startDate,endDate),
                     collection,
                     "Chart of User activities rates day by day in specific period and on specific object Type",
-                    AnaliseType.PERIOD.getValue(),
+                    AnaliseType.PERIOD_DATES.getValue(),
                     RateType.RATE.getValue()));
         });
         return new ChartResponse("Chart of User activities rates in period (all types)",
                 getHeaders(startDate,endDate),
                 "Chart of User activities rates day by day in specific period and on all object Types",
-                AnaliseType.PERIOD.getValue(),
+                AnaliseType.PERIOD_DATES.getValue(),
                 RateType.RATE.getValue(),
                 chartResponses
                 );
@@ -157,7 +219,7 @@ public class AnaliseActivityService {
                 collection,
                 "Chart of User activities in period (time)",
                 RateType.COUNT.getValue(),
-                AnaliseType.PERIOD.getValue()
+                AnaliseType.PERIOD_TIME.getValue()
         );
     }
     public ChartResponse chartOfCountsByCreatorInPeriod(User user, LocalDate startDate, LocalDate endDate){
@@ -168,7 +230,7 @@ public class AnaliseActivityService {
                 getHeaders(startDate,endDate),
                 collection,
                 "Chart of User activities in period (dates)",
-                AnaliseType.PERIOD.getValue(),
+                AnaliseType.PERIOD_DATES.getValue(),
                 RateType.COUNT.getValue() );
     }
     public ChartResponse chartOfRatesByClassNameAndCreatorInPeriod(ActivityTypes type, User creator, LocalDate startDate, LocalDate endDate){
@@ -177,13 +239,13 @@ public class AnaliseActivityService {
         double allActivities = activityRepository.countAll();
         dates.forEach(date -> {
             double count = getSpecificTypeCount(type, creator, date);
-            collection.add(allActivities == 0D && count == 0D ? 0D : count/allActivities);
+            collection.add(allActivities == 0D && count == 0D ? 0D : count/allActivities * 100);
         });
         return new ChartResponse("Chart of User activities rates in period",
                 getHeaders(startDate,endDate),
                 collection,
                 "Chart of User activities rates day by day in specific period and on specific object Type",
-                AnaliseType.PERIOD.getValue(),
+                AnaliseType.PERIOD_DATES.getValue(),
                 RateType.RATE.getValue());
     }
     public ChartResponse chartOfCountsByCreatorAndClassNameInTimePeriod(ActivityTypes type, User creator, int minutes){
@@ -197,7 +259,7 @@ public class AnaliseActivityService {
                 collection,
                 "Chart of User activities on object type in period (time)",
                 RateType.COUNT.getValue(),
-                AnaliseType.PERIOD.getValue()
+                AnaliseType.PERIOD_DATES.getValue()
         );
     }
     public ChartResponse multiSetChartOfRatesByClassNameAndCreatorInTimePeriod(User creator, int minutes){
@@ -214,13 +276,13 @@ public class AnaliseActivityService {
                     collection,
                     "Chart of User activities on object type in period (time)",
                     RateType.COUNT.getValue(),
-                    AnaliseType.PERIOD.getValue()
+                    AnaliseType.PERIOD_DATES.getValue()
             ));
         });
         return new ChartResponse("Chart of User activities rates in period (all types)",
                 getHeaders(LocalDate.now(),minutes),
                 "Chart of User activities rates day by day in specific period (time) and on all object Types",
-                AnaliseType.PERIOD.getValue(),
+                AnaliseType.PERIOD_DATES.getValue(),
                 RateType.RATE.getValue(),
                 chartResponses
                 );
@@ -231,7 +293,7 @@ public class AnaliseActivityService {
         double allActivities = activityRepository.countAll();
         Arrays.stream(ActivityTypes.values()).toList().forEach(x-> {
             double count = getSpecificTypeCount(x, creator);
-            collection.add(allActivities == 0D && count == 0D ? 0D : count/allActivities);
+            collection.add(allActivities == 0D && count == 0D ? 0D : count/allActivities * 100);
         });
 
         return new ChartResponse("Chart of User activities rates on object type",
@@ -290,7 +352,7 @@ public class AnaliseActivityService {
                 collection,
                 "Chart of User activities on object types in all time and specific field in period",
                 RateType.COUNT.getValue(),
-                AnaliseType.PERIOD.getValue());
+                AnaliseType.PERIOD_DATES.getValue());
     }
 
     public ChartResponse chartOfCountsByCreatorAndClassNameAndEventInTimePeriod(User user, ActivityTypes type, Enum<?> field, int minutes){
@@ -306,7 +368,7 @@ public class AnaliseActivityService {
                 collection,
                 "Chart of User activities on object types in all time and specific field in time period",
                 RateType.COUNT.getValue(),
-                AnaliseType.PERIOD.getValue());
+                AnaliseType.PERIOD_TIME.getValue());
     }
     /*public ChartResponse chartOfCountsByCreatorAndClassNameAndEventTypeInPeriod(User user, ActivityTypes type, LocalDate start, LocalDate end){
         List<ChartResponse> sets = new ArrayList<>();
