@@ -81,7 +81,7 @@ public class AnaliseActivityService {
         DESCRIPTION("Description"),
         TITLE("Title"),
         NEW_TICKET("New Ticket"),
-        ADD_COMMENT("New Comment");
+        ADD_COMMENT("Add Comment");
         private final String value;
 
         TicketCUEventsFieldsNames(String value) {
@@ -288,7 +288,7 @@ public class AnaliseActivityService {
         return new ChartResponse("Chart of User activities on object type in period",
                 dates,
                 collection,
-                "Chart of User activities on object types in all time and specific field in period",
+                "Chart of User activities on object types and specific field in period",
                 RateType.COUNT.getValue(),
                 AnaliseType.PERIOD.getValue());
     }
@@ -304,7 +304,7 @@ public class AnaliseActivityService {
         return new ChartResponse("Chart of User activities on object type in period",
                 getHeaders(LocalDate.now(),minutes),
                 collection,
-                "Chart of User activities on object types in all time and specific field in time period",
+                "Chart of User activities on object types and specific field in time period",
                 RateType.COUNT.getValue(),
                 AnaliseType.PERIOD.getValue());
     }

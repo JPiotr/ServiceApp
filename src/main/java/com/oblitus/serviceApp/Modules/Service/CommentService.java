@@ -50,8 +50,9 @@ public class CommentService implements IService<Comment, CommentDTO>, IActivityC
 
     @Override
     public Comment update(CommentDTO dto) {
+        var user = userService.get(new UserDTO(dto.creator()));
         var comment = get(dto);
-        createActivity("Content", dto.content(), comment.getContent(), null, comment);
+        createActivity("Content", dto.content(), comment.getContent(), user, comment);
         comment.setContent(dto.content());
         comment.setLastModificationDate();
         return repository.save(comment);
