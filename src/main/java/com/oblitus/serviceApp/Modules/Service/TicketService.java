@@ -170,4 +170,32 @@ public class TicketService implements IService<Ticket, TicketDTO>, IActivityCrea
         return repository.findAllByCreatorOrAssigned(user,user, pageable);
     }
 
+    public Collection<Ticket> getAllSubscribedTickets(UUID userID, Sort sort){
+        var user = userService.get(new UserDTO(userID));
+        return sort != null ? repository.findAllBySubscribersContaining(user, sort) :
+                repository.findAllBySubscribersContaining(user);
+    }
+
+    public Page<Ticket> getAllSubscribedTickets(UUID userId, Pageable pageable){
+        var user = userService.get(new UserDTO(userId));
+        return repository.findAllBySubscribersContaining(user,pageable);
+    }
+
+    public Ticket subscribeTicket(UUID userUuid, UUID ticketUuid){
+        var ticket = get(new TicketDTO(ticketUuid));
+        var user = userService.get(new UserDTO(userUuid));
+        ticket.getSubscribers().add(user);
+        ticket.setLastModificationDate();
+        return repository.save(ticket);
+    }
+
+    public Ticket unsubscribeTicket(UUID userUuid, UUID ticketUuid){
+        var ticket = get(new TicketDTO(ticketUuid));
+        var user = userService.get(new UserDTO(userUuid));
+        ticket.getSubscribers().remove(user);
+        ticket.setLastModificationDate();
+        return repository.save(ticket);
+
+    }
+
 }

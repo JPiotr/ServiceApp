@@ -20,6 +20,11 @@ public class TicketResponseBuilder extends BaseBuilder<TicketResponse> {
         return this;
     }
 
+    public TicketResponseBuilder setCurrentUserSubscribed(boolean isSubscribed) {
+        entity.setCurrentUserSubscribed(isSubscribed);
+        return this;
+    }
+
     public TicketResponseBuilder setDescription(String description) {
         entity.setDescription(description);
         return this;

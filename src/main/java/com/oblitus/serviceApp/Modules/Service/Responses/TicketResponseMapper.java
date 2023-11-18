@@ -2,10 +2,14 @@ package com.oblitus.serviceApp.Modules.Service.Responses;
 
 import com.oblitus.serviceApp.Abstracts.BaseResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponseMapper;
+import com.oblitus.serviceApp.Modules.Admin.UserRepository;
 import com.oblitus.serviceApp.Modules.BaseModule.Responses.FileResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.FileService;
 import com.oblitus.serviceApp.Modules.Service.Ticket;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -14,11 +18,14 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuilder> implements Function<Ticket, TicketResponse> {
     private final ProfileResponseMapper profileResponseMapper;
+    private final UserRepository userRepository;
     private final FileResponseMapper fileMapper;
     private final FileService fileService;
 
     @Override
     public TicketResponse apply(Ticket ticket) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         this.useBuilder(new TicketResponseBuilder())
                 .setTitle(ticket.getTitle())
                 .setDescription(ticket.getDescription())
@@ -41,6 +48,13 @@ public class TicketResponseMapper extends BaseResponseMapper<TicketResponseBuild
                     profileResponseMapper.apply(ticket.getAssigned())
             );
         }
+        if (authentication != null) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            var user = userRepository.findUserByEmail(userDetails.getUsername());
+            user.ifPresent(value -> builder.setCurrentUserSubscribed(ticket.getSubscribers().contains(value)));
+        }
+        builder.setCurrentUserSubscribed(false);
+
         return builder.build();
     }
 }
