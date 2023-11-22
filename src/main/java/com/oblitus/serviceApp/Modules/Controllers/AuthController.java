@@ -56,33 +56,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<Response> logout(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = getContext().getAuthentication();
-        if (auth != null) {
-            getContext().setAuthentication(null);
-            request.getSession().invalidate();
-            return  ResponseEntity.ok(
-                    Response.builder()
-                            .timestamp(LocalDateTime.now())
-                            .message("Logout successful")
-                            .data(Map.of("result", true))
-                            .statusCode(HttpStatus.OK.value())
-                            .status(HttpStatus.OK)
-                            .build()
-            );
-        }
-        return  ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(LocalDateTime.now())
-                        .message("User not logged in")
-                        .data(Map.of("result", false))
-                        .statusCode(HttpStatus.FORBIDDEN.value())
-                        .status(HttpStatus.FORBIDDEN)
-                        .build()
-        );
-    }
-
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody @Validated LUserDTO userDTO){
         try {

@@ -58,7 +58,7 @@ public class User extends EntityBase implements UserDetails, CredentialsContaine
         super(uuid);
         this.password = password;
         this.enabled = true;
-        locked = true;
+        locked = false;
         expired = false;
         publicProfile = false;
         email = "srvctrack@gmail.com";

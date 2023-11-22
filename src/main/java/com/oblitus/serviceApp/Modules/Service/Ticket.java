@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.UUID;
 
 
@@ -25,6 +26,8 @@ public class Ticket extends EntityBase {
     private TicketState state;
     private TicketPriority priority;
     private String note;
+    @ManyToMany(targetEntity = User.class, fetch = FetchType.EAGER)
+    private Collection<User> subscribers;
     public Ticket(String title, String description, com.oblitus.serviceApp.Modules.Service.Client client, User assigned, TicketPriority priority, User creator, String note){
         super();
         this.title = title;

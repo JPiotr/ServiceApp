@@ -17,5 +17,10 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Collection<Ticket> findAllByCreatorOrAssigned(User creator, User assigned, Sort sort);
     Collection<Ticket> findAllByCreatorOrAssigned(User creator, User assigned);
     Page<Ticket> findAllByCreatorOrAssigned(User creator, User assigned, Pageable pageable);
+    Collection<Ticket> findAllBySubscribersContaining(User subscriber);
+    Collection<Ticket> findAllBySubscribersContaining(User subscriber, Sort sort);
+    Page<Ticket> findAllBySubscribersContaining(User subscriber, Pageable pageable);
+
+
 
 }

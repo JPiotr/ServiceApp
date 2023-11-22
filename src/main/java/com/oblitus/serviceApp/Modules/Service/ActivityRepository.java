@@ -37,13 +37,12 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
     double countAllByCreatorAndClassNameAndTimeBetweenAndFieldName(User creator, String className, LocalTime time, LocalTime time2, String fieldName);
     double countAllByCreatorAndClassNameAndDateAndFieldNameNot(User creator, String className, LocalDate date, String fieldName);
 
+    double countActivitiesByCreatorAndDateBetween(User creator, LocalDate date, LocalDate date1);
+    double countActivitiesByDateBetween(LocalDate date, LocalDate date1);
+    double countActivitiesByCreatorAndTimeBetween(User creator, LocalTime time, LocalTime time1);
+    double countActivitiesByTimeBetween(LocalTime time, LocalTime time1);
 
 
-
-
-
-    double countActivitiesByCreatorAndCreationDateBetween(User creator, LocalDateTime creationDate, LocalDateTime creationDate2);
-    double countByCreationDateIsBetween(LocalDateTime creationDate, LocalDateTime creationDate2);
     double countByCreationDate(LocalDateTime creationDate);
     double countAllByDate(LocalDate creationDate);
     double countAllByCreatorAndClassNameAndCreationDateBetween(User creator, String className, LocalDateTime creationDate, LocalDateTime creationDate2);

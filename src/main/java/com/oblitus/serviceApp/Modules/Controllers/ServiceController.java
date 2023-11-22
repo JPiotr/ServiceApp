@@ -381,6 +381,32 @@ public class ServiceController {
         );
     }
 
+    @PatchMapping("/tickets/{ticketID}/{userID}/subscribe")
+    public ResponseEntity<Response> subscribeTicket(@PathVariable UUID ticketID, @PathVariable UUID userID){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Ticket subscribed.")
+                        .data(Map.of("ticket",mappersWrapper.ticketMapper.apply(modulesWrapper.serviceModule.getServiceDAO()
+                                .getTicketService().subscribeTicket(userID,ticketID))))
+                        .statusCode(HttpStatus.CREATED.value())
+                        .status(HttpStatus.CREATED)
+                        .build()
+        );
+    }
+    @PatchMapping("/tickets/{ticketID}/{userID}/unsubscribe")
+    public ResponseEntity<Response> unsubscribeTicket(@PathVariable UUID ticketID, @PathVariable UUID userID){
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Ticket unsubscribed.")
+                        .data(Map.of("ticket",mappersWrapper.ticketMapper.apply(modulesWrapper.serviceModule.getServiceDAO()
+                                .getTicketService().unsubscribeTicket(userID,ticketID))))
+                        .statusCode(HttpStatus.CREATED.value())
+                        .status(HttpStatus.CREATED)
+                        .build()
+        );
+    }
     @GetMapping("/tickets/{userId}")
     public ResponseEntity<Response> getUserTickets(@PathVariable @Validated UUID userId,
                                                    @Nullable @RequestParam @Validated String sortField,
@@ -414,6 +440,40 @@ public class ServiceController {
                         .build()
         );
     }
+    @GetMapping("/tickets/{userId}/subscribed")
+    public ResponseEntity<Response> getUserSubscribedTickets(@PathVariable @Validated UUID userId,
+                                                   @Nullable @RequestParam @Validated String sortField,
+                                                   @Nullable @RequestParam @Validated Boolean desc,
+                                                   @Nullable @RequestParam @Validated Integer page,
+                                                   @Nullable @RequestParam @Validated Integer size){
+        PageSortUtil.preparePaginationAndSorting(sortField,desc,size,page);
+        if(PageSortUtil.pageable.isPaged()){
+            var ticketsPage = modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                    .getAllSubscribedTickets(userId,PageSortUtil.pageable);
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timestamp(LocalDateTime.now())
+                            .message("Subscribed user tickets.")
+                            .data(Map.of("tickets", ticketsPage.stream().map(mappersWrapper.ticketMapper).toList()))
+                            .meta(Map.of("pageInfo", new PageInfo(ticketsPage)))
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .build()
+            );
+        }
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timestamp(LocalDateTime.now())
+                        .message("Subscribed user tickets.")
+                        .data(Map.of("tickets",modulesWrapper.serviceModule.getServiceDAO().getTicketService()
+                                .getAllSubscribedTickets(userId,PageSortUtil.sort).stream().map(mappersWrapper.ticketMapper)
+                                .toList()))
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
+                        .build()
+        );
+    }
+
 
     @PutMapping("/ticket")
     public ResponseEntity<Response> updateOrAddTicket(@RequestBody @Validated TicketDTO ticketDTO) {

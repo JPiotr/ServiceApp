@@ -13,7 +13,7 @@ public class BaseModule implements ModuleBase {
     @Getter
     private final BaseDAO baseDAO;
 
-    public final EModule Type = EModule.SERVICE_MODULE;
+    public final EModule Type = EModule.BASE_MODULE;
 
     //for db
     public  ModuleBase getModule(){

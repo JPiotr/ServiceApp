@@ -26,4 +26,5 @@ public class TicketResponse extends BaseResponse {
     private ProfileResponse creator;
     private String note;
     private Collection<FileResponse> files;
+    private Boolean currentUserSubscribed;
 }

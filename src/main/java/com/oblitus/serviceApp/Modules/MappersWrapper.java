@@ -5,6 +5,7 @@ import com.oblitus.serviceApp.Modules.Admin.Responses.ProfileResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.Responses.RuleMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.Responses.FileResponseMapper;
 import com.oblitus.serviceApp.Modules.Admin.Responses.UserResponseMapper;
+import com.oblitus.serviceApp.Modules.BaseModule.Responses.NotificationResponseMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.Responses.OptionsMapper;
 import com.oblitus.serviceApp.Modules.BaseModule.Responses.RuleOptionsMapper;
 import com.oblitus.serviceApp.Modules.Service.Responses.ActivityResponseMapper;
@@ -28,6 +29,7 @@ public final class MappersWrapper {
     public final UserResponseMapper userMapper;
     public final ProfileResponseMapper profileMapper;
     public final MyProfileResponseMapper myProfileMapper;
+    public final NotificationResponseMapper notificationMapper;
 
     public final OptionsMapper optionsMapper;
     public final RuleOptionsMapper ruleOptionsMapper;
