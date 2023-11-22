@@ -38,22 +38,12 @@ public class UserCreationProcess extends EmailNotification implements Job {
         User profileInfo = (User) dataMap.get(User.class.getSimpleName());
         UUID uuid = UUID.randomUUID();
         userService.saveUserSetPasswordSession(uuid,profileInfo);
-//todo:prod
-
         emailService.sendHtmlEmail(profileInfo.getEmail(), SystemNotificationTypes.USER_CREATION.getValue(), Map.of(
                 "name","Hello, " + profileInfo.getName(),
                 "environmentURL","http//:localhost:3000/set-password/" + uuid,
                 "environmentName","Set Your password"
                 ),
                 SystemNotificationTypes.USER_CREATION.getTemplate());
-
-//        emailService.sendHtmlEmail("srvctrack@gmail.com", SystemNotificationTypes.USER_CREATION.getValue(),
-//                Map.of(
-//                        "name","Hello System",
-//                        "environmentURL","http:localhost:3000/profile/set-password/" + uuid,
-//                        "environmentName","Set Your password"
-//                ),
-//                SystemNotificationTypes.USER_CREATION.getTemplate());
     }
 }
 
